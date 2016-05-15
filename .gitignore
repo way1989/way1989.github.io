@@ -2,6 +2,8 @@
 *.svn*
 Log/
 
+_site/
+
 # built application files
 *.apk
 *.ap_
