@@ -8,9 +8,8 @@ description: Capturer是为Android平台设计的，集截屏、长截屏、录�
 
 # Capturer使用说明
 
-__[Capturer](http://fir.im/capturer)__是为Android平台设计的，集`截屏、长截屏、录屏以及将录屏内容转换成GIF动态图`等多功能于一体的，小巧强悍的实用型工具软件。
+[Capturer](http://fir.im/capturer)是为Android平台设计的，集`截屏、长截屏、录屏以及将录屏内容转换成GIF动态图`等多功能于一体的，小巧强悍的实用型工具软件。
 
-===========================
 
 ## 1. 普通截屏
 
@@ -23,7 +22,6 @@ __[Capturer](http://fir.im/capturer)__是为Android平台设计的，集`截屏�
 ![Long Screenshot](https://raw.githubusercontent.com/way1989/Captain/master/help/normal_screenshot.gif)
 
 
-===========================
 
 ## 2. 录屏
 
@@ -33,17 +31,15 @@ __[Capturer](http://fir.im/capturer)__是为Android平台设计的，集`截屏�
 
 ### 2.3 倒计时3秒后，显示停止按钮并计时表示真正开始录屏了，可以通过点击`停止按钮`随时结束录屏。
 
-===========================
-* 注意事项:
+### 2.4 注意事项:
   1. __画质越高，录制的视频文件就越大，显示效果越好__。
   2. __3秒倒计时可以在设置中取消__。
   3. __停止按钮可以设置显示在通知栏中__。
 
-### 2.4 录屏演示范例：
+### 2.5 录屏演示范例：
 
 ![Long Screenshot](https://raw.githubusercontent.com/way1989/Captain/master/help/screen_record.gif)
 
-===========================
 
 ## 3. 长截屏
 
@@ -53,16 +49,14 @@ __[Capturer](http://fir.im/capturer)__是为Android平台设计的，集`截屏�
 。
 ### 3.3 滚动完一次之后，点击一次上方的提示界面，再接着滚动一次，点击一次，如果想结束长截屏，直接点击两次即可。
 
-===========================
-* 注意事项:
+### 3.4 注意事项:
   1. __滚动一次，点击一次，连点两次直接结束__。
   2. __每次滚动的高度尽量与箭头长度相近，避免滚动过大导致长图拼接失败__。
 
-### 3.4 长截屏演示范例：
+### 3.5 长截屏演示范例：
 
 ![Long Screenshot](https://raw.githubusercontent.com/way1989/Captain/master/help/long_screenshot.gif)
 
-===========================
 
 ## 4. 任意截屏
 
@@ -72,18 +66,16 @@ __[Capturer](http://fir.im/capturer)__是为Android平台设计的，集`截屏�
 
 ### 4.3 如果需要重新选取截屏区域，直接用手指圈选新的区域即可。
 
-===========================
-* 注意事项:
+### 4.4 注意事项:
   1. __保存圈选区域内容需要点击`确定`按钮__。
   2. __选择新区域时，不需要做其他操作，直接在屏幕上重新圈选__。
   3. __不圈选直接点击`确定`按钮，将直接保存完整屏幕截图__。
 
 
-### 4.4 任意截屏演示范例：
+### 4.5 任意截屏演示范例：
 
 ![Long Screenshot](https://raw.githubusercontent.com/way1989/Captain/master/help/free_screenshot.gif)
 
-===========================
 
 ## 5. 矩形区域截屏
 
@@ -93,7 +85,6 @@ __[Capturer](http://fir.im/capturer)__是为Android平台设计的，集`截屏�
 
 ### 5.3 双击屏幕即可保存所选区域截屏内容。
 
-===========================
 * 注意事项:
   1. __通过矩形框四个角调整大小，通过触摸矩形框其他区域可以拖动__。
   2. __双击即可保存矩形框区域内的截屏内容__。
@@ -103,7 +94,6 @@ __[Capturer](http://fir.im/capturer)__是为Android平台设计的，集`截屏�
 
 ![Long Screenshot](https://raw.githubusercontent.com/way1989/Captain/master/help/rect_screenshot.gif)
 
-===========================
 
 ## 6. 视频转换成GIF
 
@@ -113,13 +103,12 @@ __[Capturer](http://fir.im/capturer)__是为Android平台设计的，集`截屏�
 
 ### 6.3 点击`生成GIF`按钮即可弹出选择GIF画质的对话框，选择一个画质点击确定即可开始转换。
 
-===========================
-* 注意事项:
+### 6.4 注意事项:
   1. __第一次开始转换时，需要下载一个`FFmpeg`动态库__。
   2. __选取转换的时间只能精确到秒，因此可能生成GIF图前后会存在少许误差__。
   3. __精细画质宽480，帧率12，标准画质360，帧率10，压缩画质宽240，帧率8，为减少用户操作，暂时固定这几种画质__。
   4. __画质越高，选择视频时间越长，生成GIF文件也就越大__。
 
-### 6.4 视频转换成GIF演示范例：
+### 6.5 视频转换成GIF演示范例：
 
 ![Long Screenshot](https://raw.githubusercontent.com/way1989/Captain/master/help/video_to_gif.gif)
