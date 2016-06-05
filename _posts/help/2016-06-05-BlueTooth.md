@@ -8,7 +8,7 @@ description: 蓝牙传输文件简短小代码
 
 ``` 
 java
-  	/**
+  /**
      * 通过蓝牙发送文件
      */
     private void sendFile(Activity activity) {
