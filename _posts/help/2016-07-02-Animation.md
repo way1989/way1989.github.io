@@ -2,8 +2,8 @@
 category: books-2016
 published: true
 layout: post
-title: 蓝牙传输文件代码
-description: 蓝牙传输文件简短小代码
+title: 下载动画，图标飞入下载管理动画实现
+description: 图标飞入动画
 ---
 
 ```
