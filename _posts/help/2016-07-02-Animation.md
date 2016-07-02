@@ -100,4 +100,5 @@ public static Button sActionBarDownload;  //title栏的下载
             mAnimationImageView.startAnimation(animationSet);  
             mAnimationImageView.setTag(animationSet);  
         }  
-    }   ```
+    }   
+	```
