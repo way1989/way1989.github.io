@@ -205,6 +205,13 @@ custom_logo:
 # https://github.com/chriskempson/tomorrow-theme
 highlight_theme: night
 
+# 打赏配置
+# 打赏说明文本
+reward_comment: 坚持原创技术分享，您的支持将鼓励我继续创作！
+# 微信收款二维码
+wechatpay: /uploads/images/wechat-reward-image.png
+# 支付宝收款二维码
+alipay: /uploads/images/alipay-reward-image.png
 
 # Automatically scroll page to section which is under <!-- more --> mark.
 scroll_to_more: true
@@ -337,15 +344,6 @@ busuanzi_count:
 baidu_push: false
 
 
-# 打赏配置
-# 打赏说明文本
-donate:
-  enable: true
-  text: 坚持原创技术分享，您的支持将鼓励我继续创作！
-# 微信收款二维码
-  wechat: /uploads/images/wechat-reward-image.png
-# 支付宝收款二维码
-  alipay: /uploads/images/alipay-reward-image.png
 
 #! ---------------------------------------------------------------
 #! DO NOT EDIT THE FOLLOWING SETTINGS
