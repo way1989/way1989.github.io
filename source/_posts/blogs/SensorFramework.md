@@ -127,7 +127,8 @@ public SystemSensorManager(Context context,Looper mainLooper) {
 
 ### 启动SensorThread线程读取消息队列中数据
 
-1. 当有应用程序调用registerListenerImpl()方法注册监听的时候，会调用SensorThread.startLoacked()启动线程。线程只会启动一次，并调用enableSensorLocked()接口对指定的sensor使能，并设置采样时间。　　SensorThreadRunnable实现了Runnable接口，在SensorThread类中被启动。
+- 当有应用程序调用registerListenerImpl()方法注册监听的时候，会调用SensorThread.startLoacked()启动线程。线程只会启动一次，并调用enableSensorLocked()接口对指定的sensor使能，并设置采样时间。　　SensorThreadRunnable实现了Runnable接口，在SensorThread类中被启动。
+
 ``` java
 protected boolean registerListenerImpl(SensorEventListener listener, Sensor sensor,
             int delay, Handler handler) {
@@ -161,7 +162,7 @@ protected boolean registerListenerImpl(SensorEventListener listener, Sensor sens
     }
 ```
 
-2. 在open函数中调用JNI函数sensors_create_queue()来创建消息队列,然后调用SensorManager. createEventQueue()创建。在startLocked函数中启动新的线程后，做了一个while的等待while (mSensorsReady == false)，只有当mSensorsReady等于true的时候，才会执行enableSensorLocked()函数对sensor使能。而mSensorsReady变量，是在open()调用创建消息队列成功之后才会true，所以认为，三个功能调用顺序是如下：
+- 在open函数中调用JNI函数sensors_create_queue()来创建消息队列,然后调用SensorManager. createEventQueue()创建。在startLocked函数中启动新的线程后，做了一个while的等待while (mSensorsReady == false)，只有当mSensorsReady等于true的时候，才会执行enableSensorLocked()函数对sensor使能。而mSensorsReady变量，是在open()调用创建消息队列成功之后才会true，所以认为，三个功能调用顺序是如下：
     1. 调用open函数创建消息队列
     2. 调用enableSensorLocked()函数对sensor使能
     3. 调用sensors_data_poll从消息队列中读取数据，而且是在while (true)循环里一直读取
@@ -230,7 +231,7 @@ extern "C" status_t system_init()
 
 ### SensorService初始化
 
-1. SensorService创建完之后，将会调用SensorService::onFirstRef()方法，在该方法中完成初始化工作。首先获取SensorDevice实例，在其构造函数中，完成了对Sensor模块HAL的初始化：
+- SensorService创建完之后，将会调用SensorService::onFirstRef()方法，在该方法中完成初始化工作。首先获取SensorDevice实例，在其构造函数中，完成了对Sensor模块HAL的初始化：
 
 ``` cpp
 SensorDevice::SensorDevice()
@@ -260,12 +261,12 @@ SensorDevice::SensorDevice()
 }
 ```
 
-2. 这里主要做了三个工作：
+- 这里主要做了三个工作：
     1. 调用HAL层的hw_get_modele()方法，加载Sensor模块so文件
     2. 调用sensor.h的sensors_open方法打开设备
     3. 调用sensors_poll_device_t->activate()对Sensor模块使能
 
-3. 再看看SensorService::onFirstRef()方法:
+- 再看看SensorService::onFirstRef()方法:
 
 ``` cpp
 void SensorService::onFirstRef()
@@ -298,13 +299,13 @@ void SensorService::onFirstRef()
 }
 ```
 
-4. 在这个方法中，主要做了4件事情：
+- 在这个方法中，主要做了4件事情：
     1. 创建SensorDevice实例
     2. 获取Sensor列表
     3. 调用SensorDevice.getSensorList(),获取Sensor模块所有传感器列表
     4. 为每个传感器注册监听器
 
-5. `registerSensor(new HardwareSensor(list[i]))`;
+- `registerSensor(new HardwareSensor(list[i]))`;
 
 ``` cpp
 void SensorService::registerSensor(SensorInterface* s)
@@ -322,7 +323,7 @@ void SensorService::registerSensor(SensorInterface* s)
 }
 ```
 
-6. HardwareSensor实现了SensorInterface接口。启动线程读取数据，调用run方法启动新线程，将调用SensorService::threadLoop()方法。
+- HardwareSensor实现了SensorInterface接口。启动线程读取数据，调用run方法启动新线程，将调用SensorService::threadLoop()方法。
 
 ### 在新的线程中读取HAL层数据
 
@@ -358,17 +359,17 @@ bool SensorService::threadLoop()
 
 ### 数据传送
 
-1. 客户端与服务端通信的状态图：
+- 客户端与服务端通信的状态图：
 
 <img src="https://raw.githubusercontent.com/way1989/way1989.github.io/master/uploads/images/sensorFramework/5.png"/>
 
-2. __客户端服务端线程__，在图中可以看到有两个线程：
+- 客户端服务端线程，在图中可以看到有两个线程：
     1. 一个是服务端的一个线程，这个线程负责源源不断的从HAL读取数据。
     2. 另一个是客户端的一个线程，客户端线程负责从消息队列中读数据。
-3. __创建消息队列__，客户端可以创建多个消息队列，一个消息队列对应有一个与服务器通信的连接接口
-4. __创建连接接口__，服务端与客户端沟通的桥梁，服务端读取到HAL层数据后，会扫面有多少个与客户端连接的接口，然后往每个接口的管道中写数据
-5. __创建管道__，每一个连接接口都有对应的一个管道。
-6. 上面是设计者设计数据传送的原理，但是目前Android上面的数据传送不能完全按照上面的理解。因为在实际使用中，消息队列只会创建一个，也就是说客户端与服务端之间的通信只有一个连接接口，只有一个管道传数据。那么数据的形式是怎么从HAL层传到JAVA层的呢？其实数据是以一个结构体sensors_event_t的形式从HAL层传到JNI层。看看HAL的sensors_event_t结构体：
+- 创建消息队列，客户端可以创建多个消息队列，一个消息队列对应有一个与服务器通信的连接接口
+- 创建连接接口，服务端与客户端沟通的桥梁，服务端读取到HAL层数据后，会扫面有多少个与客户端连接的接口，然后往每个接口的管道中写数据
+- 创建管道，每一个连接接口都有对应的一个管道。
+- 上面是设计者设计数据传送的原理，但是目前Android上面的数据传送不能完全按照上面的理解。因为在实际使用中，消息队列只会创建一个，也就是说客户端与服务端之间的通信只有一个连接接口，只有一个管道传数据。那么数据的形式是怎么从HAL层传到JAVA层的呢？其实数据是以一个结构体sensors_event_t的形式从HAL层传到JNI层。看看HAL的sensors_event_t结构体：
 
 ``` cpp
 typedef struct sensors_event_t {
@@ -393,7 +394,7 @@ typedef struct sensors_event_t {
 } sensors_event_t;
 ```
 
-7. 在JNI层有一个ASensorEvent结构体与sensors_event_t向对应，frameworks/native/include/android/sensor.h：
+- 在JNI层有一个ASensorEvent结构体与sensors_event_t向对应，frameworks/native/include/android/sensor.h：
 
 ``` cpp
 typedef struct ASensorEvent {
@@ -420,13 +421,13 @@ typedef struct ASensorEvent {
 
 <img src="https://raw.githubusercontent.com/way1989/way1989.github.io/master/uploads/images/sensorFramework/6.jpg"/>
 
-1. 经过前面的介绍，现在知道了客户端实现的方式及服务端的实现，但是没有具体讲到它们是如何进行通信的，现在看看客户端与服务端之间的通信。
-2. 主要涉及的是进程间通信，有IBind和管道通信。
-3. 客户端通过IBind通信获取到服务端的远程调用，然后通过管道进行sensor数据的传输。
+- 经过前面的介绍，现在知道了客户端实现的方式及服务端的实现，但是没有具体讲到它们是如何进行通信的，现在看看客户端与服务端之间的通信。
+- 主要涉及的是进程间通信，有IBind和管道通信。
+- 客户端通过IBind通信获取到服务端的远程调用，然后通过管道进行sensor数据的传输。
 
 ### 服务端
 
-1. native层实现了sensor服务的核心实现，Sensor服务的主要流程的实现在sensorservice类中，下面重点分析下这个类的流程。
+- native层实现了sensor服务的核心实现，Sensor服务的主要流程的实现在sensorservice类中，下面重点分析下这个类的流程。
 
 ``` cpp
 class SensorService :
@@ -435,7 +436,7 @@ class SensorService :
         protected Thread
 ```
 
-2. 看看sensorService继承的类:继承BinderService<SensorService>这个模板类添加到系统服务,用于Ibinder进程间通信。
+- 看看sensorService继承的类:继承BinderService<SensorService>这个模板类添加到系统服务,用于Ibinder进程间通信。
 
 ``` cpp
 template<typename SERVICE>
@@ -460,9 +461,9 @@ public:
 }; // namespace android
 ```
 
-3. 在前面的介绍中，SensorService服务的实例是在System_init.cpp中调用SensorService::instantiate()创建的，即调用了上面的instantiate()方法，接着调用了publish(),在该方法中，我们看到了new SensorService的实例，并且调用了defaultServiceManager::addService()将Sensor服务添加到了系统服务管理中，客户端可以通过defaultServiceManager:getService()获取到Sensor服务的实例。
+- 在前面的介绍中，SensorService服务的实例是在System_init.cpp中调用SensorService::instantiate()创建的，即调用了上面的instantiate()方法，接着调用了publish(),在该方法中，我们看到了new SensorService的实例，并且调用了defaultServiceManager::addService()将Sensor服务添加到了系统服务管理中，客户端可以通过defaultServiceManager:getService()获取到Sensor服务的实例。
 
-4. 继承BnSensorServer这个是sensor服务抽象接口类提供给客户端调用：
+- 继承BnSensorServer这个是sensor服务抽象接口类提供给客户端调用：
 
 ``` cpp
 class Sensor;
@@ -489,15 +490,15 @@ public:
 }; // namespace android
 ```
 
-5. ISensorServer接口提供了两个抽象方法给客户端调用，关键在于createSensorEventConnection()方法，该在服务端被实现，在客户端被调用，并返回一个SensorEventConnection的实例，创建连接，客户端拿到SensorEventConnection实例之后，可以对sensor进行通信操作，仅仅作为通信的接口而已，它并没有用来传送Sensor数据，因为Sensor数据量比较大，IBind实现比较困难。真正实现Sensor数据传送的是管道，在创建SensorEventConnection实例中，创建了BitTube对象，里面创建了管道，用于客户端与服务端的通信。
+- ISensorServer接口提供了两个抽象方法给客户端调用，关键在于createSensorEventConnection()方法，该在服务端被实现，在客户端被调用，并返回一个SensorEventConnection的实例，创建连接，客户端拿到SensorEventConnection实例之后，可以对sensor进行通信操作，仅仅作为通信的接口而已，它并没有用来传送Sensor数据，因为Sensor数据量比较大，IBind实现比较困难。真正实现Sensor数据传送的是管道，在创建SensorEventConnection实例中，创建了BitTube对象，里面创建了管道，用于客户端与服务端的通信。
 
 ### 客户端
 
-1. 时序图：
+- 时序图：
 
 <img src="https://raw.githubusercontent.com/way1989/way1989.github.io/master/uploads/images/sensorFramework/7.png"/>
 
-2. 客户端主要在SensorManager.cpp中创建消息队列:
+- 客户端主要在SensorManager.cpp中创建消息队列:
 
 ``` cpp
 class ISensorEventConnection;
@@ -542,7 +543,7 @@ sp<ISensorEventConnection> mSensorEventConnection;
 };
 ```
 
-3. SensorEventQueue类作为消息队列，作用非常重要，在创建其实例的时候，传入了SensorEventConnection的实例，SensorEventConnection继承于ISensorEventConnection。SensorEventConnection其实是客户端调用SensorService的createSensorEventConnection()方法创建的，它是客户端与服务端沟通的桥梁，通过这个桥梁，可以完成一下任务：
+- SensorEventQueue类作为消息队列，作用非常重要，在创建其实例的时候，传入了SensorEventConnection的实例，SensorEventConnection继承于ISensorEventConnection。SensorEventConnection其实是客户端调用SensorService的createSensorEventConnection()方法创建的，它是客户端与服务端沟通的桥梁，通过这个桥梁，可以完成一下任务：
     1. 获取管道的句柄
     2. 往管道读写数据
     3. 通知服务端对Sensor使能
@@ -551,9 +552,9 @@ sp<ISensorEventConnection> mSensorEventConnection;
 
 ### 客户端获取SensorService服务实例
 
-1. 客户端初始化的时候，即SystemSensorManager的构造函数中，通过JNI调用，创建native层SensorManager的实例，然后调用SensorManager::assertStateLocked()方法做一些初始化的动作。
+- 客户端初始化的时候，即SystemSensorManager的构造函数中，通过JNI调用，创建native层SensorManager的实例，然后调用SensorManager::assertStateLocked()方法做一些初始化的动作。
 
-```
+``` cpp
 status_t SensorManager::assertStateLocked() const {
     if (mSensorServer == NULL) {
         // try for one second
@@ -572,17 +573,17 @@ status_t SensorManager::assertStateLocked() const {
 }
 ```
 
-2. 前面我们讲到过，SensorService的创建的时候调用了defaultServiceManager:getService()将服务添加到了系统服务管理中。现在我们又调用defaultServiceManager::geService()获取到SensorService服务的实例。在通过IBind通信，就可以获取到Sensor列表，所以在客户端初始化的时候，做了两件事情：
+- 前面我们讲到过，SensorService的创建的时候调用了defaultServiceManager:getService()将服务添加到了系统服务管理中。现在我们又调用defaultServiceManager::geService()获取到SensorService服务的实例。在通过IBind通信，就可以获取到Sensor列表，所以在客户端初始化的时候，做了两件事情：
     1. 获取SensorService实例引用
     2. 获取Sensor传感器列表
 
 ### 注册SensorLisenter
 
-1. 时序图：
+- 时序图：
 
 <img src="https://raw.githubusercontent.com/way1989/way1989.github.io/master/uploads/images/sensorFramework/8.png"/>
 
-2. `new ListenerDelegate(SensorEventListener listener, Sensor sensor, Handler handler)`在这个构造函数中会创建一个Handler，它会在获取到Sensor数据的时候被调用。
+- `new ListenerDelegate(SensorEventListener listener, Sensor sensor, Handler handler)`在这个构造函数中会创建一个Handler，它会在获取到Sensor数据的时候被调用。
 
 ``` java
 mHandler = new Handler(looper) {  
@@ -620,13 +621,13 @@ mHandler = new Handler(looper) {
 
 ### 创建消息队列
 
-1. 时序图：
+- 时序图：
 
 <img src="https://raw.githubusercontent.com/way1989/way1989.github.io/master/uploads/images/sensorFramework/9.png"/>
 
-2. 当客户端第一次注册监听器的时候，就需要创建一个消息队列，也就是说，__android在目前的实现中，只创建了一个消息队列，一个消息队列中有一个管道，用于服务端与客户断传送Sensor数据__。
+- 当客户端第一次注册监听器的时候，就需要创建一个消息队列，也就是说，__android在目前的实现中，只创建了一个消息队列，一个消息队列中有一个管道，用于服务端与客户断传送Sensor数据__。
 
-3. 在SensorManager.cpp中的createEventQueue方法创建消息队列：
+- 在SensorManager.cpp中的createEventQueue方法创建消息队列：
 
 ``` cpp
 sp<SensorEventQueue> SensorManager::createEventQueue()
@@ -650,7 +651,7 @@ while (assertStateLocked() == NO_ERROR) {
 }
 ```
 
-4. 客户端与服务器创建一个`SensorEventConnection`连接接口，__而一个消息队列中包含一个连接接口__。创建连接接口：
+- 客户端与服务器创建一个`SensorEventConnection`连接接口，__而一个消息队列中包含一个连接接口__。创建连接接口：
 
 ``` cpp
 sp<ISensorEventConnection> SensorService::createSensorEventConnection()
@@ -665,7 +666,7 @@ SensorService::SensorEventConnection::SensorEventConnection(
 }
 ```
 
-5. 关键在于BitTube，在构造函数中创建了管道：
+- 关键在于BitTube，在构造函数中创建了管道：
 
 ``` cpp
 BitTube::BitTube()
@@ -689,12 +690,12 @@ BitTube::BitTube()
 }
 ```
 
-6. 其中：fds[0]就是对应的mReceiveFd,是管道的读端，sensor数据的读取端，对应的是客户端进程访问的。fds[1]就是对应mSendFd,是管道的写端,sensor数据写入端,是sensor的服务进程访问的一端。通过pipe(fds)创建管道,通过fcntl来设置操作管道的方式,设置通道两端的操作方式为O_NONBLOCK ，非阻塞IO方式，read或write调用返回-1和EAGAIN错误。总结下消息队列，客户端第一次注册监听器的时候，就需要创建一个消息队列，客户端创了SensorThread线程从消息队列里面读取数据。SensorEventQueue中有一个SensorEventConnection实例的引用，SensorEventConnection中有一个BitTube实例的引用。
+- 其中：fds[0]就是对应的mReceiveFd,是管道的读端，sensor数据的读取端，对应的是客户端进程访问的。fds[1]就是对应mSendFd,是管道的写端,sensor数据写入端,是sensor的服务进程访问的一端。通过pipe(fds)创建管道,通过fcntl来设置操作管道的方式,设置通道两端的操作方式为O_NONBLOCK ，非阻塞IO方式，read或write调用返回-1和EAGAIN错误。总结下消息队列，客户端第一次注册监听器的时候，就需要创建一个消息队列，客户端创了SensorThread线程从消息队列里面读取数据。SensorEventQueue中有一个SensorEventConnection实例的引用，SensorEventConnection中有一个BitTube实例的引用。
 
 
 ### 使能Sensor
 
-1. 客户端创建了连接接口SensorEventConnection后，可以调用其方法使能Sensor传感器：
+- 客户端创建了连接接口SensorEventConnection后，可以调用其方法使能Sensor传感器：
 
 ``` cpp
 status_t SensorService::SensorEventConnection::enableDisable(
@@ -710,7 +711,7 @@ status_t SensorService::SensorEventConnection::enableDisable(
 }
 ```
 
-2. handle对应着Sensor传感器的句柄
+- handle对应着Sensor传感器的句柄
 
 ### 服务端往管道写数据
 
@@ -740,9 +741,9 @@ bool SensorService::threadLoop()
 }
 ```
 
-1. 前面介绍过，在SensorService中，创建了一个线程不断从HAL层读取Sensor数据，就是在threadLoop方法中。
+- 前面介绍过，在SensorService中，创建了一个线程不断从HAL层读取Sensor数据，就是在threadLoop方法中。
 
-2. 关键在与下面了一个for循环，其实是扫描有多少个客户端连接接口，然后就往没每个连接的管道中写数据
+- 关键在与下面了一个for循环，其实是扫描有多少个客户端连接接口，然后就往没每个连接的管道中写数据
 
 ``` cpp
 status_t SensorService::SensorEventConnection::sendEvents(
@@ -763,7 +764,7 @@ status_t SensorService::SensorEventConnection::sendEvents(
 }
 ```
 
-3. 调用该连接接口的BitTube::write()，到此，服务端就完成了往管道的写端写入数据:
+- 调用该连接接口的BitTube::write()，到此，服务端就完成了往管道的写端写入数据:
 
 ``` cpp
 ssize_t BitTube::write(void const* vaddr, size_t size)
@@ -780,7 +781,7 @@ ssize_t BitTube::write(void const* vaddr, size_t size)
 
 ### 客户端读管道数据
 
-1. 时序图:
+- 时序图:
 
 <img src="https://raw.githubusercontent.com/way1989/way1989.github.io/master/uploads/images/sensorFramework/10.png"/>
 
@@ -791,7 +792,7 @@ ssize_t SensorEventQueue::read(ASensorEvent* events, size_t numEvents)
 }
 ```
 
-1. 调用到了BitTube::read()：
+- 调用到了BitTube::read()：
 
 ``` cpp
 static ssize_t recvObjects(const sp<BitTube>& tube,
