@@ -44,3 +44,8 @@ search:
   path: search.xml
   field: post
 ```
+
+### hexo部署失败 ERROR Deployer not found: git
+``` bash
+$ npm install hexo-deployer-git --save
+```
