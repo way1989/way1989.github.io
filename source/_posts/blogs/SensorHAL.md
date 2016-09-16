@@ -30,7 +30,7 @@ tags: # 这里写的标签会自动汇集到 tags 页面上
 1. Google为Sensor提供了统一的HAL接口，不同的硬件厂商需要根据该接口来实现并完成具体的硬件抽象层。Android中Sensor的HAL接口定义在：`hardware/libhardware/include/hardware/sensors.h`
 
 2. 对传感器类型的定义:
-```
+```cpp
 #define SENSOR_TYPE_ACCELEROMETER                   (1)  //加速度传感器
 #define SENSOR_TYPE_MAGNETIC_FIELD                  (2)  //磁力传感器
 #define SENSOR_TYPE_ORIENTATION                     (3)  //方向
@@ -60,7 +60,7 @@ tags: # 这里写的标签会自动汇集到 tags 页面上
 ```
 
 3. 传感器模块的定义结构体如下，该接口的定义实际上是对标准的硬件模块hw_module_t的一个扩展，增加了一个`get_sensors_list`函数，用于获取传感器的列表。
-```
+```cpp
 struct sensors_module_t {
     struct hw_module_t common;
     int (*get_sensors_list)(struct sensors_module_t* module,
@@ -69,7 +69,7 @@ struct sensors_module_t {
 ```
 
 4. 对任意一个sensor设备都会有一个`sensor_t`结构体，其定义如下：
-```
+```cpp
 struct sensor_t {
     const char*     name;       //传感器名字
     const char*     vendor;
@@ -85,7 +85,7 @@ struct sensor_t {
 ```
 
 5. 每个传感器的数据由`sensors_event_t`结构体表示，定义如下，其中，sensor为传感器的标志符，而不同的传感器则采用union方式来表示。
-```
+```cpp
 typedef struct sensors_event_t {
     int32_t version;
     int32_t sensor;            //标识符
@@ -109,7 +109,7 @@ typedef struct sensors_event_t {
 ```
 
 6. `sensors_vec_t`结构体用来表示不同传感器的数据：
-```
+```cpp
 typedef struct {
     union {
         float v[3];
@@ -130,7 +130,7 @@ typedef struct {
 ```
 
 7. Sensor设备结构体`sensors_poll_device_t`，对标准硬件设备`hw_device_t`结构体的扩展，主要完成读取底层数据，并将数据存储在`struct sensors_poll_device_t`结构体中；poll函数用来获取底层数据，调用时将被阻塞定义如下：
-```
+```cpp
 struct sensors_poll_device_t {
 struct hw_device_t common;
 //Activate/deactivate one sensor
@@ -146,7 +146,7 @@ struct hw_device_t common;
 ```
 
 8. 控制设备打开/关闭结构体定义如下：
-```
+```cpp
 static inline int sensors_open(const struct hw_module_t* module,
         struct sensors_poll_device_t** device) {
     return module->methods->open(module,
