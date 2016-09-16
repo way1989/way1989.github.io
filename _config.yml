@@ -75,3 +75,4 @@ deploy:
   repo: 
     github: https://github.com/way1989/way1989.github.io,master
     oschina: https://git.oschina.net/way/way.git,master
+    coding: https://git.coding.net/wayping/wayping.git,master
