@@ -3,7 +3,7 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: 番茄爱吃我
+title: 我爱吃番茄
 subtitle:
 description: 爱生活...爱Android...
 author: wayping
@@ -72,5 +72,6 @@ avatar: /uploads/images/avatar.png
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repo: https://github.com/way1989/way1989.github.io
-  branch: master
+  repo: 
+    github: https://github.com/way1989/way1989.github.io,master
+    oschina: https://git.oschina.net/way/way.git,master
