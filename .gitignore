@@ -5,3 +5,6 @@ db.json
 node_modules/
 public/
 .deploy*/
+.Archive/
+.md_configs.data
+.me_configs.data
