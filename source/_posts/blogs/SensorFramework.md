@@ -12,7 +12,7 @@ tags: # 这里写的标签会自动汇集到 tags 页面上
 
 ## Sensor整体架构：
 
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/master/uploads/images/sensorFramework/1.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorFramework/1.png"/>
 
 ### 整体架构说明:
 
@@ -26,7 +26,7 @@ tags: # 这里写的标签会自动汇集到 tags 页面上
 - 本节主要解读Android的Framework层框架。
 - Sensor 框架分为三个层次，客户度、服务端、HAL层，服务端负责从HAL读取数据，并将数据写到管道中，客户端通过管道读取服务端数据。
 
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/master/uploads/images/sensorFramework/2.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorFramework/2.png"/>
 
 ### 客户端主要类
 
@@ -53,7 +53,7 @@ tags: # 这里写的标签会自动汇集到 tags 页面上
 
 ### 调用时序图
 
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/master/uploads/images/sensorFramework/3.jpg"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorFramework/3.jpg"/>
 
 ### apk注册监听器
 
@@ -209,7 +209,7 @@ private class SensorThreadRunnable implements Runnable {
 
 ### 调用时序图
 
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/master/uploads/images/sensorFramework/4.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorFramework/4.png"/>
 
 ### 启动SensorService服务
 
@@ -361,7 +361,7 @@ bool SensorService::threadLoop()
 
 - 客户端与服务端通信的状态图：
 
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/master/uploads/images/sensorFramework/5.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorFramework/5.png"/>
 
 - 客户端服务端线程，在图中可以看到有两个线程：
     1. 一个是服务端的一个线程，这个线程负责源源不断的从HAL读取数据。
@@ -419,7 +419,7 @@ typedef struct ASensorEvent {
 
 ## 交互调用时序图
 
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/master/uploads/images/sensorFramework/6.jpg"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorFramework/6.jpg"/>
 
 - 经过前面的介绍，现在知道了客户端实现的方式及服务端的实现，但是没有具体讲到它们是如何进行通信的，现在看看客户端与服务端之间的通信。
 - 主要涉及的是进程间通信，有IBind和管道通信。
@@ -496,7 +496,7 @@ public:
 
 - 时序图：
 
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/master/uploads/images/sensorFramework/7.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorFramework/7.png"/>
 
 - 客户端主要在SensorManager.cpp中创建消息队列:
 
@@ -581,7 +581,7 @@ status_t SensorManager::assertStateLocked() const {
 
 - 时序图：
 
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/master/uploads/images/sensorFramework/8.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorFramework/8.png"/>
 
 - `new ListenerDelegate(SensorEventListener listener, Sensor sensor, Handler handler)`在这个构造函数中会创建一个Handler，它会在获取到Sensor数据的时候被调用。
 
@@ -623,7 +623,7 @@ mHandler = new Handler(looper) {
 
 - 时序图：
 
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/master/uploads/images/sensorFramework/9.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorFramework/9.png"/>
 
 - 当客户端第一次注册监听器的时候，就需要创建一个消息队列，也就是说，__android在目前的实现中，只创建了一个消息队列，一个消息队列中有一个管道，用于服务端与客户断传送Sensor数据__。
 
@@ -783,7 +783,7 @@ ssize_t BitTube::write(void const* vaddr, size_t size)
 
 - 时序图:
 
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/master/uploads/images/sensorFramework/10.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorFramework/10.png"/>
 
 ``` cpp
 ssize_t SensorEventQueue::read(ASensorEvent* events, size_t numEvents)

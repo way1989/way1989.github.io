@@ -22,7 +22,7 @@ tags: # 这里写的标签会自动汇集到 tags 页面上
 
 3. 各部分之间架构图如下：
 
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/master/uploads/images/sensorHAL/1.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorHAL/1.png"/>
 
 
 ## Sensor HAL层接口
@@ -162,6 +162,6 @@ static inline int sensors_close(struct sensors_poll_device_t* device) {
 
 1. 打开设备时序图
 
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/master/uploads/images/sensorHAL/2.jpg"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorHAL/2.jpg"/>
 
 2. SensorDevice属于JNI层，与HAL进行通信的接口，在JNI层调用了HAL层的`open_sensors()`方法打开设备模块，再调用`poll__activate()`对设备使能，然后调用`poll__poll`读取数据。

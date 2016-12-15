@@ -10,7 +10,7 @@ tags: # 这里写的标签会自动汇集到 tags 页面上
  - Retrofit
 ---
 
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/source/postImage/Retrofit/1.jpg"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/Retrofit/1.jpg"/>
 
 Android 开发中，从原生的 HttpUrlConnection 到经典的 Apache 的 HttpClient，再到对前面这些网络基础框架的封装，比如 Volley、Async Http Client，Http 相关开源框架的选择还是很多的，其中由著名的 Square 公司开源的 Retrofit 更是以其简易的接口配置、强大的扩展支持、优雅的代码结构受到大家的追捧。也正是由于 Square 家的框架一如既往的简洁优雅，所以我一直在想，Square 公司是不是只招处女座的程序员？
 
@@ -26,7 +26,7 @@ Retrofitting refers to the addition of new technology or features to older syste
 ### Retrofit 概览
 
 Retrofit 是一个 RESTful 的 HTTP 网络请求框架的封装。注意这里并没有说它是网络请求框架，主要原因在于网络请求的工作并不是 Retrofit 来完成的。Retrofit 2.0 开始内置 OkHttp，前者专注于接口的封装，后者专注于网络请求的高效，二者分工协作，宛如古人的『你耕地来我织布』，小日子别提多幸福了。
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/source/postImage/Retrofit/2.jpg"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/Retrofit/2.jpg"/>
 我们的应用程序通过 Retrofit 请求网络，实际上是使用 Retrofit 接口层封装请求参数、Header、Url 等信息，之后由 OkHttp 完成后续的请求操作，在服务端返回数据之后，OkHttp 将原始的结果交给 Retrofit，后者根据用户的需求对结果进行解析的过程。
 讲到这里，你就会发现所谓 Retrofit，其实就是 Retrofitting OkHttp 了。
 
@@ -222,7 +222,7 @@ Visit me: http://www.println.net
 #### RequestBodyConverter
 
 前面我为大家展示了如何用 Retrofit 上传文件，这个上传的过程其实。。还是有那么点儿不够简练，我们只是要提供一个文件用于上传，可我们前后构造了三个对象：
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/source/postImage/Retrofit/3.jpg"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/Retrofit/3.jpg"/>
 天哪，肯定是哪里出了问题。实际上，Retrofit 允许我们自己定义入参和返回的类型，不过，如果这些类型比较特别，我们还需要准备相应的 Converter，也正是因为 Converter 的存在， Retrofit 在入参和返回类型上表现得非常灵活。
 下面我们把刚才的 Service 代码稍作修改：
 ```java
@@ -256,7 +256,7 @@ Content-Length: 35
 --7d24e78e-4354-4ed4-9db4-57d799b6efb7--
 ```
 服务端收到了一个文件的路径，它肯定会觉得
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/source/postImage/Retrofit/4.jpg"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/Retrofit/4.jpg"/>
 好了，不闹了，这明显是 Retrofit 在发现自己收到的实际入参是个 File 时，不知道该怎么办，情急之下给 toString了，而且还是个 JsonString（后来查证原来是使用了 GsonRequestBodyConverter。。）。
 
 接下来我们就自己实现一个 FileRequestBodyConverter，
@@ -369,7 +369,7 @@ static class RawResult{
 前一个小节我们把 Retrofit 的基本用法和概念介绍了一下，如果你的目标是学会如何使用它，那么下面的内容你可以不用看了。
 
 不过呢，我就知道你不是那种浅尝辄止的人！这一节我们主要把注意力放在 Retrofit 背后的魔法上面~~
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/source/postImage/Retrofit/5.jpg"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/Retrofit/5.jpg"/>
 
 ### 是谁实际上完成了接口请求的处理？
 

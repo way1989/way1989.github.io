@@ -12,7 +12,7 @@ tags: # 这里写的标签会自动汇集到 tags 页面上
 EventBus
 ========
 EventBus is a publish/subscribe event bus optimized for Android.<br/>
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/master/uploads/images/eventbus/EventBus-Publish-Subscribe.png" width="500" height="187"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/eventbus/EventBus-Publish-Subscribe.png" width="500" height="187"/>
 
 ## EventBus介绍
 
@@ -162,7 +162,7 @@ EventBus.builder().addIndex(new MySubscriberInfoIndex()).installDefaultEventBus(
 
 ### EventBus.getDefault().register(this)方法
 
-  <img src="https://raw.githubusercontent.com/way1989/way1989.github.io/master/uploads/images/eventbus//register.png"/>
+  <img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/eventbus//register.png"/>
 
 
 ```java
@@ -277,7 +277,7 @@ EventBus.builder().addIndex(new MySubscriberInfoIndex()).installDefaultEventBus(
 
 ### EventBus.getDefault().post(new LoadEvent());
 
-  <img src="https://raw.githubusercontent.com/way1989/way1989.github.io/master/uploads/images/eventbus//post.png"/>
+  <img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/eventbus//post.png"/>
 
 
 ```java
