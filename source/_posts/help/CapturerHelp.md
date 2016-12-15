@@ -1,5 +1,6 @@
 ---
 date: 2016-05-15 11:16:24
+comments: false
 title: Capturer帮助文档
 description: Capturer是为Android平台设计的，集截屏、长截屏、录屏以及将录屏内容转换成GIF动态图等多功能于一体的，小巧强悍的实用型工具软件。
 categories:
