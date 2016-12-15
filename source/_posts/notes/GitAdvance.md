@@ -17,13 +17,13 @@ tags: # 这里写的标签会自动汇集到 tags 页面上
 * 已暂存表示把已修改的文件放在下次提交时要保存的清单中.
 * 已提交表示该文件已经被安全地保存在本地数据库中了.
 
- <img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/source/postImage/gitAdvance/1.png"/>
+ <img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/1.png"/>
 
 ## 两种分支合并的方法,rebase 与 merge：
 
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/source/postImage/gitAdvance/2.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/2.png"/>
 
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/source/postImage/gitAdvance/3.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/3.png"/>
 
 ## Rebase的原理:
 
@@ -34,14 +34,14 @@ tags: # 这里写的标签会自动汇集到 tags 页面上
 
 由此可见，rebase过程可能产生冲突，而且可能需要解决多次
 
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/source/postImage/gitAdvance/4.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/4.png"/>
 
 
 ## 删除一个未上传的提交
 
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/source/postImage/gitAdvance/5.png"/>
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/source/postImage/gitAdvance/6.png"/>
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/source/postImage/gitAdvance/7.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/5.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/6.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/7.png"/>
 
 注意点:
 * Rebase时log显示是按修改的顺序显示的，和git log 显示刚好是相反的
@@ -50,7 +50,7 @@ tags: # 这里写的标签会自动汇集到 tags 页面上
 
 ## 修改非最后一个提交
 
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/source/postImage/gitAdvance/8.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/8.png"/>
 
 注意点:
 * 这个方案适合走读发现的小问题修改，适合少量的代码修改。
@@ -58,11 +58,11 @@ tags: # 这里写的标签会自动汇集到 tags 页面上
 
 ## 合并本地未上传的提交
 
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/source/postImage/gitAdvance/9.png"/>
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/source/postImage/gitAdvance/10.png"/>
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/source/postImage/gitAdvance/11.png"/>
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/source/postImage/gitAdvance/12.png"/>
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/source/postImage/gitAdvance/13.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/9.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/10.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/11.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/12.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/13.png"/>
 
 注意点:
 * 只能合并到未上传的commit
@@ -71,7 +71,7 @@ tags: # 这里写的标签会自动汇集到 tags 页面上
 
 ## 已经commit未push的提交，不小心reset掉了，怎么找回来
 
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/source/postImage/gitAdvance/14.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/14.png"/>
 
 操作步骤及注意事项:
 * 根据后面的commit_msg找到对应的commit
@@ -80,9 +80,9 @@ tags: # 这里写的标签会自动汇集到 tags 页面上
 
 ## 把自己的修改内容合并到别人的commit里面去了
 
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/source/postImage/gitAdvance/15.png"/>
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/source/postImage/gitAdvance/16.png"/>
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/source/postImage/gitAdvance/17.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/15.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/16.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/17.png"/>
 
 操作步骤及注意事项
 * 根据后面的commit_msg找到对应的comit
@@ -90,8 +90,8 @@ tags: # 这里写的标签会自动汇集到 tags 页面上
 
 ## 从gerrit获取别人提交的commit
 
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/source/postImage/gitAdvance/18.png"/>
-<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/source/postImage/gitAdvance/19.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/18.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/19.png"/>
 
 操作步骤及注意事项
 * 从gerrit查看到要下载的commit的commit_id
