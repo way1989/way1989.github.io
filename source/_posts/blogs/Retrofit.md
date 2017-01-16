@@ -10,6 +10,8 @@ tags: # 这里写的标签会自动汇集到 tags 页面上
  - Retrofit
 ---
 
+### 本文转自微信: [Bugly](http://mp.weixin.qq.com/s/5EmNqqX7rt1KT62KXNCq3A)
+
 <img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/Retrofit/1.jpg"/>
 
 Android 开发中，从原生的 HttpUrlConnection 到经典的 Apache 的 HttpClient，再到对前面这些网络基础框架的封装，比如 Volley、Async Http Client，Http 相关开源框架的选择还是很多的，其中由著名的 Square 公司开源的 Retrofit 更是以其简易的接口配置、强大的扩展支持、优雅的代码结构受到大家的追捧。也正是由于 Square 家的框架一如既往的简洁优雅，所以我一直在想，Square 公司是不是只招处女座的程序员？
