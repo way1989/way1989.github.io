@@ -8,3 +8,5 @@ public/
 .Archive/
 .md_configs.data
 .me_configs.data
+_image/
+.z_sync_configs.data
