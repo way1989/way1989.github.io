@@ -49,7 +49,7 @@ tags: # 这里写的标签会自动汇集到 tags 页面上
 
 ## Android.mk的写法及自动生成版本号的实现
 
-```bash
+```makefile
 ifeq ($(strip $(MYOS_APE_GALLERY31_SUPPORT)), yes)
 ifneq ($(strip $(MYOS_APE_GALLERY31_NAME)),)
 $(warning --Android.mk--ApeGalleryOverlay31---------)
