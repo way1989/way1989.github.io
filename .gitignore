@@ -2,6 +2,7 @@
 Thumbs.db
 db.json
 *.log
+*.pdf
 node_modules/
 public/
 .deploy*/
