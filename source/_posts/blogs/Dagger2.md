@@ -140,7 +140,7 @@ public interface MainActivityComponent {// 必须定义为接口，Dagger2框架
     void inject(MainActivity activity);// 注入到MainActivity(Container)的方法，方法名一般使用inject
 }
 ```
-&emsp;&emsp;最后我们的`Tinno`类中的`@Inject`和构造函数可以去掉了(亲测不去掉也是可以正常运行的，此时也是使用`Module`中提供的对象，具体可以通过后面分享的`@Scope`来验证)，如下所示。
+&emsp;&emsp;最后我们的`Tinno`类中的`@Inject`和构造函数可以去掉了(亲测不去掉也是可以正常运行的，此时也是使用`Module`中提供的对象，具体可以通过后面分享的`@Scope`来验证，这样说明：__Component会首先从Module维度中查找类实例，若找到就用Module维度创建类实例，并停止查找Inject维度，否则才是从Inject维度查找类实例，所以创建类实例级别Module维度要高于Inject维度。__)，如下所示。
 ```Java
 public class Tinno {
 }
@@ -355,7 +355,7 @@ appComponent.mainComponent(new MainPresenterModule(this)).inject(this);
 
 
 #### 6.5 懒加载和强加载模式
-&emsp;&emsp;在上面的比喻中，一针扎进去，是撒都给你打进去了，那么如果有些我想要在调用的时候才加载呢？这里 dagger 提供了 Lazy<T> 的方式来注入，对应的获取就是：
+&emsp;&emsp;在上面的比喻中，一针扎进去，是啥都给你打进去了，那么如果有些我想要在调用的时候才加载呢？这里 dagger 提供了 Lazy<T> 的方式来注入，对应的获取就是：
 ```Java
 public class Container{
     @Inject Lazy<Tinno> mTinnoLazy; //延迟加载
@@ -369,36 +369,47 @@ public class Container{
 
 #### 6.6 `@Scope`详解
 __@Scope 是什么__
-&emsp;&emsp; scope 翻译过来就是辖域，再结合到计算机上，其实就是作用域的意思，学过高级语言的应该都知道设计模式中一个模式叫做单例模式，单例即为全局中该对象的实例只存在一个，而在 dagger2 中，@scope 的一个默认实现就是 @Singleton，乍一看，很神奇啊，仅仅使用一个注解就可以实现单例！
+&emsp;&emsp; scope 翻译过来就是辖域，再结合到计算机上，其实就是作用域的意思，学过高级语言的应该都知道设计模式中一个模式叫做单例模式，单例即为全局中该对象的实例只存在一个，而在 dagger2 中，@scope 的一个默认实现就是 `@Singleton`，也是Dagger2唯一自带的Scope注解，下面是@Singleton的源码，乍一看，很神奇啊，仅仅使用一个注解就可以实现单例！
+```Java
+@Scope
+@Documented
+@Retention(RUNTIME)
+public @interface Singleton{}
+```
+可以看到定义一个Scope注解，必须添加以下三部分：
+* __@Scope__：注明是Scope
+* __@Documented__：标记文档提示
+* __@Retention(RUNTIME)__：运行时级别
 
 __@Scpoe 怎么用__
 &emsp;&emsp; 那么接下来我们就看一下它的使用。代码如下：
 ```Java
-public class User {}
+//普通的对象
+public class Tinno {}
 
-@Module
-public class UserModule {
+@Module//申明Module
+public class MainModule {
     @Provides
     @Singleton
-    User provideUser() {
-        return new User();
+    Tinno provideTinno() {
+        return new Tinno();
     }
 }
 
 @Singleton
 @Component(modules = UserModule.class)
-public interface UserComponent {
+public interface MainActivityComponent {//同一个Component可以申明多个注入Container
     void inject(MainActivity activity);
     void inject(SecondActivity activity);
 }
 ```
-&emsp;&emsp; 我们创建一个普通的 User 类，然后创建它的 Module，并且用 @Singleton 标记该 User 返回对象，最后我们再创建它的 Component，然后用 @Singleton 标记这个 Component。这是一个标准的套路流程。接下来我们创建一个 MainActivity 和一个 SecondActivity，代码如下：
+&emsp;&emsp; 我们创建一个普通的 `Tinno` 类，然后创建它的`Module`，并且用 `@Singleton` 标记该 `Tinno` 返回对象，最后我们再创建它的 `Component`，然后用 `@Singleton` 标记这个 `Component`。这是一个标准的套路流程。接下来我们创建一个 MainActivity 和一个 SecondActivity，代码如下：
 ```Java
 public class MainActivity extends AppCompatActivity {
     @Inject
-    User mUser1;
+    Tinno mTinno1;
     @Inject
-    User mUser2;
+    Tinno mTinno2;
     private TextView mContentTextView;
     private Button mContentButton;
 
@@ -410,10 +421,10 @@ public class MainActivity extends AppCompatActivity {
         mContentButton = (Button) findViewById(R.id.btn_content);
 
         // [1]
-        UserComponent component = DaggerUserComponent.create();
+        MainActivityComponent component = DaggerMainActivityComponent.create();
         component.inject(this);
-        // 第一行为 mUser1 的信息，第二行为 mUser2 的信息，第三行为该类中 UserComponent 的信息
-        mContentTextView.setText(mUser1.toString() + "\n" + mUser2.toString()+"\n"+ component.toString());
+        // 第一行为 mTinno1 的信息，第二行为 mTinno2 的信息，第三行为该类中 MainActivityComponent 的信息
+        mContentTextView.setText(mTinno1.toString() + "\n" + mTinno2.toString()+"\n"+ component.toString());
         mContentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -425,7 +436,7 @@ public class MainActivity extends AppCompatActivity {
 
 public class SecondActivity extends AppCompatActivity {
     @Inject
-    User mUser;
+    Tinno mTinno;
     private TextView mContentTextView;
 
     @Override
@@ -434,10 +445,34 @@ public class SecondActivity extends AppCompatActivity {
         setContentView(R.layout.activity_second);
         mContentTextView = (TextView) findViewById(R.id.tv_content);
         // [2]
-        UserComponent component = DaggerUserComponent.create();
+        MainActivityComponent component = DaggerMainActivityComponent.create();
         component.inject(this);
-        // 第一行为 mUser 的信息，第二行为该类中 UserComponent 的信息
-        mContentTextView.setText(mUser.toString() + "\n" + component.toString());
+        // 第一行为 mTinno 的信息，第二行为该类中 MainActivityComponent 的信息
+        mContentTextView.setText(mTinno.toString() + "\n" + component.toString());
     }
 }
 ```
+运行结果如下图所示，没有问题的，单例实现成功了，发现两个 `Tinno`的地址是一样的。
+<div align="center"><img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/dagger2/2.png"/></div>
+
+我们仅仅通过一个 @Singleton 标记就使得对象实现了单例模式，接下来我们点一下按钮跳转到 SecondActivity 中，如下图所示：
+<div align="center"><img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/dagger2/3.png"/></div>
+
+但是此时我们发现，不对啊，`SecondActivity` 的 `Tinno` 对象的地址和 `MainActivity` 中的 `Tinno` 对象地址并不一样啊，这个单例好像失效了啊！事实上并不是这样，那么为什么这个单例“失效”了呢？细心的小伙伴们已经看到了，两个 `Activity` 中的 `Component` 对象的地址是并不一样的，这样就好理解了 ——— 由于 `Component` 对象不是同一个，当然它们注入的对象也不会是同一个。那么我们如何解决这个问题呢？
+我们在 `Application` 层初始化 `MainActivityComponent`，然后在 Activity 中直接获取这个 `MainActivityComponent` 对象，由于 `Application` 在全局中只会初始化一次， 所以 Application 中的 `MainActivityComponent` 对象只初始化一次，我们每次在 `Activity` 中获取 Application 中的这个 `MainActivityComponent` 当然就是同一个的啦。`Application` 代码如下：
+```Java
+public class App extends Application {
+    MainActivityComponent mComponent;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        mComponent = DaggerMainActivityComponent.create();
+    }
+
+    public MainActivityComponent getComponent() {
+        return mComponent;
+    }
+}
+```
+我们只需要将 [1] 和 [2] 处的代码更改成 `MainActivityComponent component = ((App)getApplication()).getComponent();`这样我们不就能将我们的 `MainActivityComponent` “单例”化了吗？截图这里就不再贴出了。
