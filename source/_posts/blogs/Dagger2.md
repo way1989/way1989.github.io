@@ -12,7 +12,7 @@ tags: # 这里写的标签会自动汇集到 tags 页面上
 
 ### 1.Dagger2是什么？
 
-&emsp;&emsp;Dagger2是由Google接手开发，最早的版本Dagger1 是由Square公司开发的。大神[JakeWharton](https://github.com/JakeWharton)最近也从 Square 公司跳槽到 Google。
+&emsp;&emsp;Dagger2是由Google接手开发，最早的版本Dagger1 是由Square公司开发的，大神[JakeWharton](https://github.com/JakeWharton)最近也从 Square 公司跳槽到 Google。
 ```
 A fast dependency injector for Android and Java
 Android和Java的依赖快速注入器
@@ -47,7 +47,7 @@ Tinno mTinno;
 
 ### 1. gradle配置
 
-&emsp;&emsp;Android Studio 2.2以前的版本需要使用Gradle插件`android-apt`(Annotation Processing Tool)，协助Android Studio处理`annotation processors`；`annotationProcessor`就是APT工具中的一种，他是google开发的内置框架，不需要引入，所以可以像下面这样直接使用。
+&emsp;&emsp;Android Studio 2.2以前的版本需要使用Gradle插件`android-apt`(Annotation Processing Tool)，协助Android Studio处理`annotation processors`；`annotationProcessor`就是APT工具中的一种，是google开发的内置框架，不需要引入，所以可以像下面这样直接使用。
 ```Groovy
 // Add Dagger dependencies
 dependencies {
@@ -68,7 +68,7 @@ dependencies {
 
 ### 3. 结构
 
-&emsp;&emsp;Dagger2要实现一个完整的依赖注入，通常必不可少的元素有三种：__Module__，__Component__，__Container__。为了便于理解，其实可以把`component`想象成针管，`module`是注射瓶，里面的`依赖对象`是注入的药水，`build方法`是插进患者（Container），`inject方法`的调用是推动活塞。
+&emsp;&emsp;Dagger2要实现一个完整的依赖注入，通常必不可少的元素有三种：__Module__，__Component__，__Container__。为了便于理解，其实可以把`component`想象成`针管`，`module`是`注射器`，里面的`依赖对象`是待`注入的药水`，`build方法`是插进`患者（Container）`，`inject方法`的调用是`推动活塞`。
 <div align="center"><img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/dagger2/1.png"/></div>
 
 ### 4. 简单的例子
@@ -94,7 +94,7 @@ public interface MainActivityComponent {
 }
 ```
 
- __在使用的地方注入__
+ __在使用的地方注入，这里是 MainActivity：__
 
 ```Java
 public class MainActivity extends AppCompatActivity {
@@ -115,12 +115,10 @@ public class MainActivity extends AppCompatActivity {
     }
 }
 ```
-
-__简单使用小结__
 &emsp;&emsp; 这是最简单的一种使用了。首先我们看到，第一印象是我去😲，这个更复杂了啊😂😂。我只能说确实，因为这个是它对的最基础的使用，看起来很笨拙，但是当它在大型项目里面，在依赖更多的情况下，则会发生质的飞跃，会发现它非常好用，并且将你需要传递的参数都隐藏掉，来实现解耦。
 
 ### 5. 常规使用方法
-&emsp;&emsp;细心的朋友发现了，我在结构中说 dagger2结构的时候提到通常必不可少的三元素，这个例子只用到了 __Component__，__Container__，__Module__ 并未提及，这就是我这里需要重点提及的，通过以下这个例子，能更加深刻的理解 __Module__ 的作用。
+&emsp;&emsp;细心的朋友发现了，我在结构中说 dagger2结构的时候提到通常必不可少的三元素，这个例子只用到了 __Component__和__Container__，而 __Module__ 并未提及，通过以下这个例子，能更加深刻的理解 __Module__ 的作用。
 &emsp;&emsp;实现一个 __MainModule__，提供一些实例构造，通过 __Component__ 联系起来。
 ```Java
 @Module //实现一个类，标注为 Module
@@ -149,7 +147,7 @@ public class Tinno {
 
 ### 6. 更多用法
 #### 6.1 方法参数
-&emsp;&emsp;上面的例子@Provides标注的方法是没有输入参数的，Module中@Provides标注的方法是可以带输入参数的，其参数值可以由Module中的其他被@Provides标注的方法提供。
+&emsp;&emsp;上面的例子`@Provides`标注的方法是没有输入参数的，`Module`中`@Provides`标注的方法是可以带输入参数的，其参数值可以由`Module`中的其他被`@Provides`标注的方法提供。
 ```Java
 @Module //实现一个类，标注为 Module
 public class MainModule {
@@ -179,7 +177,7 @@ public class MainModule {
 //    }
 }
 ```
-&emsp;&emsp;如果找不到被@Provides注释的方法提供对应参数对象的话，将会自动调用被@Inject注释的构造方法生成相应对象。
+&emsp;&emsp;如果找不到被`@Provides`注释的方法提供对应参数对象的话，将会自动调用被`@Inject`注释的构造方法生成相应对象。
 ```Java
 public class CameraTeam {
     @Inject
@@ -199,14 +197,14 @@ __思考__
 
 #### 6.2 添加多个Module
 
-&emsp;&emsp;一个Component可以添加多个Module，这样Component获取依赖时候会自动从多个Module中查找获取。添加多个Module有两种方法，一种是在Component的注解@Component(modules={××××，×××})中添加多个modules。
+&emsp;&emsp;一个`Component`可以添加多个`Module`，这样`Component`获取依赖时候会自动从多个`Module`中查找获取。添加多个`Module`有两种方法，一种是在`Component`的注解`@Component(modules={××××，×××})`中添加多个`modules`。
 ```Java
 @Component(modules={MainModule.class,ModuleA.class,ModuleB.class,ModuleC.class}) //直接在Component引用多个 Module
 public interface MainActivityComponent {
     ...
 }
 ```
-&emsp;&emsp;另外一种添加多个Module的方法可以使用@Module的 includes的方法（includes={××××，×××}）。
+&emsp;&emsp;另外一种添加多个`Module`的方法可以使用`@Module`的 `includes`的方法`（includes={××××，×××}）`。
 ```Java
 @Module(includes={ModuleA.class,ModuleB.class,ModuleC.class})//先在一个 Module 中includes其他 Module
 public class MainModule {
@@ -220,14 +218,16 @@ public interface MainActivityComponent {
 
 #### 6.3 区分返回类型相同@Provides方法
 
-&emsp;&emsp;如果我们在 `Module` 中有重复的类型返回，例如我定义两个 Context 类型的provides 在 Module 中的话，编译直接会报错：
+&emsp;&emsp;如果我们在 `Module` 中有重复的类型返回，例如我定义两个 `Context` 类型的`provides` 在 `Module` 中的话，编译直接会报错：
 
 ```
 Error:(16, 10) 错误: android.content.Context is bound multiple times:
 @Provides android.content.Context com.ape.dagger2.MainModule.provideApplicationContext()
 @Provides android.content.Context com.ape.dagger2.MainModule.provideActivityContext()
 ```
-&emsp;&emsp;那如果我们真的需要注入同一类型多次呢，这个问题总会有解决方案的吧？要是真的这么坑估计也没人用 dagger 了吧！哈哈。。。😂  其实 dagger2 为我们提供了两种方式来解决这个问题：__可以使用`@Qualifier` 的注解来区分，或者 `@Named("xx")` 的注解__。
+&emsp;&emsp;那如果我们真的需要注入同一类型多次呢，这个问题总会有解决方案的吧？要是真的这么坑估计也没人用 dagger 了吧！哈哈。。。😂  其实 dagger2 为我们提供了两种方式来解决这个问题：
+* __可以使用`@Qualifier` 的注解来区分__
+* __`@Named("xx")` 的注解__。
 
 __@Named 方式__
 ```Java
@@ -309,7 +309,7 @@ public class MainModule {
 &emsp;&emsp;使用哪种方式就仁者见仁智者见智了，但个人推荐使用`@Qualifier`，毕竟输入太多字符串容易出错。
 
 #### 6.4 组件间依赖和子组件
-&emsp;&emsp;有时我们需要依赖一个组件，这个最常见的用法是，如果我们定义了 MainActivity 的 `MainComponent` ，并且它依赖咱们的 `AppComponent` 里面的 `IRepositoryManager` 的话就要这样定义了：
+&emsp;&emsp;有时我们需要依赖一个组件，这个最常见的用法是，如果我们定义了 `MainActivity` 的 `MainComponent` ，并且它依赖咱们的 `AppComponent` 里面的 `IRepositoryManager` 的话就要这样定义了：
 ```Java
 @Component(dependencies = AppComponent.class, modules = MainPresenterModule.class)
 public interface MainComponent {
@@ -325,7 +325,7 @@ public interface AppComponent {
     IRepositoryManager repositoryManager();
 }
 ```
-&emsp;&emsp;那如果我觉得暴露这些方法太麻烦了，那需要怎么办呢？最简单就是使用 `@SubComponent` ,在所属的父 `Component` 中定义一个 `SubComponent`，该 `SubComponent` 中将会包含父 `Component` 的所有方法。父 `Component` 不显示声明都可以。
+&emsp;&emsp;那如果我觉得暴露这些方法太麻烦了，那需要怎么办呢？最简单就是使用 `@SubComponent` ,在所属的父 `Component` 中定义一个 `SubComponent`，该 `SubComponent` 中将会包含父 `Component` 的所有方法，父 `Component` 不显示声明都可以。
 ```Java
 @Subcomponent(modules = MainPresenterModule.class)
 public interface MainComponent {
@@ -339,7 +339,7 @@ public interface AppComponent {
     MainComponent mainComponent(MainPresenterModule module);
 }
 ```
-&emsp;&emsp;如何确保我们的MainComponent就是AppComponent的子组件呢？直接在注入的时候指明：
+&emsp;&emsp;在注入的时候直接使用父组件的`mainComponent(MainPresenterModule module)`包含子组件的`module`：
 ```Java
 appComponent.mainComponent(new MainPresenterModule(this)).inject(this);
 //DaggerMainComponent.builder().appComponent(appComponent)
@@ -367,16 +367,16 @@ public class Container{
 
 #### 6.6 `@Scope`详解
 __@Scope 是什么__
-&emsp;&emsp; scope 翻译过来就是辖域，再结合到计算机上，其实就是作用域的意思，学过高级语言的应该都知道设计模式中一个模式叫做单例模式，单例即为全局中该对象的实例只存在一个，而在 dagger2 中，@scope 的一个默认实现就是 `@Singleton`，也是Dagger2唯一自带的Scope注解，下面是@Singleton的源码，乍一看，很神奇啊，仅仅使用一个注解就可以实现单例！
+&emsp;&emsp; `Scope` 翻译过来就是辖域，再结合到计算机上，其实就是作用域的意思，学过高级语言的应该都知道设计模式中一个模式叫做单例模式，单例即为全局中该对象的实例只存在一个，而在 dagger2 中，`@scope` 的一个默认实现就是 `@Singleton`，也是Dagger2唯一自带的Scope注解，下面是`@Singleton`的源码，乍一看，很神奇啊，仅仅使用一个注解就可以实现单例！
 ```Java
 @Scope
 @Documented
 @Retention(RUNTIME)
 public @interface Singleton{}
 ```
-可以看到定义一个Scope注解，必须添加以下三部分：
+可以看到定义一个`Scope`注解，通常需要添加以下三部分：
 * __@Scope__：注明是Scope
-* __@Documented__：标记文档提示
+* __@Documented__：标记文档提示，可以不用
 * __@Retention(RUNTIME)__：运行时级别
 
 __@Scpoe 怎么用__
@@ -401,7 +401,7 @@ public interface MainActivityComponent {//同一个Component可以申明多个�
     void inject(SecondActivity activity);
 }
 ```
-&emsp;&emsp; 我们创建一个普通的 `Tinno` 类，然后创建它的`Module`，并且用 `@Singleton` 标记该 `Tinno` 返回对象，最后我们再创建它的 `Component`，然后用 `@Singleton` 标记这个 `Component`。这是一个标准的套路流程。接下来我们创建一个 MainActivity 和一个 SecondActivity，代码如下：
+&emsp;&emsp; 我们创建一个普通的 `Tinno` 类，然后创建它的`Module`，并且用 `@Singleton` 标记该 `Tinno` 返回对象，最后我们再创建它的 `Component`，然后用 `@Singleton` 标记这个 `Component`。这是一个标准的套路流程。接下来我们创建一个 `MainActivity` 和一个 `SecondActivity`，代码如下：
 ```Java
 public class MainActivity extends AppCompatActivity {
     @Inject
@@ -453,11 +453,11 @@ public class SecondActivity extends AppCompatActivity {
 运行结果如下图所示，没有问题的，单例实现成功了，发现两个 `Tinno`的地址是一样的。
 <div align="center"><img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/dagger2/2.png"/></div>
 
-我们仅仅通过一个 @Singleton 标记就使得对象实现了单例模式，接下来我们点一下按钮跳转到 SecondActivity 中，如下图所示：
+我们仅仅通过一个 `@Singleton` 标记就使得对象实现了单例模式，接下来我们点一下按钮跳转到 `SecondActivity` 中，如下图所示：
 <div align="center"><img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/dagger2/3.png"/></div>
 
 &emsp;&emsp;但是此时我们发现，不对啊，`SecondActivity` 的 `Tinno` 对象的地址和 `MainActivity` 中的 `Tinno` 对象地址并不一样啊，这个单例好像失效了啊！事实上并不是这样，那么为什么这个单例“失效”了呢？细心的小伙伴们已经看到了，两个 `Activity` 中的 `Component` 对象的地址是并不一样的，这样就好理解了 ——— 由于 `Component` 对象不是同一个，当然它们注入的对象也不会是同一个。那么我们如何解决这个问题呢？
-我们在 `Application` 层初始化 `MainActivityComponent`，然后在 Activity 中直接获取这个 `MainActivityComponent` 对象，由于 `Application` 在全局中只会初始化一次， 所以 Application 中的 `MainActivityComponent` 对象只初始化一次，我们每次在 `Activity` 中获取 Application 中的这个 `MainActivityComponent` 当然就是同一个的啦。`Application` 代码如下：
+我们在 `Application` 层初始化 `MainActivityComponent`，然后在 `Activity` 中直接获取这个 `MainActivityComponent` 对象，由于 `Application` 在全局中只会初始化一次， 所以 `Application` 中的 `MainActivityComponent` 对象只初始化一次，我们每次在 `Activity` 中获取 `Application` 中的这个 `MainActivityComponent` 当然就是同一个的啦。`Application` 代码如下：
 ```Java
 public class App extends Application {
     MainActivityComponent mComponent;
@@ -477,7 +477,7 @@ public class App extends Application {
 
 __自定义@Scpoe__
 
-&emsp;&emsp;Dagger2中`@Singleton`和自己定义的`@ActivityScope`、`@ApplicationScope`等代码上并没有什么区别，区别是在那种Component依赖的Component的情况下，两个Component的@Scope不能相同，既然没什么区别，那为什么还要这么做呢？是因为这样标示可以清晰的区分Component依赖的层次，方便理清我们的代码逻辑层次，如下为自定义的`ActivityScope`：
+&emsp;&emsp;Dagger2中`@Singleton`和自己定义的`@ActivityScope`、`@ApplicationScope`等代码上并没有什么区别，区别是在那种`Component`依赖的`Component`的情况下，两个`Component`的`@Scope`不能相同，既然没什么区别，那为什么还要这么做呢？是因为这样标示可以清晰的区分`Component`依赖的层次，方便理清我们的代码逻辑层次，如下为自定义的`ActivityScope`：
 ```Java
 @Scope
 @Documented
@@ -485,7 +485,7 @@ __自定义@Scpoe__
 public @interface ActivityScope {
 }
 ```
-&emsp;&emsp;有@Scope注解和没@Scope注解的编译时生成代码的区别，在编译生成的`DaggerMainActivityComponent`的`initialize`函数代码中我们可以看到如下：
+&emsp;&emsp;有`@Scope`注解和没`@Scope`注解的编译时生成代码的区别，在编译生成的`DaggerMainActivityComponent`的`initialize`函数代码中我们可以看到如下：
 
 
 ```Java
@@ -497,7 +497,7 @@ private void initialize(final Builder builder) {
     this.provideTinnoProvider = MainModule_ProvideTinnoFactory.create(builder.mainModule);
 }
 ```
-&emsp;&emsp;有`@Scope`类注解的`@Provider`生成的代码，外层多了一层`DoubleCheck.provider(…);`没有`@Scope`类注解的则是直接create一个新的实例。关于DoubleCheck，简单来说就是加了`@Scope`的Provider，Dagger会缓存一个实例在`DaggerMainComponent`中，在`DaggerMainComponent`中保持单例，缓存的provide跟随`DaggerMainComponent`的生命周期，`DaggerMainComponent`被销毁时，provider也被销毁，这就是局部单例的概念，假如你的`DaggerMainComponent`是在你应用的application中，则就形成了全局单例。
+&emsp;&emsp;有`@Scope`类注解的`@Provider`生成的代码，外层多了一层`DoubleCheck.provider(…);`没有`@Scope`类注解的则是直接create一个新的实例。关于`DoubleCheck`，简单来说就是加了`@Scope`的`Provider`，`Dagger`会缓存一个实例在`DaggerMainComponent`中，在`DaggerMainComponent`中保持单例，缓存的`provide`跟随`DaggerMainComponent`的生命周期，`DaggerMainComponent`被销毁时，`provider`也被销毁，这就是局部单例的概念，假如你的`DaggerMainComponent`是在你应用的`application`中，则就形成了全局单例。
 
 ## 三. 小结
 
@@ -519,3 +519,4 @@ private void initialize(final Builder builder) {
 
 
 __本文所演示的代码在此下载__：[Dagger2Sample](https://github.com/way1989/Dagger2Test)
+__MVP使用 Dagger2的例子在此下载__：[MaterialWeather](https://github.com/way1989/MaterialWeather)
