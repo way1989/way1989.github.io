@@ -59,21 +59,21 @@ dependencies {
 ### 2. 注解
 
 &emsp;&emsp;Dagger2 通过注解来生成代码，定义不同的角色，主要的注解如下：
-* **@Module**: Module类里面的方法专门提供依赖，所以我们定义一个类，用@Module注解，这样Dagger在构造类的实例的时候，就知道从哪里去找到需要的依赖。
-* **@Provides**: 在Module中，我们定义的方法是用这个注解，以此来告诉Dagger我们想要构造对象并提供这些依赖。
-* **@Inject**: 通常在需要依赖的地方使用这个注解。换句话说，你用它告诉Dagger这个类或者字段需要依赖注入。这样，Dagger就会构造一个这个类的实例并满足他们的依赖。
-* **@Component**: Component从根本上来说就是一个注入器，也可以说是@Inject和@Module的桥梁，它的主要作用就是连接这两个部分。将Module中产生的依赖对象自动注入到需要依赖实例的Container中。
-* **@Scope**: Dagger2可以通过自定义注解限定注解作用域，来管理每个对象实例的生命周期。
-* **@Qualifier**: 当类的类型不足以鉴别一个依赖的时候，我们就可以使用这个注解标示。例如：在Android中，我们会需要不同类型的context，所以我们就可以定义 qualifier注解“@perApp”和“@perActivity”，这样当注入一个context的时候，我们就可以告诉 Dagger我们想要哪种类型的context。
+* **@Module**: 用来标注类，Module类里面的方法专门提供依赖，所以我们定义一个类，用@Module注解，这样Dagger在构造类的实例的时候，就知道从哪里去找到需要的依赖。
+* **@Provides**: 用来标注方法，在Module中，我们定义的方法是用这个注解，以此来告诉Dagger我们想要构造对象并提供这些依赖。
+* **@Inject**: 用来标注对象变量或构造方法，通常在需要依赖的地方使用这个注解。换句话说，你用它告诉Dagger这个类或者字段需要依赖注入。这样，Dagger就会构造一个这个类的实例并满足他们的依赖。
+* **@Component**: 通常用来标注接口，Component从根本上来说就是一个注入器，也可以说是@Inject和@Module的桥梁，它的主要作用就是连接这两个部分。将Module中产生的依赖对象自动注入到需要依赖实例的Container中。
+* **@Scope**: 标注`Component`和`Module`提供对象的方法，Dagger2可以通过自定义注解限定注解作用域，来管理每个对象实例的生命周期。
+* **@Qualifier**: 用来标注方法，当类的类型不足以鉴别一个依赖的时候，我们就可以使用这个注解标示。例如：在Android中，我们会需要不同类型的context，所以我们就可以定义 qualifier注解“@perApp”和“@perActivity”，这样当注入一个context的时候，我们就可以告诉 Dagger我们想要哪种类型的context。
 
 ### 3. 结构
 
-&emsp;&emsp;Dagger2要实现一个完整的依赖注入，必不可少的元素有三种：__Module__，__Component__，__Container__。为了便于理解，其实可以把component想象成针管，module是注射瓶，里面的依赖对象是注入的药水，build方法是插进患者（Container），inject方法的调用是推动活塞。
+&emsp;&emsp;Dagger2要实现一个完整的依赖注入，通常必不可少的元素有三种：__Module__，__Component__，__Container__。为了便于理解，其实可以把`component`想象成针管，`module`是注射瓶，里面的`依赖对象`是注入的药水，`build方法`是插进患者（Container），`inject方法`的调用是推动活塞。
 <div align="center"><img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/dagger2/1.png"/></div>
 
 ### 4. 简单的例子
 
-&emsp;&emsp;__申明需要依赖的对象__：使用了注解方式，还是以`Tinno`为例，使得Dagger2能找到它。
+__申明需要依赖的对象__：使用了注解方式，还是以`Tinno`为例，使得Dagger2能找到它。
 ```Java
 public class Tinno {
     //这里可以看到加入了注解方式
@@ -84,7 +84,7 @@ public class Tinno {
 }
 ```
 
-&emsp;&emsp; __申明`Component`接口__：申明完后rebuild一下工程，使其自动生成`Component`实现类`DaggerMainActivityComponent`。
+ __申明`Component`接口__：申明完后rebuild一下工程，使其自动生成`Component`实现类`DaggerMainActivityComponent`。
 ```Java
 //用这个标注标识是一个连接器
 @Component
@@ -94,7 +94,7 @@ public interface MainActivityComponent {
 }
 ```
 
-&emsp;&emsp; __在使用的地方注入__
+ __在使用的地方注入__
 
 ```Java
 public class MainActivity extends AppCompatActivity {
@@ -116,11 +116,11 @@ public class MainActivity extends AppCompatActivity {
 }
 ```
 
-&emsp;&emsp; __简单使用小结__
+__简单使用小结__
 &emsp;&emsp; 这是最简单的一种使用了。首先我们看到，第一印象是我去😲，这个更复杂了啊😂😂。我只能说确实，因为这个是它对的最基础的使用，看起来很笨拙，但是当它在大型项目里面，在依赖更多的情况下，则会发生质的飞跃，会发现它非常好用，并且将你需要传递的参数都隐藏掉，来实现解耦。
 
 ### 5. 常规使用方法
-&emsp;&emsp;细心的朋友发现了，我在结构中说 dagger2结构的时候提到必不可少的三元素，这个例子只用到了 __Component__，__Container__，__Module__ 并未提及，这就是我这里需要重点提及的，通过以下这个例子，能更加深刻的理解 __Module__ 的作用。
+&emsp;&emsp;细心的朋友发现了，我在结构中说 dagger2结构的时候提到通常必不可少的三元素，这个例子只用到了 __Component__，__Container__，__Module__ 并未提及，这就是我这里需要重点提及的，通过以下这个例子，能更加深刻的理解 __Module__ 的作用。
 &emsp;&emsp;实现一个 __MainModule__，提供一些实例构造，通过 __Component__ 联系起来。
 ```Java
 @Module //实现一个类，标注为 Module
@@ -136,7 +136,7 @@ public class MainModule {
 &emsp;&emsp;在 __MainComponent__ 中，指明 __Component__ 查找 __Module__ 的位置
 ```Java
 @Component(modules = MainModule.class)
-public interface MainActivityComponent {// 必须定义为接口，Dagger2框架将自动生成Component的实现类，对应的类名是Dagger×××××，这里对应的实现类是DaggerMainActivityComponent
+public interface MainActivityComponent {// 通常定义为接口，Dagger2框架将自动生成Component的实现类，对应的类名是Dagger×××××，这里对应的实现类是DaggerMainActivityComponent
     void inject(MainActivity activity);// 注入到MainActivity(Container)的方法，方法名一般使用inject
 }
 ```
@@ -146,8 +146,6 @@ public class Tinno {
 }
 ```
 &emsp;&emsp;注入使用的地方完全不用修改，也能得到和之前例子一样的结果。
-
-&emsp;&emsp;**Dagger2的注释思路**：关键的点是 __@Component__，这个可以理解为 __注射器__，它使用在组件里面标记为Module可以理解为 __生理盐水__，__@Module__ 中提供的各种对象可以理解为 __青霉素__、__氨基酸__ 等药剂， 然后我们写入一个 __void inject(MainActivity activity);__  这个方法相当于是 __针头__， 方法里面的参数，就是 __受体(人或动物)__。最后通过类似 __DaggerMainActivityComponent.builder().build().inject(this);__ 的动作，将 __注射器__ 中的 __青霉素__、__氨基酸__ 等药剂全部注入到 __受体(人或动物)__ 中，完成自动初始化的动作。
 
 ### 6. 更多用法
 #### 6.1 方法参数
