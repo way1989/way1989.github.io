@@ -13,7 +13,7 @@ tags: # 这里写的标签会自动汇集到 tags 页面上
 ### 1.Dagger2是什么？
 
 &emsp;&emsp;Dagger2是由Google接手开发，最早的版本Dagger1 是由Square公司开发的，大神[JakeWharton](https://github.com/JakeWharton)最近也从 Square 公司跳槽到 Google。
-```
+``` java
 A fast dependency injector for Android and Java
 Android和Java的依赖快速注入器
 ```
@@ -37,7 +37,7 @@ public MainActivity() {
     mTinno = new Tinno();
 }
 ```
-&emsp;&emsp;上面例子面临着一个问题，一旦某一天`Tinno`的创建方式（如构造参数）发生改变，那么你不但需要修改`MainActivity`中创建`Tinno`的代码，还要修改其他所有地方创建`Tinno`的代码。如果我们使用了Dagger2的话，就不需要管这些了，只需要在需要B的地方写下：
+&emsp;&emsp;上面例子面临着一个问题，一旦某一天`Tinno`的创建方式（如构造参数）发生改变，那么你不但需要修改`MainActivity`中创建`Tinno`的代码，还要修改其他所有地方创建`Tinno`的代码。如果我们使用了Dagger2的话，就不需要管这些了，只需要在需要`Tinno`的地方写下：
 ```java
 @Inject
 Tinno mTinno;
@@ -76,10 +76,8 @@ dependencies {
 __申明需要依赖的对象__：使用了注解方式，还是以`Tinno`为例，使得Dagger2能找到它。
 ```Java
 public class Tinno {
-    //这里可以看到加入了注解方式
-    @Inject
+    @Inject //这里可以看到加入了注解方式
     public Tinno() {
-
     }
 }
 ```
@@ -262,7 +260,9 @@ public class MainModule {
 ```
 
 __@Qualifier方式__
+
 ```Java
+
 @Qualifier
 @Documented
 @Retention(RUNTIME)
@@ -270,13 +270,16 @@ public @interface ApplicationQualifier {
 }
 ```
 ```Java
+
 @Qualifier
 @Documented
 @Retention(RUNTIME)
 public @interface ActivityQualifier {
 }
 ```
+
 ```java
+
 @Module //实现一个类，标注为 Module
 public class MainModule {
     private Context mApplicationContext;
@@ -311,12 +314,15 @@ public class MainModule {
 #### 6.4 组件间依赖和子组件
 &emsp;&emsp;有时我们需要依赖一个组件，这个最常见的用法是，如果我们定义了 `MainActivity` 的 `MainComponent` ，并且它依赖咱们的 `AppComponent` 里面的 `IRepositoryManager` 的话就要这样定义了：
 ```Java
+
 @Component(dependencies = AppComponent.class, modules = MainPresenterModule.class)
 public interface MainComponent {
     void inject(MainActivity activity);
 }
 ```
+
 &emsp;&emsp;在 `AppComponent` 中需要将获取 `IRepositoryManager` 的方法暴露出来，不然还是无法注入成功的。
+
 ```Java
 
 @Component(modules = {AppModule.class})
@@ -324,29 +330,42 @@ public interface AppComponent {
     //用于管理网络请求层,以及数据缓存层,对外开放的接口
     IRepositoryManager repositoryManager();
 }
+
 ```
+
 &emsp;&emsp;那如果我觉得暴露这些方法太麻烦了，那需要怎么办呢？最简单就是使用 `@SubComponent` ,在所属的父 `Component` 中定义一个 `SubComponent`，该 `SubComponent` 中将会包含父 `Component` 的所有方法，父 `Component` 不显示声明都可以。
+
 ```Java
+
 @Subcomponent(modules = MainPresenterModule.class)
 public interface MainComponent {
     void inject(MainActivity activity);
 }
+
 ```
+
 ```Java
+
 @Component(modules = {AppModule.class})
 public interface AppComponent {
     // 提供 MainComponent 对象的获取方法
     MainComponent mainComponent(MainPresenterModule module);
 }
+
 ```
+
 &emsp;&emsp;在注入的时候直接使用父组件的`mainComponent(MainPresenterModule module)`包含子组件的`module`：
+
 ```Java
+
 appComponent.mainComponent(new MainPresenterModule(this)).inject(this);
 //DaggerMainComponent.builder().appComponent(appComponent)
 //                .mainPresenterModule(new MainPresenterModule(this)).build().inject(this);
+
 ```
 
 __组件依赖和子组件的区别__：
+
 | 组件依赖 | 子组件                          |
 |---------|----------------------------------|
 | 1. 保持两个 Component 都独立，没有任何关联<br />2. 明确的告诉别人这个 Component 所依赖的 Component <br />3. 两个拥有依赖关系的 Component 是不能有相同 @Scope 注解的<br />4. 依赖的组件会生成Dagger...Component  | 1. 保持两个 Component 内聚<br />2. 不关心这个 Component 依赖哪个 Component<br />3. 可以使用相同的@Scope注解<br />4. 子组件的组件不会生成Dagger...Component|
@@ -479,6 +498,7 @@ __自定义@Scpoe__
 
 &emsp;&emsp;Dagger2中`@Singleton`和自己定义的`@ActivityScope`、`@ApplicationScope`等代码上并没有什么区别，区别是在那种`Component`依赖的`Component`的情况下，两个`Component`的`@Scope`不能相同，既然没什么区别，那为什么还要这么做呢？是因为这样标示可以清晰的区分`Component`依赖的层次，方便理清我们的代码逻辑层次，如下为自定义的`ActivityScope`：
 ```Java
+
 @Scope
 @Documented
 @Retention(RUNTIME)
@@ -519,4 +539,6 @@ private void initialize(final Builder builder) {
 
 
 __本文所演示的代码在此下载__：[Dagger2Sample](https://github.com/way1989/Dagger2Test)
+
+
 __MVP使用 Dagger2的例子在此下载__：[MaterialWeather](https://github.com/way1989/MaterialWeather)
