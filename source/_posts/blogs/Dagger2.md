@@ -346,7 +346,7 @@ appComponent.mainComponent(new MainPresenterModule(this)).inject(this);
 //                .mainPresenterModule(new MainPresenterModule(this)).build().inject(this);
 ```
 
-&emsp;&emsp; __组件依赖和子组件的区别__：
+__组件依赖和子组件的区别__：
 | 组件依赖 | 子组件                          |
 |---------|----------------------------------|
 | 1. 保持两个 Component 都独立，没有任何关联<br />2. 明确的告诉别人这个 Component 所依赖的 Component <br />3. 两个拥有依赖关系的 Component 是不能有相同 @Scope 注解的<br />4. 依赖的组件会生成Dagger...Component  | 1. 保持两个 Component 内聚<br />2. 不关心这个 Component 依赖哪个 Component<br />3. 可以使用相同的@Scope注解<br />4. 子组件的组件不会生成Dagger...Component|
