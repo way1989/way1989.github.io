@@ -1,11 +1,11 @@
 ---
 date: 2017-09-10 11:16:24
-title: 解耦神器dagger2
-description: dagger2入门以及深入理解
+title: 解耦神器Dagger2
+description: Dagger2入门以及深入理解
 categories:   # 这里写的分类会自动汇集到 categories 页面上，分类可以多级
- - dagger2
+ - Dagger2
 tags: # 这里写的标签会自动汇集到 tags 页面上
- - dagger2
+ - Dagger2
 ---
 
 ## 一. Dagger2介绍
@@ -21,11 +21,11 @@ Android和Java的依赖快速注入器
 ### 2. Dagger2相较于Dagger1的优势是什么？
 
 * **更好的性能**：相较于Dagger1，它使用的预编译期间生成代码来完成依赖注入，而不是用的反射。大家知道反射对手机应用开发影响是比较大的，因为反射是在程序运行时加载类来进行处理所以会比较耗时，而手机硬件资源有限，所以相对来说会对性能产生一定的影响。
-* **容易跟踪调试**：因为dagger2是使用生成代码来实现完整依赖注入，所以完全可以在相关代码处下断点进行运行调试。
+* **容易跟踪调试**：因为Dagger2是使用生成代码来实现完整依赖注入，所以完全可以在相关代码处下断点进行运行调试。
 
 ### 3. 使用依赖注入的最大好处是什么？
 
-&emsp;&emsp;快速自动的构建出我们所需要的依赖对象，这里的依赖对象可以理解为某一个成员变量。例如在 `MVP` 中，`VP` 层就是互相关联的， `V` 要依赖对应的 `P`，而 `P` 也要依赖对应的 `V` 。dagger2 能解决的就是这种依赖关系，通过注入的方式，将双方的耦合再次降低，在实际的使用中体现为一个注解想要的对象就创建好了，咱们不用再去管理所依赖对象的创建等情况了。
+&emsp;&emsp;快速自动的构建出我们所需要的依赖对象，这里的依赖对象可以理解为某一个成员变量。例如在 `MVP` 中，`VP` 层就是互相关联的， `V` 要依赖对应的 `P`，而 `P` 也要依赖对应的 `V` 。Dagger2 能解决的就是这种依赖关系，通过注入的方式，将双方的耦合再次降低，在实际的使用中体现为一个注解想要的对象就创建好了，咱们不用再去管理所依赖对象的创建等情况了。
 
 ### 4. 举个例子
 
@@ -59,21 +59,21 @@ dependencies {
 ### 2. 注解
 
 &emsp;&emsp;Dagger2 通过注解来生成代码，定义不同的角色，主要的注解如下：
-* **@Module**: 用来标注类，Module类里面的方法专门提供依赖，所以我们定义一个类，用@Module注解，这样Dagger在构造类的实例的时候，就知道从哪里去找到需要的依赖。
-* **@Provides**: 用来标注方法，在Module中，我们定义的方法是用这个注解，以此来告诉Dagger我们想要构造对象并提供这些依赖。
-* **@Inject**: 用来标注对象变量或构造方法，通常在需要依赖的地方使用这个注解。换句话说，你用它告诉Dagger这个类或者字段需要依赖注入。这样，Dagger就会构造一个这个类的实例并满足他们的依赖。
-* **@Component**: 通常用来标注接口，Component从根本上来说就是一个注入器，也可以说是@Inject和@Module的桥梁，它的主要作用就是连接这两个部分。将Module中产生的依赖对象自动注入到需要依赖实例的Container中。
-* **@Scope**: 标注`Component`和`Module`提供对象的方法，Dagger2可以通过自定义注解限定注解作用域，来管理每个对象实例的生命周期。
-* **@Qualifier**: 用来标注方法，当类的类型不足以鉴别一个依赖的时候，我们就可以使用这个注解标示。例如：在Android中，我们会需要不同类型的context，所以我们就可以定义 qualifier注解“@perApp”和“@perActivity”，这样当注入一个context的时候，我们就可以告诉 Dagger我们想要哪种类型的context。
+* **@Module**: 用来标注类，`Module`类里面的方法专门提供依赖，所以我们定义一个类，用`@Module`注解，这样Dagger在构造类的实例的时候，就知道从哪里去找到需要的依赖。
+* **@Provides**: 用来标注方法，在`Module`中，我们定义的方法是用这个注解，以此来告诉`Dagger2`我们想要构造对象并提供这些依赖。
+* **@Inject**: 用来标注对象变量或构造方法，通常在需要依赖的地方使用这个注解。换句话说，你用它告诉`Dagger2`这个类或者字段需要依赖注入。这样，`Dagger2`就会构造一个这个类的实例并满足他们的依赖。
+* **@Component**: 通常用来标注接口，`Component`从根本上来说就是一个注入器，也可以说是`@Inject`和`@Module`的桥梁，它的主要作用就是连接这两个部分。将`Module`中产生的依赖对象自动注入到需要依赖实例的Container中。
+* **@Scope**: 标注`Component`和`Module`提供对象的方法，`Dagger2`可以通过自定义注解限定注解作用域，来管理每个对象实例的生命周期。
+* **@Qualifier**: 用来标注方法，当类的类型不足以鉴别一个依赖的时候，我们就可以使用这个注解标示。例如：在Android中，我们会需要不同类型的`Context`，所以我们就可以定义`Qualifier`注解`@ApplicationQualifier`和`@ActivityQualifier`，这样当注入一个`Context`的时候，我们就可以告诉`Dagger2`我们想要哪种类型的`Context`。
 
 ### 3. 结构
 
-&emsp;&emsp;Dagger2要实现一个完整的依赖注入，通常必不可少的元素有三种：__Module__，__Component__，__Container__。为了便于理解，其实可以把`component`想象成`针管`，`module`是`注射器`，里面的`依赖对象`是待`注入的药水`，`build方法`是插进`患者（Container）`，`inject方法`的调用是`推动活塞`。
+&emsp;&emsp;Dagger2要实现一个完整的依赖注入，通常必不可少的元素有三种：__Module__，__Component__，__Container__。为了便于理解，其实可以把`component`想象成`针管`，`module`是`注射器`，里面的`依赖对象`是`待注入的药水`，`build方法`是插进`患者（Container）`，`inject方法`的调用是`推动活塞`。
 <div align="center"><img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/dagger2/1.png"/></div>
 
 ### 4. 简单的例子
 
-__申明需要依赖的对象__：使用了注解方式，还是以`Tinno`为例，使得Dagger2能找到它。
+__声明需要依赖的对象__：使用了注解方式，还是以`Tinno`为例，使得Dagger2能找到它。
 ```Java
 public class Tinno {
     @Inject //这里可以看到加入了注解方式
@@ -82,7 +82,7 @@ public class Tinno {
 }
 ```
 
- __申明`Component`接口__：申明完后rebuild一下工程，使其自动生成`Component`实现类`DaggerMainActivityComponent`。
+ __声明`Component`接口__：声明完后rebuild一下工程，使其自动生成`Component`实现类`DaggerMainActivityComponent`。
 ```Java
 //用这个标注标识是一个连接器
 @Component
@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
 &emsp;&emsp; 这是最简单的一种使用了。首先我们看到，第一印象是我去😲，这个更复杂了啊😂😂。我只能说确实，因为这个是它对的最基础的使用，看起来很笨拙，但是当它在大型项目里面，在依赖更多的情况下，则会发生质的飞跃，会发现它非常好用，并且将你需要传递的参数都隐藏掉，来实现解耦。
 
 ### 5. 常规使用方法
-&emsp;&emsp;细心的朋友发现了，我在结构中说 dagger2结构的时候提到通常必不可少的三元素，这个例子只用到了 __Component__和__Container__，而 __Module__ 并未提及，通过以下这个例子，能更加深刻的理解 __Module__ 的作用。
+&emsp;&emsp;细心的朋友发现了，我在结构中说 Dagger2结构的时候提到通常必不可少的三元素，这个例子只用到了 __Component__和__Container__，而 __Module__ 并未提及，通过以下这个例子，能更加深刻的理解 __Module__ 的作用。
 &emsp;&emsp;实现一个 __MainModule__，提供一些实例构造，通过 __Component__ 联系起来。
 ```Java
 @Module //实现一个类，标注为 Module
@@ -216,14 +216,14 @@ public interface MainActivityComponent {
 
 #### 6.3 区分返回类型相同@Provides方法
 
-&emsp;&emsp;如果我们在 `Module` 中有重复的类型返回，例如我定义两个 `Context` 类型的`provides` 在 `Module` 中的话，编译直接会报错：
+&emsp;&emsp;如果我们在 `Module` 中有重复的类型返回，例如我定义两个 `Context` 类型的`Provides` 在 `Module` 中的话，编译直接会报错：
 
 ```
 Error:(16, 10) 错误: android.content.Context is bound multiple times:
 @Provides android.content.Context com.ape.dagger2.MainModule.provideApplicationContext()
 @Provides android.content.Context com.ape.dagger2.MainModule.provideActivityContext()
 ```
-&emsp;&emsp;那如果我们真的需要注入同一类型多次呢，这个问题总会有解决方案的吧？要是真的这么坑估计也没人用 dagger 了吧！哈哈。。。😂  其实 dagger2 为我们提供了两种方式来解决这个问题：
+&emsp;&emsp;那如果我们真的需要注入同一类型多次呢，这个问题总会有解决方案的吧？要是真的这么坑估计也没人用 Dagger2 了吧！哈哈。。。😂  其实 Dagger2 为我们提供了两种方式来解决这个问题：
 * __可以使用`@Qualifier` 的注解来区分__
 * __`@Named("xx")` 的注解__。
 
@@ -372,7 +372,7 @@ __组件依赖和子组件的区别__：
 
 
 #### 6.5 懒加载和强加载模式
-&emsp;&emsp;在上面的比喻中，一针扎进去，是啥都给你打进去了，那么如果有些我想要在调用的时候才加载呢？这里 dagger 提供了 Lazy<T> 的方式来注入，对应的获取就是：
+&emsp;&emsp;在上面的比喻中，一针扎进去，是啥都给你打进去了，那么如果有些我想要在调用的时候才加载呢？这里 Dagger2 提供了 `Lazy<T>` 的方式来注入；同时相反的提供一个强制加载方式`Provider<T>`，每次调用get都会调用Module的Provides方法一次，对应的获取就是：
 ```Java
 public class Container{
     @Inject Lazy<Tinno> mTinnoLazy; //延迟加载
@@ -386,7 +386,7 @@ public class Container{
 
 #### 6.6 `@Scope`详解
 __@Scope 是什么__
-&emsp;&emsp; `Scope` 翻译过来就是辖域，再结合到计算机上，其实就是作用域的意思，学过高级语言的应该都知道设计模式中一个模式叫做单例模式，单例即为全局中该对象的实例只存在一个，而在 dagger2 中，`@scope` 的一个默认实现就是 `@Singleton`，也是Dagger2唯一自带的Scope注解，下面是`@Singleton`的源码，乍一看，很神奇啊，仅仅使用一个注解就可以实现单例！
+&emsp;&emsp; `Scope` 翻译过来就是辖域，再结合到计算机上，其实就是作用域的意思，学过高级语言的应该都知道设计模式中一个模式叫做单例模式，单例即为全局中该对象的实例只存在一个，而在 Dagger2 中，`@scope` 的一个默认实现就是 `@Singleton`，也是Dagger2唯一自带的Scope注解，下面是`@Singleton`的源码，乍一看，很神奇啊，仅仅使用一个注解就可以实现单例！
 ```Java
 @Scope
 @Documented
@@ -404,7 +404,7 @@ __@Scpoe 怎么用__
 //普通的对象
 public class Tinno {}
 
-@Module//申明Module
+@Module//声明Module
 public class MainModule {
     @Provides
     @Singleton
@@ -415,7 +415,7 @@ public class MainModule {
 
 @Singleton
 @Component(modules = UserModule.class)
-public interface MainActivityComponent {//同一个Component可以申明多个注入Container
+public interface MainActivityComponent {//同一个Component可以声明多个注入Container
     void inject(MainActivity activity);
     void inject(SecondActivity activity);
 }
@@ -524,18 +524,18 @@ private void initialize(final Builder builder) {
 ### 1. Dagger2到底有哪些好处？
 
 * __增加开发效率、省去重复的简单体力劳动__
-首先new一个实例的过程是一个重复的简单体力劳动，dagger2完全可以把new一个实例的工作做了，因此我们把主要精力集中在关键业务上、同时也能增加开发效率上。省去写单例的方法，并且也不需要担心自己写的单例方法是否线程安全，自己写的单例是懒汉模式还是饿汉模式。因为dagger2都可以把这些工作做了。
+首先new一个实例的过程是一个重复的简单体力劳动，Dagger2完全可以把new一个实例的工作做了，因此我们把主要精力集中在关键业务上、同时也能增加开发效率上。省去写单例的方法，并且也不需要担心自己写的单例方法是否线程安全，自己写的单例是懒汉模式还是饿汉模式。因为Dagger2都可以把这些工作做了。
 
 * __更好的管理类实例__
 每个app中的ApplicationComponent管理整个app的全局类实例，所有的全局类实例都统一交给ApplicationComponent管理，并且它们的生命周期与app的生命周期一样。每个页面对应自己的Component，页面Component管理着自己页面所依赖的所有类实例。因为Component，Module，整个app的类实例结构变的很清晰。
 
 * __解耦__
-假如不用dagger2的话，一个类的new代码是非常可能充斥在app的多个类中的，假如该类的构造函数发生变化，那这些涉及到的类都得进行修改。设计模式中提倡把容易变化的部分封装起来。
+假如不用Dagger2的话，一个类的new代码是非常可能充斥在app的多个类中的，假如该类的构造函数发生变化，那这些涉及到的类都得进行修改。设计模式中提倡把容易变化的部分封装起来。
 
 ### 2. Dagger2在Camera中使用思考！
 
-* __CameraScheduler__ 中依赖的各个模块实例可以通过dagger2注入，回调接口也可以在注入的时候传递过去，类似与MVP模式将V传递给P。
-* 各个子模块也可以使用dagger2来注入相关实例。
+* __CameraScheduler__ 中依赖的各个模块实例可以通过Dagger2注入，回调接口也可以在注入的时候传递过去，类似与MVP模式将V传递给P。
+* 各个子模块也可以使用Dagger2来注入相关实例。
 
 
 __本文所演示的代码在此下载__：[Dagger2Sample](https://github.com/way1989/Dagger2Test)
