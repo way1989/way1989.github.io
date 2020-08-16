@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"way1989.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Dagger2入门以及深入理解">
+<meta name="keywords" content="Dagger2">
+<meta property="og:type" content="article">
+<meta property="og:title" content="解耦神器Dagger2">
+<meta property="og:url" content="https://way1989.github.io/2017/09/10/blogs/Dagger2/index.html">
+<meta property="og:site_name" content="Broncho">
+<meta property="og:description" content="Dagger2入门以及深入理解">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/dagger2/1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/dagger2/2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/dagger2/3.png">
+<meta property="og:updated_time" content="2020-08-15T07:52:32.558Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="解耦神器Dagger2">
+<meta name="twitter:description" content="Dagger2入门以及深入理解">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/dagger2/1.png">
+
+<link rel="canonical" href="https://way1989.github.io/2017/09/10/blogs/Dagger2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>解耦神器Dagger2 | Broncho</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Broncho</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/way1989" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://way1989.github.io/2017/09/10/blogs/Dagger2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Broncho">
+      <meta itemprop="description" content="爱生活...爱Android...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Broncho">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          解耦神器Dagger2
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-09-10 11:16:24" itemprop="dateCreated datePublished" datetime="2017-09-10T11:16:24+08:00">2017-09-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-15 15:52:32" itemprop="dateModified" datetime="2020-08-15T15:52:32+08:00">2020-08-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Dagger2/" itemprop="url" rel="index"><span itemprop="name">Dagger2</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">Dagger2入门以及深入理解</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="一-Dagger2介绍"><a href="#一-Dagger2介绍" class="headerlink" title="一. Dagger2介绍"></a>一. Dagger2介绍</h2><h3 id="1-Dagger2是什么？"><a href="#1-Dagger2是什么？" class="headerlink" title="1.Dagger2是什么？"></a>1.Dagger2是什么？</h3><p>&emsp;&emsp;Dagger2是由Google接手开发，最早的版本Dagger1 是由Square公司开发的，大神<a href="https://github.com/JakeWharton" target="_blank" rel="noopener">JakeWharton</a>最近也从 Square 公司跳槽到 Google。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">A fast dependency injector <span class="keyword">for</span> Android and Java</span><br><span class="line">Android和Java的依赖快速注入器</span><br></pre></td></tr></table></figure></p>
+<h3 id="2-Dagger2相较于Dagger1的优势是什么？"><a href="#2-Dagger2相较于Dagger1的优势是什么？" class="headerlink" title="2. Dagger2相较于Dagger1的优势是什么？"></a>2. Dagger2相较于Dagger1的优势是什么？</h3><ul>
+<li><strong>更好的性能</strong>：相较于Dagger1，它使用的预编译期间生成代码来完成依赖注入，而不是用的反射。大家知道反射对手机应用开发影响是比较大的，因为反射是在程序运行时加载类来进行处理所以会比较耗时，而手机硬件资源有限，所以相对来说会对性能产生一定的影响。</li>
+<li><strong>容易跟踪调试</strong>：因为Dagger2是使用生成代码来实现完整依赖注入，所以完全可以在相关代码处下断点进行运行调试。</li>
+</ul>
+<h3 id="3-使用依赖注入的最大好处是什么？"><a href="#3-使用依赖注入的最大好处是什么？" class="headerlink" title="3. 使用依赖注入的最大好处是什么？"></a>3. 使用依赖注入的最大好处是什么？</h3><p>&emsp;&emsp;快速自动的构建出我们所需要的依赖对象，这里的依赖对象可以理解为某一个成员变量。例如在 <code>MVP</code> 中，<code>VP</code> 层就是互相关联的， <code>V</code> 要依赖对应的 <code>P</code>，而 <code>P</code> 也要依赖对应的 <code>V</code> 。Dagger2 能解决的就是这种依赖关系，通过注入的方式，将双方的耦合再次降低，在实际的使用中体现为一个注解想要的对象就创建好了，咱们不用再去管理所依赖对象的创建等情况了。</p>
+<h3 id="4-举个例子"><a href="#4-举个例子" class="headerlink" title="4. 举个例子"></a>4. 举个例子</h3><p>&emsp;&emsp;如果在 <code>MainActivity</code> 中，有 <code>Tinno</code>的实例，则称 <code>MainActivity</code> 对 <code>Tinno</code> 有一个依赖。如果不用Dagger2的情况下我们应该这么写：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Tinno mTinno;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">MainActivity</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    mTinno = <span class="keyword">new</span> Tinno();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;上面例子面临着一个问题，一旦某一天<code>Tinno</code>的创建方式（如构造参数）发生改变，那么你不但需要修改<code>MainActivity</code>中创建<code>Tinno</code>的代码，还要修改其他所有地方创建<code>Tinno</code>的代码。如果我们使用了Dagger2的话，就不需要管这些了，只需要在需要<code>Tinno</code>的地方写下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Inject</span></span><br><span class="line">Tinno mTinno;</span><br></pre></td></tr></table></figure></p>
+<h2 id="二-Dagger2使用"><a href="#二-Dagger2使用" class="headerlink" title="二. Dagger2使用"></a>二. Dagger2使用</h2><h3 id="1-gradle配置"><a href="#1-gradle配置" class="headerlink" title="1. gradle配置"></a>1. gradle配置</h3><p>&emsp;&emsp;Android Studio 2.2以前的版本需要使用Gradle插件<code>android-apt</code>(Annotation Processing Tool)，协助Android Studio处理<code>annotation processors</code>；<code>annotationProcessor</code>就是APT工具中的一种，是google开发的内置框架，不需要引入，所以可以像下面这样直接使用。<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Add Dagger dependencies</span></span><br><span class="line">dependencies &#123;</span><br><span class="line">  compile <span class="string">'com.google.dagger:dagger:2.4'</span></span><br><span class="line">  annotationProcessor <span class="string">'com.google.dagger:dagger-compiler:2.4'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="2-注解"><a href="#2-注解" class="headerlink" title="2. 注解"></a>2. 注解</h3><p>&emsp;&emsp;Dagger2 通过注解来生成代码，定义不同的角色，主要的注解如下：</p>
+<ul>
+<li><strong>@Module</strong>: 用来标注类，<code>Module</code>类里面的方法专门提供依赖，所以我们定义一个类，用<code>@Module</code>注解，这样Dagger在构造类的实例的时候，就知道从哪里去找到需要的依赖。</li>
+<li><strong>@Provides</strong>: 用来标注方法，在<code>Module</code>中，我们定义的方法是用这个注解，以此来告诉<code>Dagger2</code>我们想要构造对象并提供这些依赖。</li>
+<li><strong>@Inject</strong>: 用来标注对象变量或构造方法，通常在需要依赖的地方使用这个注解。换句话说，你用它告诉<code>Dagger2</code>这个类或者字段需要依赖注入。这样，<code>Dagger2</code>就会构造一个这个类的实例并满足他们的依赖。</li>
+<li><strong>@Component</strong>: 通常用来标注接口，<code>Component</code>从根本上来说就是一个注入器，也可以说是<code>@Inject</code>和<code>@Module</code>的桥梁，它的主要作用就是连接这两个部分。将<code>Module</code>中产生的依赖对象自动注入到需要依赖实例的Container中。</li>
+<li><strong>@Scope</strong>: 标注<code>Component</code>和<code>Module</code>提供对象的方法，<code>Dagger2</code>可以通过自定义注解限定注解作用域，来管理每个对象实例的生命周期。</li>
+<li><strong>@Qualifier</strong>: 用来标注方法，当类的类型不足以鉴别一个依赖的时候，我们就可以使用这个注解标示。例如：在Android中，我们会需要不同类型的<code>Context</code>，所以我们就可以定义<code>Qualifier</code>注解<code>@ApplicationQualifier</code>和<code>@ActivityQualifier</code>，这样当注入一个<code>Context</code>的时候，我们就可以告诉<code>Dagger2</code>我们想要哪种类型的<code>Context</code>。</li>
+</ul>
+<h3 id="3-结构"><a href="#3-结构" class="headerlink" title="3. 结构"></a>3. 结构</h3><p>&emsp;&emsp;Dagger2要实现一个完整的依赖注入，通常必不可少的元素有三种：<strong>Module</strong>，<strong>Component</strong>，<strong>Container</strong>。为了便于理解，其实可以把<code>component</code>想象成<code>针管</code>，<code>module</code>是<code>注射器</code>，里面的<code>依赖对象</code>是<code>待注入的药水</code>，<code>build方法</code>是插进<code>患者（Container）</code>，<code>inject方法</code>的调用是<code>推动活塞</code>。</p>
+<div align="center"><img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/dagger2/1.png"></div>
+
+<h3 id="4-简单的例子"><a href="#4-简单的例子" class="headerlink" title="4. 简单的例子"></a>4. 简单的例子</h3><p><strong>声明需要依赖的对象</strong>：使用了注解方式，还是以<code>Tinno</code>为例，使得Dagger2能找到它。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Tinno</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Inject</span> <span class="comment">//这里可以看到加入了注解方式</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Tinno</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p> <strong>声明<code>Component</code>接口</strong>：声明完后rebuild一下工程，使其自动生成<code>Component</code>实现类<code>DaggerMainActivityComponent</code>。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//用这个标注标识是一个连接器</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">MainActivityComponent</span> </span>&#123;</span><br><span class="line">    <span class="comment">//这个连接器要注入的对象。这个inject标注的意思是，我后面的参数对象里面有标注为@Inject的属性，这个标注的属性是需要这个连接器注入进来的。</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">inject</span><span class="params">(MainActivity activity)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p> <strong>在使用的地方注入，这里是 MainActivity：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"MainActivity"</span>;</span><br><span class="line">    <span class="meta">@Inject</span></span><br><span class="line">    Tinno mTinno;<span class="comment">//加入注解，标注这个Tinno是需要注入的</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">        TextView dagger2TextView = (TextView) findViewById(R.id.dagger2_text_view);</span><br><span class="line">        <span class="comment">//使用组件进行构造，注入</span></span><br><span class="line">        DaggerMainActivityComponent.builder().build().inject(<span class="keyword">this</span>);</span><br><span class="line">        Log.d(TAG, <span class="string">"onCreate: mTinno = "</span> + mTinno);</span><br><span class="line"></span><br><span class="line">        dagger2TextView.setText(mTinno.toString());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp; 这是最简单的一种使用了。首先我们看到，第一印象是我去😲，这个更复杂了啊😂😂。我只能说确实，因为这个是它对的最基础的使用，看起来很笨拙，但是当它在大型项目里面，在依赖更多的情况下，则会发生质的飞跃，会发现它非常好用，并且将你需要传递的参数都隐藏掉，来实现解耦。</p>
+<h3 id="5-常规使用方法"><a href="#5-常规使用方法" class="headerlink" title="5. 常规使用方法"></a>5. 常规使用方法</h3><p>&emsp;&emsp;细心的朋友发现了，我在结构中说 Dagger2结构的时候提到通常必不可少的三元素，这个例子只用到了 <strong>Component</strong>和<strong>Container</strong>，而 <strong>Module</strong> 并未提及，通过以下这个例子，能更加深刻的理解 <strong>Module</strong> 的作用。<br>&emsp;&emsp;实现一个 <strong>MainModule</strong>，提供一些实例构造，通过 <strong>Component</strong> 联系起来。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Module</span> <span class="comment">//实现一个类，标注为 Module</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainModule</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Provides</span> <span class="comment">//实现一些提供方法，供外部使用</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Tinno <span class="title">provideTinno</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Tinno();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;在 <strong>MainComponent</strong> 中，指明 <strong>Component</strong> 查找 <strong>Module</strong> 的位置<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span>(modules = MainModule.class)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">MainActivityComponent</span> </span>&#123;<span class="comment">// 通常定义为接口，Dagger2框架将自动生成Component的实现类，对应的类名是Dagger×××××，这里对应的实现类是DaggerMainActivityComponent</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">inject</span><span class="params">(MainActivity activity)</span></span>;<span class="comment">// 注入到MainActivity(Container)的方法，方法名一般使用inject</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;最后我们的<code>Tinno</code>类中的<code>@Inject</code>和构造函数可以去掉了(亲测不去掉也是可以正常运行的，此时也是使用<code>Module</code>中提供的对象，具体可以通过后面分享的<code>@Scope</code>来验证，这样说明：<strong>Component会首先从Module维度中查找类实例，若找到就用Module维度创建类实例，并停止查找Inject维度，否则才是从Inject维度查找类实例，所以创建类实例级别Module维度要高于Inject维度。</strong>)，如下所示。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Tinno</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;注入使用的地方完全不用修改，也能得到和之前例子一样的结果。</p>
+<h3 id="6-更多用法"><a href="#6-更多用法" class="headerlink" title="6. 更多用法"></a>6. 更多用法</h3><h4 id="6-1-方法参数"><a href="#6-1-方法参数" class="headerlink" title="6.1 方法参数"></a>6.1 方法参数</h4><p>&emsp;&emsp;上面的例子<code>@Provides</code>标注的方法是没有输入参数的，<code>Module</code>中<code>@Provides</code>标注的方法是可以带输入参数的，其参数值可以由<code>Module</code>中的其他被<code>@Provides</code>标注的方法提供。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Module</span> <span class="comment">//实现一个类，标注为 Module</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainModule</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Context mContext;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MainModule</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">        mContext = context;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Provides</span> <span class="comment">//实现一些提供方法，供外部使用</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Tinno <span class="title">provideTinno</span><span class="params">(Gson gson, CameraTeam cameraTeam)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Tinno(mContext, gson, cameraTeam);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Provides</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Gson <span class="title">provideGson</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> GsonBuilder()</span><br><span class="line">                .excludeFieldsWithModifiers(Modifier.PROTECTED)<span class="comment">//忽略protected字段</span></span><br><span class="line">                .setDateFormat(<span class="string">"yyyy-MM-dd'T'HH:mm:ssZ"</span>)</span><br><span class="line">                .create();</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//    @Provides</span></span><br><span class="line"><span class="comment">//    public CameraTeam provideCameraTeam() &#123;</span></span><br><span class="line"><span class="comment">//        return new CameraTeam();</span></span><br><span class="line"><span class="comment">//    &#125;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;如果找不到被<code>@Provides</code>注释的方法提供对应参数对象的话，将会自动调用被<code>@Inject</code>注释的构造方法生成相应对象。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CameraTeam</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Inject</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">CameraTeam</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;由于我们修改了<code>MainModule</code>，所以对应注入的地方要稍微修改一下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//注意此处比之前多了.mainModule(new MainModule(getApplicationContext()))</span></span><br><span class="line">DaggerMainActivityComponent.builder().mainModule(<span class="keyword">new</span> MainModule(getApplicationContext())).build().inject(<span class="keyword">this</span>);</span><br></pre></td></tr></table></figure></p>
+<p><strong>思考</strong><br>&emsp;&emsp; 通过上面3个例子<code>@Provides</code>和<code>@Inject</code>两种方式提供对象的区别？</p>
+<h4 id="6-2-添加多个Module"><a href="#6-2-添加多个Module" class="headerlink" title="6.2 添加多个Module"></a>6.2 添加多个Module</h4><p>&emsp;&emsp;一个<code>Component</code>可以添加多个<code>Module</code>，这样<code>Component</code>获取依赖时候会自动从多个<code>Module</code>中查找获取。添加多个<code>Module</code>有两种方法，一种是在<code>Component</code>的注解<code>@Component(modules={××××，×××})</code>中添加多个<code>modules</code>。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span>(modules=&#123;MainModule.class,ModuleA.class,ModuleB.class,ModuleC.class&#125;) <span class="comment">//直接在Component引用多个 Module</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">MainActivityComponent</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;另外一种添加多个<code>Module</code>的方法可以使用<code>@Module</code>的 <code>includes</code>的方法<code>（includes={××××，×××}）</code>。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Module</span>(includes=&#123;ModuleA.class,ModuleB.class,ModuleC.class&#125;)<span class="comment">//先在一个 Module 中includes其他 Module</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainModule</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@Component</span>(modules=&#123;MainModule.class&#125;) <span class="comment">//只有一个 Module 时可以不用&#123;&#125;</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">MainActivityComponent</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="6-3-区分返回类型相同-Provides方法"><a href="#6-3-区分返回类型相同-Provides方法" class="headerlink" title="6.3 区分返回类型相同@Provides方法"></a>6.3 区分返回类型相同@Provides方法</h4><p>&emsp;&emsp;如果我们在 <code>Module</code> 中有重复的类型返回，例如我定义两个 <code>Context</code> 类型的<code>Provides</code> 在 <code>Module</code> 中的话，编译直接会报错：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Error:(16, 10) 错误: android.content.Context is bound multiple times:</span><br><span class="line">@Provides android.content.Context com.ape.dagger2.MainModule.provideApplicationContext()</span><br><span class="line">@Provides android.content.Context com.ape.dagger2.MainModule.provideActivityContext()</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;那如果我们真的需要注入同一类型多次呢，这个问题总会有解决方案的吧？要是真的这么坑估计也没人用 Dagger2 了吧！哈哈。。。😂  其实 Dagger2 为我们提供了两种方式来解决这个问题：</p>
+<ul>
+<li><strong>可以使用<code>@Qualifier</code> 的注解来区分</strong></li>
+<li><strong><code>@Named(&quot;xx&quot;)</code> 的注解</strong>。</li>
+</ul>
+<p><strong>@Named 方式</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Module</span> <span class="comment">//实现一个类，标注为 Module</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainModule</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Context mApplicationContext;</span><br><span class="line">    <span class="keyword">private</span> Context mActivityContext;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MainModule</span><span class="params">(Context context, Context activityContext)</span> </span>&#123;</span><br><span class="line">        mApplicationContext = context;</span><br><span class="line">        mActivityContext = activityContext;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Provides</span> <span class="comment">//实现一些提供方法，供外部使用</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Tinno <span class="title">provideTinno</span><span class="params">(@Named(<span class="string">"application"</span>)</span><span class="comment">/*使用的是 application*/</span>Context context, Gson gson, CameraTeam cameraTeam) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Tinno(context, gson, cameraTeam);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Named</span>(<span class="string">"application"</span>) <span class="comment">//标注为 application</span></span><br><span class="line">    <span class="meta">@Provides</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Context <span class="title">provideApplicationContext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mApplicationContext;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Named</span>(<span class="string">"activity"</span>) <span class="comment">//标注为 activity</span></span><br><span class="line">    <span class="meta">@Provides</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Context <span class="title">provideActivityContext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mActivityContext;</span><br><span class="line">    &#125;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>@Qualifier方式</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@Qualifier</span></span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@Retention</span>(RUNTIME)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> ApplicationQualifier &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@Qualifier</span></span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@Retention</span>(RUNTIME)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> ActivityQualifier &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@Module</span> <span class="comment">//实现一个类，标注为 Module</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainModule</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Context mApplicationContext;</span><br><span class="line">    <span class="keyword">private</span> Context mActivityContext;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MainModule</span><span class="params">(Context context, Context activityContext)</span> </span>&#123;</span><br><span class="line">        mApplicationContext = context;</span><br><span class="line">        mActivityContext = activityContext;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Provides</span> <span class="comment">//实现一些提供方法，供外部使用</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Tinno <span class="title">provideTinno</span><span class="params">(@ApplicationQualifier<span class="comment">/*此处使用为 ApplicationQualifier*/</span> Context context, Gson gson, CameraTeam cameraTeam)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Tinno(context, gson, cameraTeam);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@ApplicationQualifier</span> <span class="comment">//标注为 ApplicationQualifier</span></span><br><span class="line">    <span class="meta">@Provides</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Context <span class="title">provideApplicationContext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mApplicationContext;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@ActivityQualifier</span> <span class="comment">//标注为 ActivityQualifier</span></span><br><span class="line">    <span class="meta">@Provides</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Context <span class="title">provideActivityContext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mActivityContext;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;使用哪种方式就仁者见仁智者见智了，但个人推荐使用<code>@Qualifier</code>，毕竟输入太多字符串容易出错。</p>
+<h4 id="6-4-组件间依赖和子组件"><a href="#6-4-组件间依赖和子组件" class="headerlink" title="6.4 组件间依赖和子组件"></a>6.4 组件间依赖和子组件</h4><p>&emsp;&emsp;有时我们需要依赖一个组件，这个最常见的用法是，如果我们定义了 <code>MainActivity</code> 的 <code>MainComponent</code> ，并且它依赖咱们的 <code>AppComponent</code> 里面的 <code>IRepositoryManager</code> 的话就要这样定义了：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@Component</span>(dependencies = AppComponent.class, modules = MainPresenterModule.class)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">MainComponent</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">inject</span><span class="params">(MainActivity activity)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;在 <code>AppComponent</code> 中需要将获取 <code>IRepositoryManager</code> 的方法暴露出来，不然还是无法注入成功的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@Component</span>(modules = &#123;AppModule.class&#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">AppComponent</span> </span>&#123;</span><br><span class="line">    <span class="comment">//用于管理网络请求层,以及数据缓存层,对外开放的接口</span></span><br><span class="line">    <span class="function">IRepositoryManager <span class="title">repositoryManager</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;那如果我觉得暴露这些方法太麻烦了，那需要怎么办呢？最简单就是使用 <code>@SubComponent</code> ,在所属的父 <code>Component</code> 中定义一个 <code>SubComponent</code>，该 <code>SubComponent</code> 中将会包含父 <code>Component</code> 的所有方法，父 <code>Component</code> 不显示声明都可以。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@Subcomponent</span>(modules = MainPresenterModule.class)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">MainComponent</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">inject</span><span class="params">(MainActivity activity)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@Component</span>(modules = &#123;AppModule.class&#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">AppComponent</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 提供 MainComponent 对象的获取方法</span></span><br><span class="line">    <span class="function">MainComponent <span class="title">mainComponent</span><span class="params">(MainPresenterModule <span class="keyword">module</span>)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;在注入的时候直接使用父组件的<code>mainComponent(MainPresenterModule module)</code>包含子组件的<code>module</code>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">appComponent.mainComponent(<span class="keyword">new</span> MainPresenterModule(<span class="keyword">this</span>)).inject(<span class="keyword">this</span>);</span><br><span class="line"><span class="comment">//DaggerMainComponent.builder().appComponent(appComponent)</span></span><br><span class="line"><span class="comment">//                .mainPresenterModule(new MainPresenterModule(this)).build().inject(this);</span></span><br></pre></td></tr></table></figure>
+<p><strong>组件依赖和子组件的区别</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>组件依赖</th>
+<th>子组件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. 保持两个 Component 都独立，没有任何关联<br>2. 明确的告诉别人这个 Component 所依赖的 Component <br>3. 两个拥有依赖关系的 Component 是不能有相同 @Scope 注解的<br>4. 依赖的组件会生成Dagger…Component</td>
+<td>1. 保持两个 Component 内聚<br>2. 不关心这个 Component 依赖哪个 Component<br>3. 可以使用相同的@Scope注解<br>4. 子组件的组件不会生成Dagger…Component</td>
+</tr>
+</tbody>
+</table>
+<h4 id="6-5-懒加载和强加载模式"><a href="#6-5-懒加载和强加载模式" class="headerlink" title="6.5 懒加载和强加载模式"></a>6.5 懒加载和强加载模式</h4><p>&emsp;&emsp;在上面的比喻中，一针扎进去，是啥都给你打进去了，那么如果有些我想要在调用的时候才加载呢？这里 Dagger2 提供了 <code>Lazy&lt;T&gt;</code> 的方式来注入；同时相反的提供一个强制加载方式<code>Provider&lt;T&gt;</code>，每次调用get都会调用Module的Provides方法一次，对应的获取就是：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Container</span></span>&#123;</span><br><span class="line">    <span class="meta">@Inject</span> Lazy&lt;Tinno&gt; mTinnoLazy; <span class="comment">//延迟加载</span></span><br><span class="line">    <span class="meta">@Inject</span> Provider&lt;Tinno&gt; mTinnoProvider;<span class="comment">//实现强制加载，每次调用get都会调用Module的Provides方法一次，和懒加载模式正好相反,比如我们需要一次性创建出10个Tinno 对象</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span>&#123;</span><br><span class="line">        DaggerComponent.create().inject(<span class="keyword">this</span>);</span><br><span class="line">        Tinno tinno = mTinnoLazy.get();  <span class="comment">//调用get时才创建b</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="6-6-Scope详解"><a href="#6-6-Scope详解" class="headerlink" title="6.6 @Scope详解"></a>6.6 <code>@Scope</code>详解</h4><p><strong>@Scope 是什么</strong><br>&emsp;&emsp; <code>Scope</code> 翻译过来就是辖域，再结合到计算机上，其实就是作用域的意思，学过高级语言的应该都知道设计模式中一个模式叫做单例模式，单例即为全局中该对象的实例只存在一个，而在 Dagger2 中，<code>@scope</code> 的一个默认实现就是 <code>@Singleton</code>，也是Dagger2唯一自带的Scope注解，下面是<code>@Singleton</code>的源码，乍一看，很神奇啊，仅仅使用一个注解就可以实现单例！<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Scope</span></span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@Retention</span>(RUNTIME)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Singleton&#123;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以看到定义一个<code>Scope</code>注解，通常需要添加以下三部分：</p>
+<ul>
+<li><strong>@Scope</strong>：注明是Scope</li>
+<li><strong>@Documented</strong>：标记文档提示，可以不用</li>
+<li><strong>@Retention(RUNTIME)</strong>：运行时级别</li>
+</ul>
+<p><strong>@Scpoe 怎么用</strong><br>&emsp;&emsp; 那么接下来我们就看一下它的使用。代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//普通的对象</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Tinno</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Module</span><span class="comment">//声明Module</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainModule</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Provides</span></span><br><span class="line">    <span class="meta">@Singleton</span></span><br><span class="line">    <span class="function">Tinno <span class="title">provideTinno</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Tinno();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Singleton</span></span><br><span class="line"><span class="meta">@Component</span>(modules = UserModule.class)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">MainActivityComponent</span> </span>&#123;<span class="comment">//同一个Component可以声明多个注入Container</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">inject</span><span class="params">(MainActivity activity)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">inject</span><span class="params">(SecondActivity activity)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp; 我们创建一个普通的 <code>Tinno</code> 类，然后创建它的<code>Module</code>，并且用 <code>@Singleton</code> 标记该 <code>Tinno</code> 返回对象，最后我们再创建它的 <code>Component</code>，然后用 <code>@Singleton</code> 标记这个 <code>Component</code>。这是一个标准的套路流程。接下来我们创建一个 <code>MainActivity</code> 和一个 <code>SecondActivity</code>，代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Inject</span></span><br><span class="line">    Tinno mTinno1;</span><br><span class="line">    <span class="meta">@Inject</span></span><br><span class="line">    Tinno mTinno2;</span><br><span class="line">    <span class="keyword">private</span> TextView mContentTextView;</span><br><span class="line">    <span class="keyword">private</span> Button mContentButton;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">        mContentTextView = (TextView) findViewById(R.id.tv_content);</span><br><span class="line">        mContentButton = (Button) findViewById(R.id.btn_content);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// [1]</span></span><br><span class="line">        MainActivityComponent component = DaggerMainActivityComponent.create();</span><br><span class="line">        component.inject(<span class="keyword">this</span>);</span><br><span class="line">        <span class="comment">// 第一行为 mTinno1 的信息，第二行为 mTinno2 的信息，第三行为该类中 MainActivityComponent 的信息</span></span><br><span class="line">        mContentTextView.setText(mTinno1.toString() + <span class="string">"\n"</span> + mTinno2.toString()+<span class="string">"\n"</span>+ component.toString());</span><br><span class="line">        mContentButton.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</span><br><span class="line">                startActivity(<span class="keyword">new</span> Intent(MainActivity.<span class="keyword">this</span>, SecondActivity.class));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SecondActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Inject</span></span><br><span class="line">    Tinno mTinno;</span><br><span class="line">    <span class="keyword">private</span> TextView mContentTextView;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_second);</span><br><span class="line">        mContentTextView = (TextView) findViewById(R.id.tv_content);</span><br><span class="line">        <span class="comment">// [2]</span></span><br><span class="line">        MainActivityComponent component = DaggerMainActivityComponent.create();</span><br><span class="line">        component.inject(<span class="keyword">this</span>);</span><br><span class="line">        <span class="comment">// 第一行为 mTinno 的信息，第二行为该类中 MainActivityComponent 的信息</span></span><br><span class="line">        mContentTextView.setText(mTinno.toString() + <span class="string">"\n"</span> + component.toString());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>运行结果如下图所示，没有问题的，单例实现成功了，发现两个 <code>Tinno</code>的地址是一样的。</p>
+<div align="center"><img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/dagger2/2.png"></div>
+
+<p>我们仅仅通过一个 <code>@Singleton</code> 标记就使得对象实现了单例模式，接下来我们点一下按钮跳转到 <code>SecondActivity</code> 中，如下图所示：</p>
+<div align="center"><img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/dagger2/3.png"></div>
+
+<p>&emsp;&emsp;但是此时我们发现，不对啊，<code>SecondActivity</code> 的 <code>Tinno</code> 对象的地址和 <code>MainActivity</code> 中的 <code>Tinno</code> 对象地址并不一样啊，这个单例好像失效了啊！事实上并不是这样，那么为什么这个单例“失效”了呢？细心的小伙伴们已经看到了，两个 <code>Activity</code> 中的 <code>Component</code> 对象的地址是并不一样的，这样就好理解了 ——— 由于 <code>Component</code> 对象不是同一个，当然它们注入的对象也不会是同一个。那么我们如何解决这个问题呢？<br>我们在 <code>Application</code> 层初始化 <code>MainActivityComponent</code>，然后在 <code>Activity</code> 中直接获取这个 <code>MainActivityComponent</code> 对象，由于 <code>Application</code> 在全局中只会初始化一次， 所以 <code>Application</code> 中的 <code>MainActivityComponent</code> 对象只初始化一次，我们每次在 <code>Activity</code> 中获取 <code>Application</code> 中的这个 <code>MainActivityComponent</code> 当然就是同一个的啦。<code>Application</code> 代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> <span class="keyword">extends</span> <span class="title">Application</span> </span>&#123;</span><br><span class="line">    MainActivityComponent mComponent;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate();</span><br><span class="line">        mComponent = DaggerMainActivityComponent.create();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> MainActivityComponent <span class="title">getComponent</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mComponent;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;我们只需要将 [1] 和 [2] 处的代码更改成 <code>MainActivityComponent component = ((App)getApplication()).getComponent();</code>这样我们不就能将我们的 <code>MainActivityComponent</code> “单例”化了吗？截图这里就不再贴出了。</p>
+<p><strong>自定义@Scpoe</strong></p>
+<p>&emsp;&emsp;Dagger2中<code>@Singleton</code>和自己定义的<code>@ActivityScope</code>、<code>@ApplicationScope</code>等代码上并没有什么区别，区别是在那种<code>Component</code>依赖的<code>Component</code>的情况下，两个<code>Component</code>的<code>@Scope</code>不能相同，既然没什么区别，那为什么还要这么做呢？是因为这样标示可以清晰的区分<code>Component</code>依赖的层次，方便理清我们的代码逻辑层次，如下为自定义的<code>ActivityScope</code>：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@Scope</span></span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@Retention</span>(RUNTIME)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> ActivityScope &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;有<code>@Scope</code>注解和没<code>@Scope</code>注解的编译时生成代码的区别，在编译生成的<code>DaggerMainActivityComponent</code>的<code>initialize</code>函数代码中我们可以看到如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initialize</span><span class="params">(<span class="keyword">final</span> Builder builder)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//标记了`@Singleton`中`DaggerMainActivityComponent`中实例化provideTinnoProvider方式</span></span><br><span class="line">    <span class="keyword">this</span>.provideTinnoProvider =</span><br><span class="line">      DoubleCheck.provider(MainModule_ProvideTinnoFactory.create(builder.mainModule));</span><br><span class="line">    <span class="comment">//未标记</span></span><br><span class="line">    <span class="keyword">this</span>.provideTinnoProvider = MainModule_ProvideTinnoFactory.create(builder.mainModule);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;有<code>@Scope</code>类注解的<code>@Provider</code>生成的代码，外层多了一层<code>DoubleCheck.provider(…);</code>没有<code>@Scope</code>类注解的则是直接create一个新的实例。关于<code>DoubleCheck</code>，简单来说就是加了<code>@Scope</code>的<code>Provider</code>，<code>Dagger</code>会缓存一个实例在<code>DaggerMainComponent</code>中，在<code>DaggerMainComponent</code>中保持单例，缓存的<code>provide</code>跟随<code>DaggerMainComponent</code>的生命周期，<code>DaggerMainComponent</code>被销毁时，<code>provider</code>也被销毁，这就是局部单例的概念，假如你的<code>DaggerMainComponent</code>是在你应用的<code>application</code>中，则就形成了全局单例。</p>
+<h2 id="三-小结"><a href="#三-小结" class="headerlink" title="三. 小结"></a>三. 小结</h2><h3 id="1-Dagger2到底有哪些好处？"><a href="#1-Dagger2到底有哪些好处？" class="headerlink" title="1. Dagger2到底有哪些好处？"></a>1. Dagger2到底有哪些好处？</h3><ul>
+<li><p><strong>增加开发效率、省去重复的简单体力劳动</strong><br>首先new一个实例的过程是一个重复的简单体力劳动，Dagger2完全可以把new一个实例的工作做了，因此我们把主要精力集中在关键业务上、同时也能增加开发效率上。省去写单例的方法，并且也不需要担心自己写的单例方法是否线程安全，自己写的单例是懒汉模式还是饿汉模式。因为Dagger2都可以把这些工作做了。</p>
+</li>
+<li><p><strong>更好的管理类实例</strong><br>每个app中的ApplicationComponent管理整个app的全局类实例，所有的全局类实例都统一交给ApplicationComponent管理，并且它们的生命周期与app的生命周期一样。每个页面对应自己的Component，页面Component管理着自己页面所依赖的所有类实例。因为Component，Module，整个app的类实例结构变的很清晰。</p>
+</li>
+<li><p><strong>解耦</strong><br>假如不用Dagger2的话，一个类的new代码是非常可能充斥在app的多个类中的，假如该类的构造函数发生变化，那这些涉及到的类都得进行修改。设计模式中提倡把容易变化的部分封装起来。</p>
+</li>
+</ul>
+<h3 id="2-Dagger2在Camera中使用思考！"><a href="#2-Dagger2在Camera中使用思考！" class="headerlink" title="2. Dagger2在Camera中使用思考！"></a>2. Dagger2在Camera中使用思考！</h3><ul>
+<li><strong>CameraScheduler</strong> 中依赖的各个模块实例可以通过Dagger2注入，回调接口也可以在注入的时候传递过去，类似与MVP模式将V传递给P。</li>
+<li>各个子模块也可以使用Dagger2来注入相关实例。</li>
+</ul>
+<p><strong>本文所演示的代码在此下载</strong>：<a href="https://github.com/way1989/Dagger2Test" target="_blank" rel="noopener">Dagger2Sample</a></p>
+<p><strong>MVP使用 Dagger2的例子在此下载</strong>：<a href="https://github.com/way1989/MaterialWeather" target="_blank" rel="noopener">MaterialWeather</a></p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="Broncho 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="Broncho 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Dagger2/" rel="tag"># Dagger2</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/06/07/notes/AndroidLanguage/" rel="prev" title="Android开发各国语言后缀对照">
+      <i class="fa fa-chevron-left"></i> Android开发各国语言后缀对照
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一-Dagger2介绍"><span class="nav-number">1.</span> <span class="nav-text">一. Dagger2介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Dagger2是什么？"><span class="nav-number">1.1.</span> <span class="nav-text">1.Dagger2是什么？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Dagger2相较于Dagger1的优势是什么？"><span class="nav-number">1.2.</span> <span class="nav-text">2. Dagger2相较于Dagger1的优势是什么？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-使用依赖注入的最大好处是什么？"><span class="nav-number">1.3.</span> <span class="nav-text">3. 使用依赖注入的最大好处是什么？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-举个例子"><span class="nav-number">1.4.</span> <span class="nav-text">4. 举个例子</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二-Dagger2使用"><span class="nav-number">2.</span> <span class="nav-text">二. Dagger2使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-gradle配置"><span class="nav-number">2.1.</span> <span class="nav-text">1. gradle配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-注解"><span class="nav-number">2.2.</span> <span class="nav-text">2. 注解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-结构"><span class="nav-number">2.3.</span> <span class="nav-text">3. 结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-简单的例子"><span class="nav-number">2.4.</span> <span class="nav-text">4. 简单的例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-常规使用方法"><span class="nav-number">2.5.</span> <span class="nav-text">5. 常规使用方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-更多用法"><span class="nav-number">2.6.</span> <span class="nav-text">6. 更多用法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#6-1-方法参数"><span class="nav-number">2.6.1.</span> <span class="nav-text">6.1 方法参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-2-添加多个Module"><span class="nav-number">2.6.2.</span> <span class="nav-text">6.2 添加多个Module</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-3-区分返回类型相同-Provides方法"><span class="nav-number">2.6.3.</span> <span class="nav-text">6.3 区分返回类型相同@Provides方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-4-组件间依赖和子组件"><span class="nav-number">2.6.4.</span> <span class="nav-text">6.4 组件间依赖和子组件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-5-懒加载和强加载模式"><span class="nav-number">2.6.5.</span> <span class="nav-text">6.5 懒加载和强加载模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-6-Scope详解"><span class="nav-number">2.6.6.</span> <span class="nav-text">6.6 @Scope详解</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三-小结"><span class="nav-number">3.</span> <span class="nav-text">三. 小结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Dagger2到底有哪些好处？"><span class="nav-number">3.1.</span> <span class="nav-text">1. Dagger2到底有哪些好处？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Dagger2在Camera中使用思考！"><span class="nav-number">3.2.</span> <span class="nav-text">2. Dagger2在Camera中使用思考！</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Broncho"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Broncho</p>
+  <div class="site-description" itemprop="description">爱生活...爱Android...</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/way1989" title="GitHub → https://github.com/way1989" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="http://www.beian.miit.gov.cn" rel="noopener" target="_blank">粤ICP备20072588号 </a>
+      <img src="/images/gongan.png" style="display: inline-block;"><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44030702002235" rel="noopener" target="_blank">粤公网安备 44030702002235号 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Broncho</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/muse.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'Iv1.50bf941f924c4c15',
+      clientSecret: 'Iv1.50bf941f924c4c15',
+      repo        : 'blogComment',
+      owner       : 'way1989',
+      admin       : ['way1989'],
+      id          : '86e9f60a44b4d186b0357afe2099d6f7',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

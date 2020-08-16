@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"way1989.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null,"activeClass":"gitalk"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Android Runtime Resource Overlay">
+<meta name="keywords" content="博客">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android运行时资源覆盖">
+<meta property="og:url" content="https://way1989.github.io/2017/01/16/blogs/RuntimeResourceOverlay/index.html">
+<meta property="og:site_name" content="Broncho">
+<meta property="og:description" content="Android Runtime Resource Overlay">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/runtimeResourceOverlay/2017-01-16-23-12-24.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/runtimeResourceOverlay/2017-01-16-23-12-40.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/runtimeResourceOverlay/2017-01-16-23-13-30.jpg">
+<meta property="og:updated_time" content="2020-08-15T07:52:32.561Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android运行时资源覆盖">
+<meta name="twitter:description" content="Android Runtime Resource Overlay">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/runtimeResourceOverlay/2017-01-16-23-12-24.jpg">
+
+<link rel="canonical" href="https://way1989.github.io/2017/01/16/blogs/RuntimeResourceOverlay/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Android运行时资源覆盖 | Broncho</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Broncho</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/way1989" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://way1989.github.io/2017/01/16/blogs/RuntimeResourceOverlay/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Broncho">
+      <meta itemprop="description" content="爱生活...爱Android...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Broncho">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Android运行时资源覆盖
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-01-16 23:02:24" itemprop="dateCreated datePublished" datetime="2017-01-16T23:02:24+08:00">2017-01-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-08-15 15:52:32" itemprop="dateModified" datetime="2020-08-15T15:52:32+08:00">2020-08-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/博客/" itemprop="url" rel="index"><span itemprop="name">博客</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">Android Runtime Resource Overlay</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="什么是运行时资源覆盖"><a href="#什么是运行时资源覆盖" class="headerlink" title="什么是运行时资源覆盖"></a>什么是运行时资源覆盖</h2><p>无需修改原app的代码，无需重新编译，就能覆盖app内的部分资源，从而实现修改app的部分UI,后面简称RRO。</p>
+<h2 id="RRO原理"><a href="#RRO原理" class="headerlink" title="RRO原理"></a>RRO原理</h2><ul>
+<li><p>应用通过 getString/getDrawable去调用某个资源时,会将这个resources ID 作为参数传给 framework 层。同一名称但不同状态的 resources ID 是一样的,比如不同分辨率但名称相同的图片分别被放置在了drawable-hdpi/drawable-ldpi/drawable-mdpi下，但在编译时针对该图片生成的resources ID只有一个。</p>
+</li>
+<li><p>为了快速查找到指定的资源，Apk编译的时候会把Java文件里面的R.String.app_name替换成ox7f123456这种格式的值</p>
+</li>
+<li><p>每个apk里面都有一个文件(resources.arsc)记录着指定的resource_id对应的资源类型，如果是string类型，则记录的这个资源名称对应的所有语言的翻译，如果是drawable类型，则记录着哪些分辨率底下有这个资源。</p>
+</li>
+</ul>
+<h2 id="Resources-arsc的结构-string"><a href="#Resources-arsc的结构-string" class="headerlink" title="Resources.arsc的结构 string"></a>Resources.arsc的结构 string</h2><p><img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/runtimeResourceOverlay/2017-01-16-23-12-24.jpg"></p>
+<p><img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/runtimeResourceOverlay/2017-01-16-23-12-40.jpg"></p>
+<h2 id="Resources-arsc的结构-drawable"><a href="#Resources-arsc的结构-drawable" class="headerlink" title="Resources.arsc的结构 drawable"></a>Resources.arsc的结构 drawable</h2><p><img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/runtimeResourceOverlay/2017-01-16-23-13-30.jpg"></p>
+<h2 id="RRO实现方法"><a href="#RRO实现方法" class="headerlink" title="RRO实现方法"></a>RRO实现方法</h2><ul>
+<li>建立一个新的overlay apk项目，apk项目底下有 res文件夹，Android.mk、AndroidManifest.xml</li>
+<li>修改AndroidManifest.xml 配置apk的包名、要覆盖的apk的包名</li>
+<li>修改Android.mk 使得apk能集成到system/vendor/overlay/目录下</li>
+<li>找到需要覆盖的资源名，在overlay apk的res指定目录下定义同名的资源</li>
+</ul>
+<h2 id="AndroidManifest-xml的写法"><a href="#AndroidManifest-xml的写法" class="headerlink" title="AndroidManifest.xml的写法"></a>AndroidManifest.xml的写法</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span><br><span class="line"><span class="tag">&lt;<span class="name">manifest</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span>  </span></span><br><span class="line"><span class="tag">	<span class="attr">package</span>=<span class="string">"com.android.gallery3d.overlay"</span>&gt;</span>  </span><br><span class="line">	<span class="tag">&lt;<span class="name">overlay</span> <span class="attr">android:targetPackage</span>=<span class="string">"com.android.gallery3d"</span> <span class="attr">android:priority</span>=<span class="string">"1"</span>/&gt;</span>  </span><br><span class="line"><span class="tag">&lt;/<span class="name">manifest</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="Android-mk的写法及自动生成版本号的实现"><a href="#Android-mk的写法及自动生成版本号的实现" class="headerlink" title="Android.mk的写法及自动生成版本号的实现"></a>Android.mk的写法及自动生成版本号的实现</h2><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ifeq</span> (<span class="variable">$(<span class="built_in">strip</span> <span class="variable">$(MYOS_APE_GALLERY31_SUPPORT)</span>)</span>, yes)</span><br><span class="line"><span class="keyword">ifneq</span> (<span class="variable">$(<span class="built_in">strip</span> <span class="variable">$(MYOS_APE_GALLERY31_NAME)</span>)</span>,)</span><br><span class="line"><span class="variable">$(<span class="built_in">warning</span> --Android.mk--ApeGalleryOverlay31---------)</span></span><br><span class="line"></span><br><span class="line">LOCAL_PATH:= <span class="variable">$(<span class="built_in">call</span> my-<span class="built_in">dir</span>)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">include</span> <span class="variable">$(CLEAR_VARS)</span></span><br><span class="line"></span><br><span class="line">LOCAL_MODULE_TAGS := optional</span><br><span class="line">LOCAL_SRC_FILES := <span class="variable">$(<span class="built_in">call</span> all-java-files-under, res)</span></span><br><span class="line">LOCAL_PACKAGE_NAME := ApeGalleryOverlay31</span><br><span class="line">LOCAL_CERTIFICATE := platform</span><br><span class="line">LOCAL_MODULE_PATH := <span class="variable">$(TARGET_OUT)</span>/vendor/overlay</span><br><span class="line"></span><br><span class="line">version1 = 6</span><br><span class="line">version2 = 0</span><br><span class="line">version3 = <span class="variable">$(<span class="built_in">shell</span> cd <span class="variable">$(LOCAL_PATH)</span> &amp;&amp; git rev-list --count HEAD)</span></span><br><span class="line">build_date = <span class="variable">$(<span class="built_in">shell</span> date +%y%m%d)</span></span><br><span class="line">last_commit = <span class="variable">$(<span class="built_in">shell</span> cd <span class="variable">$(LOCAL_PATH)</span> &amp;&amp; git describe --always)</span></span><br><span class="line"></span><br><span class="line">version_code = <span class="variable">$(<span class="built_in">shell</span> expr <span class="variable">$(version1)</span> \* 1000000 + <span class="variable">$(version2)</span> \* 10000 + <span class="variable">$(version3)</span>)</span></span><br><span class="line">version_name := <span class="variable">$(version1)</span>.<span class="variable">$(version2)</span>.<span class="variable">$(version3)</span>.<span class="variable">$(build_date)</span>.<span class="variable">$(last_commit)</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$(<span class="built_in">warning</span> --ApeGalleryOverlay31---<span class="variable">$(version_code)</span>---<span class="variable">$(version_name)</span>---)</span></span><br><span class="line"></span><br><span class="line">LOCAL_AAPT_FLAGS += --version-code <span class="variable">$(version_code)</span></span><br><span class="line">LOCAL_AAPT_FLAGS += --version-name <span class="variable">$(version_name)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">include</span> <span class="variable">$(BUILD_PACKAGE)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">endif</span></span><br><span class="line"><span class="keyword">endif</span></span><br></pre></td></tr></table></figure>
+<h2 id="自动生成版本号的意义"><a href="#自动生成版本号的意义" class="headerlink" title="自动生成版本号的意义"></a>自动生成版本号的意义</h2><ul>
+<li>出现问题以后反查问题原因,是代码问题，还是集成问题</li>
+<li>这里为什么要使用自动版本号:<ul>
+<li>不用每次改版本号的麻烦</li>
+<li>版本号有序自增，没有出错的风险</li>
+<li>每一个编译出来的apk,都能定位到当时的最后一个提交</li>
+<li>由于是随系统编译,可能你没来得及改版本号就编译了，所以手工改版本号可能只能定位到大致的位置</li>
+</ul>
+</li>
+<li>注意事项:<ul>
+<li>仓库提交9999次以后，版本会溢出，此时可以脚本向前进位</li>
+</ul>
+</li>
+</ul>
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ul>
+<li>不能覆盖layout、AndroidManifest.xml、asset目录</li>
+<li>建议只覆盖字符资源、覆盖图片要谨慎</li>
+<li>Overlay apk中不要添加其它的东西，比方说style.xml 可能会导致被覆盖的apk打开就报错</li>
+<li>Overlay apk 必须要签名，否则不生效 </li>
+<li>为了安全起见，Overylay的apk必须放到system/vendor/overlay/目录下才会生效</li>
+<li>由于是把源码放在基线里面编译，所以提交代码需要特别小心，不要造成项目编译不过</li>
+</ul>
+<h2 id="RRO对我们目前来说使用的意义"><a href="#RRO对我们目前来说使用的意义" class="headerlink" title="RRO对我们目前来说使用的意义"></a>RRO对我们目前来说使用的意义</h2><ul>
+<li>对于字符翻译需求，快速输出版本</li>
+<li>DCC以后，只有翻译需求，无需更新主apk版本</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div></div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="Broncho 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="Broncho 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/博客/" rel="tag"># 博客</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/01/15/notes/MacOS/" rel="prev" title="mac OS常用开发软件激活方式">
+      <i class="fa fa-chevron-left"></i> mac OS常用开发软件激活方式
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/01/18/blogs/Camera2/" rel="next" title="Camera2录像流程">
+      Camera2录像流程 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是运行时资源覆盖"><span class="nav-number">1.</span> <span class="nav-text">什么是运行时资源覆盖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RRO原理"><span class="nav-number">2.</span> <span class="nav-text">RRO原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Resources-arsc的结构-string"><span class="nav-number">3.</span> <span class="nav-text">Resources.arsc的结构 string</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Resources-arsc的结构-drawable"><span class="nav-number">4.</span> <span class="nav-text">Resources.arsc的结构 drawable</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RRO实现方法"><span class="nav-number">5.</span> <span class="nav-text">RRO实现方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AndroidManifest-xml的写法"><span class="nav-number">6.</span> <span class="nav-text">AndroidManifest.xml的写法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android-mk的写法及自动生成版本号的实现"><span class="nav-number">7.</span> <span class="nav-text">Android.mk的写法及自动生成版本号的实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自动生成版本号的意义"><span class="nav-number">8.</span> <span class="nav-text">自动生成版本号的意义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意事项"><span class="nav-number">9.</span> <span class="nav-text">注意事项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RRO对我们目前来说使用的意义"><span class="nav-number">10.</span> <span class="nav-text">RRO对我们目前来说使用的意义</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Broncho"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Broncho</p>
+  <div class="site-description" itemprop="description">爱生活...爱Android...</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/way1989" title="GitHub → https://github.com/way1989" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="http://www.beian.miit.gov.cn" rel="noopener" target="_blank">粤ICP备20072588号 </a>
+      <img src="/images/gongan.png" style="display: inline-block;"><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44030702002235" rel="noopener" target="_blank">粤公网安备 44030702002235号 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Broncho</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/muse.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'Iv1.50bf941f924c4c15',
+      clientSecret: 'Iv1.50bf941f924c4c15',
+      repo        : 'blogComment',
+      owner       : 'way1989',
+      admin       : ['way1989'],
+      id          : '6f52876115cbf687814ea1b25687138a',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
