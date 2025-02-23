@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"way1989.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Android Sensor框架Framework层解读">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android Sensor框架Framework层解读">
+<meta property="og:url" content="https://way1989.github.io/2016/09/15/blogs/SensorFramework/index.html">
+<meta property="og:site_name" content="liweiping">
+<meta property="og:description" content="Android Sensor框架Framework层解读">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorFramework/1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorFramework/2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorFramework/3.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorFramework/4.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorFramework/5.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorFramework/6.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorFramework/7.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorFramework/8.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorFramework/9.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorFramework/10.png">
+<meta property="article:published_time" content="2016-09-15T10:00:24.000Z">
+<meta property="article:modified_time" content="2025-02-23T13:38:11.290Z">
+<meta property="article:author" content="liweiping">
+<meta property="article:tag" content="博客">
+<meta property="article:tag" content="Sensor">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorFramework/1.png">
+
+<link rel="canonical" href="https://way1989.github.io/2016/09/15/blogs/SensorFramework/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Android Sensor框架Framework层解读 | liweiping</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">liweiping</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://way1989.github.io/2016/09/15/blogs/SensorFramework/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="liweiping">
+      <meta itemprop="description" content="爱生活...爱Android...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="liweiping">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Android Sensor框架Framework层解读
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-09-15 18:00:24" itemprop="dateCreated datePublished" datetime="2016-09-15T18:00:24+08:00">2016-09-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-02-23 21:38:11" itemprop="dateModified" datetime="2025-02-23T21:38:11+08:00">2025-02-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8D%9A%E5%AE%A2/" itemprop="url" rel="index"><span itemprop="name">博客</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8D%9A%E5%AE%A2/Sensor/" itemprop="url" rel="index"><span itemprop="name">Sensor</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">Android Sensor框架Framework层解读</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="Sensor整体架构："><a href="#Sensor整体架构：" class="headerlink" title="Sensor整体架构："></a>Sensor整体架构：</h2><img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorFramework/1.png"/>
+
+<h3 id="整体架构说明"><a href="#整体架构说明" class="headerlink" title="整体架构说明:"></a>整体架构说明:</h3><ol>
+<li>黄色部分表示硬件，它要挂在I2C总线上    </li>
+<li>红色部分表示驱动，驱动注册到Kernel的Input Subsystem上，然后通过Event Device把Sensor数据传到HAL层，准确说是HAL从Event读</li>
+<li>绿色部分表示动态库，它封装了整个Sensor的IPC机制，如SensorManager是客户端，SensorService是服务端，而HAL部分是封装了服务端对Kernel的直接访问</li>
+<li>蓝色部分就是我们的Framework和Application了，JNI负责访问Sensor的客户端，而Application就是具体的应用程序，用来接收Sensor返回的数据，并处理实现对应的UI效果，如屏幕旋转，打电话时灭屏，自动调接背光（这三个功能的具体实现会在以后分析）</li>
+</ol>
+<h3 id="Sensor总体调用关系图"><a href="#Sensor总体调用关系图" class="headerlink" title="Sensor总体调用关系图"></a>Sensor总体调用关系图</h3><ul>
+<li>本节主要解读Android的Framework层框架。</li>
+<li>Sensor 框架分为三个层次，客户度、服务端、HAL层，服务端负责从HAL读取数据，并将数据写到管道中，客户端通过管道读取服务端数据。</li>
+</ul>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorFramework/2.png"/>
+
+<h3 id="客户端主要类"><a href="#客户端主要类" class="headerlink" title="客户端主要类"></a>客户端主要类</h3><ul>
+<li><code>SensorManager.java</code>：从android4.1开始，把SensorManager定义为一个抽象类，定义了一些主要的方法，该类主要是应用层直接使用的类，提供给应用层的接口</li>
+<li><code>SystemSensorManager.java</code>：继承于SensorManager，客户端消息处理的实体，应用程序通过获取其实例，并注册监听接口，获取sensor数据。</li>
+<li><code>sensorEventListener</code>接口：用于注册监听的接口</li>
+<li><code>sensorThread</code>：是SystemSensorManager的一个内部类，开启一个新线程负责读取读取sensor数据，当注册了sensorEventListener接口的时候才会启动线程</li>
+<li><code>android_hardware_SensorManager.cpp</code>：负责与java层通信的JNI接口</li>
+<li><code>SensorManager.cpp</code>：sensor在Native层的客户端，负责与服务端SensorService.cpp的通信</li>
+<li><code>SenorEventQueue.cpp</code>：消息队列</li>
+</ul>
+<h3 id="服务端主要类"><a href="#服务端主要类" class="headerlink" title="服务端主要类"></a>服务端主要类</h3><ul>
+<li><code>SensorService.cpp</code>：服务端数据处理中心</li>
+<li><code>SensorEventConnection</code>：从BnSensorEventConnection继承来，实现接口ISensorEventConnection的一些方法，ISensorEventConnection在SensorEventQueue会保存一个指针，指向调用服务接口创建的SensorEventConnection对象</li>
+<li><code>Bittube.cpp</code>：在这个类中创建了管道，用于服务端与客户端读写数据</li>
+<li><code>SensorDevice</code>：负责与HAL读取数据</li>
+</ul>
+<h3 id="HAL层"><a href="#HAL层" class="headerlink" title="HAL层"></a>HAL层</h3><ul>
+<li><code>Sensor.h</code>是google为Sensor定义的Hal接口，单独提出去</li>
+</ul>
+<h2 id="客户端读取数据"><a href="#客户端读取数据" class="headerlink" title="客户端读取数据"></a>客户端读取数据</h2><h3 id="调用时序图"><a href="#调用时序图" class="headerlink" title="调用时序图"></a>调用时序图</h3><img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorFramework/3.jpg"/>
+
+<h3 id="apk注册监听器"><a href="#apk注册监听器" class="headerlink" title="apk注册监听器"></a>apk注册监听器</h3><ul>
+<li>Activity实现了SensorEventListener接口。在onCreate方法中，获取SystemSensorManager，并获取到加速传感器的Sensor；在onResume方法中调用SystemSensorManager，registerListenerImpl注册监听器；当Sensor数据有改变的时候将会回调onSensorChanged方法。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">SensorManager</span>  <span class="variable">mSensorManager</span> <span class="operator">=</span></span><br><span class="line"> (SensorManager)getSystemService(SENSOR_SERVICE);</span><br><span class="line"> <span class="type">Sensor</span>   <span class="variable">mAccelerometer</span> <span class="operator">=</span></span><br><span class="line"> mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">onResume</span><span class="params">()</span> &#123;</span><br><span class="line">           <span class="built_in">super</span>.onResume();</span><br><span class="line">          mSensorManager. registerListenerImpl (<span class="built_in">this</span>, mAccelerometer,</span><br><span class="line">     SensorManager.SENSOR_DELAY_NORMAL);</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">onPause</span><span class="params">()</span> &#123;</span><br><span class="line">           <span class="built_in">super</span>.onPause();</span><br><span class="line">         mSensorManager.unregisterListener(<span class="built_in">this</span>);</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">SensorEventListener</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onSensorChanged</span><span class="params">(SensorEvent event)</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onAccuracyChanged</span><span class="params">(Sensor sensor, <span class="type">int</span> accuracy)</span>;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="初始化SystemSensorManager"><a href="#初始化SystemSensorManager" class="headerlink" title="初始化SystemSensorManager"></a>初始化SystemSensorManager</h3><ul>
+<li><p>系统开机启动的时候，会创建SystemSensorManager的实例，在其构造函数中，主要做了四件事情：</p>
+<ol>
+<li>初始化JNI：调用JNI函数nativeClassInit()进行初始化</li>
+<li>初始化Sensor列表：调用JNI函数sensors_module_init，对Sensor模块进行初始化。创建了native层SensorManager的实例。</li>
+<li>获取Sensor列表：调用JNI函数sensors_module_get_next_sensor()获取Sensor，并存在sHandleToSensor列表中</li>
+<li>构造SensorThread类：构造线程的类函数，并没有启动线程，当有应用注册的时候才会启动线程</li>
+</ol>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="title function_">SystemSensorManager</span><span class="params">(Context context,Looper mainLooper)</span> &#123;</span><br><span class="line">        mMainLooper = mainLooper;       </span><br><span class="line">              mContext = context;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">synchronized</span>(sListeners) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!sSensorModuleInitialized) &#123;</span><br><span class="line">                sSensorModuleInitialized = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">                nativeClassInit();</span><br><span class="line"></span><br><span class="line">                <span class="comment">// initialize the sensor list</span></span><br><span class="line">                sensors_module_init();</span><br><span class="line">                <span class="keyword">final</span> ArrayList&lt;Sensor&gt; fullList = sFullSensorsList;</span><br><span class="line">                <span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">                <span class="keyword">do</span> &#123;</span><br><span class="line">                    <span class="type">Sensor</span> <span class="variable">sensor</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Sensor</span>();</span><br><span class="line">                    i = sensors_module_get_next_sensor(sensor, i);</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">if</span> (i&gt;=<span class="number">0</span>) &#123;</span><br><span class="line">                        <span class="comment">//Log.d(TAG, &quot;found sensor: &quot; + sensor.getName() +</span></span><br><span class="line">                        <span class="comment">//        &quot;, handle=&quot; + sensor.getHandle());</span></span><br><span class="line">                        fullList.add(sensor);</span><br><span class="line">                        sHandleToSensor.append(sensor.getHandle(), sensor);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; <span class="keyword">while</span> (i&gt;<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">                sPool = <span class="keyword">new</span> <span class="title class_">SensorEventPool</span>( sFullSensorsList.size()*<span class="number">2</span> );</span><br><span class="line">                sSensorThread = <span class="keyword">new</span> <span class="title class_">SensorThread</span>();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="启动SensorThread线程读取消息队列中数据"><a href="#启动SensorThread线程读取消息队列中数据" class="headerlink" title="启动SensorThread线程读取消息队列中数据"></a>启动SensorThread线程读取消息队列中数据</h3><ul>
+<li>当有应用程序调用registerListenerImpl()方法注册监听的时候，会调用SensorThread.startLoacked()启动线程。线程只会启动一次，并调用enableSensorLocked()接口对指定的sensor使能，并设置采样时间。　　SensorThreadRunnable实现了Runnable接口，在SensorThread类中被启动。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="type">boolean</span> <span class="title function_">registerListenerImpl</span><span class="params">(SensorEventListener listener, Sensor sensor,</span></span><br><span class="line"><span class="params">            <span class="type">int</span> delay, Handler handler)</span> &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">synchronized</span> (sListeners) &#123;</span><br><span class="line">            <span class="type">ListenerDelegate</span> <span class="variable">l</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">            <span class="keyword">for</span> (ListenerDelegate i : sListeners) &#123;</span><br><span class="line">                <span class="keyword">if</span> (i.getListener() == listener) &#123;</span><br><span class="line">                    l = i;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            …….</span><br><span class="line">            <span class="comment">// if we don&#x27;t find it, add it to the list</span></span><br><span class="line">            <span class="keyword">if</span> (l == <span class="literal">null</span>) &#123;</span><br><span class="line">                l = <span class="keyword">new</span> <span class="title class_">ListenerDelegate</span>(listener, sensor, handler);</span><br><span class="line">                sListeners.add(l);</span><br><span class="line">                  ……</span><br><span class="line">                    <span class="keyword">if</span> (sSensorThread.startLocked()) &#123;</span><br><span class="line">                        <span class="keyword">if</span> (!enableSensorLocked(sensor, delay)) &#123;</span><br><span class="line">                          …….</span><br><span class="line">                        &#125;</span><br><span class="line">                 ……</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (!l.hasSensor(sensor)) &#123;</span><br><span class="line">                l.addSensor(sensor);</span><br><span class="line">                <span class="keyword">if</span> (!enableSensorLocked(sensor, delay)) &#123;</span><br><span class="line">                    ……</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>在open函数中调用JNI函数sensors_create_queue()来创建消息队列,然后调用SensorManager. createEventQueue()创建。在startLocked函数中启动新的线程后，做了一个while的等待while (mSensorsReady &#x3D;&#x3D; false)，只有当mSensorsReady等于true的时候，才会执行enableSensorLocked()函数对sensor使能。而mSensorsReady变量，是在open()调用创建消息队列成功之后才会true，所以认为，三个功能调用顺序是如下：<ol>
+<li>调用open函数创建消息队列</li>
+<li>调用enableSensorLocked()函数对sensor使能</li>
+<li>调用sensors_data_poll从消息队列中读取数据，而且是在while (true)循环里一直读取</li>
+</ol>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">boolean</span> <span class="title function_">startLocked</span><span class="params">()</span> &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (mThread == <span class="literal">null</span>) &#123;</span><br><span class="line">                    <span class="type">SensorThreadRunnable</span> <span class="variable">runnable</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SensorThreadRunnable</span>();</span><br><span class="line">                    <span class="type">Thread</span> <span class="variable">thread</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(runnable, SensorThread.class.getName());</span><br><span class="line">                    thread.start();</span><br><span class="line">                    <span class="keyword">synchronized</span> (runnable) &#123;  <span class="comment">//队列创建成功,线程同步</span></span><br><span class="line">                        <span class="keyword">while</span> (mSensorsReady == <span class="literal">false</span>) &#123;</span><br><span class="line">                            runnable.wait();</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">class</span> <span class="title class_">SensorThreadRunnable</span> <span class="keyword">implements</span> <span class="title class_">Runnable</span> &#123;</span><br><span class="line">            SensorThreadRunnable() &#123;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">private</span> <span class="type">boolean</span> <span class="title function_">open</span><span class="params">()</span> &#123;</span><br><span class="line">                sQueue = sensors_create_queue();</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">                …….</span><br><span class="line">                <span class="keyword">if</span> (!open()) &#123;</span><br><span class="line">                    <span class="keyword">return</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">synchronized</span> (<span class="built_in">this</span>) &#123;</span><br><span class="line">                    mSensorsReady = <span class="literal">true</span>;</span><br><span class="line">                    <span class="built_in">this</span>.notify();</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">                    <span class="keyword">final</span> <span class="type">int</span> <span class="variable">sensor</span> <span class="operator">=</span> sensors_data_poll(sQueue, values, status, timestamp);</span><br><span class="line">                    …….</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="服务端实现"><a href="#服务端实现" class="headerlink" title="服务端实现"></a>服务端实现</h2><h3 id="调用时序图-1"><a href="#调用时序图-1" class="headerlink" title="调用时序图"></a>调用时序图</h3><img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorFramework/4.png"/>
+
+<h3 id="启动SensorService服务"><a href="#启动SensorService服务" class="headerlink" title="启动SensorService服务"></a>启动SensorService服务</h3><ul>
+<li>在SystemServer进程中的main函数中，通过JNI调用，调用到<code>com_android_server_SystemServer.cpp</code>的<code>android_server_SystemServer_init1()</code>方法，该方法又调用<code>system_init.cpp中的system_init()</code>，在这里创建了SensorService的实例。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> <span class="function"><span class="type">status_t</span> <span class="title">system_init</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    ……</span><br><span class="line">    <span class="built_in">property_get</span>(<span class="string">&quot;system_init.startsensorservice&quot;</span>, propBuf, <span class="string">&quot;1&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">strcmp</span>(propBuf, <span class="string">&quot;1&quot;</span>) == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">// Start the sensor service</span></span><br><span class="line">        SensorService::<span class="built_in">instantiate</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    …..</span><br><span class="line">    <span class="keyword">return</span> NO_ERROR;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="SensorService初始化"><a href="#SensorService初始化" class="headerlink" title="SensorService初始化"></a>SensorService初始化</h3><ul>
+<li>SensorService创建完之后，将会调用SensorService::onFirstRef()方法，在该方法中完成初始化工作。首先获取SensorDevice实例，在其构造函数中，完成了对Sensor模块HAL的初始化：</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">SensorDevice::<span class="built_in">SensorDevice</span>()</span><br><span class="line">    :  <span class="built_in">mSensorDevice</span>(<span class="number">0</span>),</span><br><span class="line">       <span class="built_in">mSensorModule</span>(<span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">status_t</span> err = <span class="built_in">hw_get_module</span>(SENSORS_HARDWARE_MODULE_ID,</span><br><span class="line">            (<span class="type">hw_module_t</span> <span class="type">const</span>**)&amp;mSensorModule);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (mSensorModule) &#123;</span><br><span class="line">        err = <span class="built_in">sensors_open</span>(&amp;mSensorModule-&gt;common, &amp;mSensorDevice);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">ALOGE_IF</span>(err, <span class="string">&quot;couldn&#x27;t open device for module %s (%s)&quot;</span>,</span><br><span class="line">                SENSORS_HARDWARE_MODULE_ID, <span class="built_in">strerror</span>(-err));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (mSensorDevice) &#123;</span><br><span class="line">            <span class="type">sensor_t</span> <span class="type">const</span>* list;</span><br><span class="line">            <span class="type">ssize_t</span> count = mSensorModule-&gt;<span class="built_in">get_sensors_list</span>(mSensorModule, &amp;list);</span><br><span class="line">            mActivationCount.<span class="built_in">setCapacity</span>(count);</span><br><span class="line">            Info model;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">size_t</span> i=<span class="number">0</span> ; i&lt;<span class="built_in">size_t</span>(count) ; i++) &#123;</span><br><span class="line">                mActivationCount.<span class="built_in">add</span>(list[i].handle, model);</span><br><span class="line">                mSensorDevice-&gt;<span class="built_in">activate</span>(mSensorDevice, list[i].handle, <span class="number">0</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>这里主要做了三个工作：</p>
+<ol>
+<li>调用HAL层的hw_get_modele()方法，加载Sensor模块so文件</li>
+<li>调用sensor.h的sensors_open方法打开设备</li>
+<li>调用sensors_poll_device_t-&gt;activate()对Sensor模块使能</li>
+</ol>
+</li>
+<li><p>再看看SensorService::onFirstRef()方法:</p>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">SensorService::onFirstRef</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="function">SensorDevice&amp; <span class="title">dev</span><span class="params">(SensorDevice::getInstance())</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (dev.<span class="built_in">initCheck</span>() == NO_ERROR) &#123;</span><br><span class="line">        <span class="type">sensor_t</span> <span class="type">const</span>* list;</span><br><span class="line">        <span class="type">ssize_t</span> count = dev.<span class="built_in">getSensorList</span>(&amp;list);</span><br><span class="line">        <span class="keyword">if</span> (count &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            ……</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">ssize_t</span> i=<span class="number">0</span> ; i&lt;count ; i++) &#123;</span><br><span class="line">                <span class="built_in">registerSensor</span>( <span class="keyword">new</span> <span class="built_in">HardwareSensor</span>(list[i]) );</span><br><span class="line">                ……</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// it&#x27;s safe to instantiate the SensorFusion object here</span></span><br><span class="line">            <span class="comment">// (it wants to be instantiated after h/w sensors have been</span></span><br><span class="line">            <span class="comment">// registered)</span></span><br><span class="line">            <span class="function"><span class="type">const</span> SensorFusion&amp; <span class="title">fusion</span><span class="params">(SensorFusion::getInstance())</span></span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (hasGyro) &#123;</span><br><span class="line">               ……</span><br><span class="line">            &#125;</span><br><span class="line">            ……</span><br><span class="line">            <span class="built_in">run</span>(<span class="string">&quot;SensorService&quot;</span>, PRIORITY_URGENT_DISPLAY);</span><br><span class="line">            mInitCheck = NO_ERROR;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>在这个方法中，主要做了4件事情：</p>
+<ol>
+<li>创建SensorDevice实例</li>
+<li>获取Sensor列表</li>
+<li>调用SensorDevice.getSensorList(),获取Sensor模块所有传感器列表</li>
+<li>为每个传感器注册监听器</li>
+</ol>
+</li>
+<li><p><code>registerSensor(new HardwareSensor(list[i]))</code>;</p>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">SensorService::registerSensor</span><span class="params">(SensorInterface* s)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">sensors_event_t</span> event;</span><br><span class="line">    <span class="built_in">memset</span>(&amp;event, <span class="number">0</span>, <span class="built_in">sizeof</span>(event));</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">const</span> Sensor <span class="title">sensor</span><span class="params">(s-&gt;getSensor())</span></span>;</span><br><span class="line">    <span class="comment">// 添加到Sensor列表，给客户端使用</span></span><br><span class="line">    mSensorList.<span class="built_in">add</span>(sensor);</span><br><span class="line">    <span class="comment">// add to our handle-&gt;SensorInterface mapping</span></span><br><span class="line">    mSensorMap.<span class="built_in">add</span>(sensor.<span class="built_in">getHandle</span>(), s);</span><br><span class="line">    <span class="comment">// create an entry in the mLastEventSeen array</span></span><br><span class="line">    mLastEventSeen.<span class="built_in">add</span>(sensor.<span class="built_in">getHandle</span>(), event);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>HardwareSensor实现了SensorInterface接口。启动线程读取数据，调用run方法启动新线程，将调用SensorService::threadLoop()方法。</li>
+</ul>
+<h3 id="在新的线程中读取HAL层数据"><a href="#在新的线程中读取HAL层数据" class="headerlink" title="在新的线程中读取HAL层数据"></a>在新的线程中读取HAL层数据</h3><ul>
+<li>SensorService实现了Thread类，当在onFirstRef中调用run方法后，将在新的线程中调用<code>SensorService::threadLoop()</code>方法。在while循环中一直读取HAL层数据，再调用<code>SensorEventConnection-&gt;sendEvents</code>将数据写到管道中。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">SensorService::threadLoop</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    ……</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        count = device.<span class="built_in">poll</span>(buffer, numEventMax);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">recordLastValue</span>(buffer, count);</span><br><span class="line">        ……</span><br><span class="line"></span><br><span class="line">        <span class="comment">// send our events to clients...</span></span><br><span class="line">        <span class="type">const</span> SortedVector&lt; wp&lt;SensorEventConnection&gt; &gt; <span class="built_in">activeConnections</span>(</span><br><span class="line">                <span class="built_in">getActiveConnections</span>());</span><br><span class="line">        <span class="type">size_t</span> numConnections = activeConnections.<span class="built_in">size</span>();</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">size_t</span> i=<span class="number">0</span> ; i&lt;numConnections ; i++) &#123;</span><br><span class="line">            <span class="function">sp&lt;SensorEventConnection&gt; <span class="title">connection</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">                    activeConnections[i].promote())</span></span>;</span><br><span class="line">            <span class="keyword">if</span> (connection != <span class="number">0</span>) &#123;</span><br><span class="line">                connection-&gt;<span class="built_in">sendEvents</span>(buffer, count, scratch);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">while</span> (count &gt;= <span class="number">0</span> || Thread::<span class="built_in">exitPending</span>());</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="客户端与服务端通信"><a href="#客户端与服务端通信" class="headerlink" title="客户端与服务端通信"></a>客户端与服务端通信</h2><h3 id="数据传送"><a href="#数据传送" class="headerlink" title="数据传送"></a>数据传送</h3><ul>
+<li>客户端与服务端通信的状态图：</li>
+</ul>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorFramework/5.png"/>
+
+<ul>
+<li>客户端服务端线程，在图中可以看到有两个线程：<ol>
+<li>一个是服务端的一个线程，这个线程负责源源不断的从HAL读取数据。</li>
+<li>另一个是客户端的一个线程，客户端线程负责从消息队列中读数据。</li>
+</ol>
+</li>
+<li>创建消息队列，客户端可以创建多个消息队列，一个消息队列对应有一个与服务器通信的连接接口</li>
+<li>创建连接接口，服务端与客户端沟通的桥梁，服务端读取到HAL层数据后，会扫面有多少个与客户端连接的接口，然后往每个接口的管道中写数据</li>
+<li>创建管道，每一个连接接口都有对应的一个管道。</li>
+<li>上面是设计者设计数据传送的原理，但是目前Android上面的数据传送不能完全按照上面的理解。因为在实际使用中，消息队列只会创建一个，也就是说客户端与服务端之间的通信只有一个连接接口，只有一个管道传数据。那么数据的形式是怎么从HAL层传到JAVA层的呢？其实数据是以一个结构体sensors_event_t的形式从HAL层传到JNI层。看看HAL的sensors_event_t结构体：</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> <span class="title class_">sensors_event_t</span> &#123;</span><br><span class="line">    <span class="type">int32_t</span> version;</span><br><span class="line">    <span class="type">int32_t</span> sensor;            <span class="comment">//标识符</span></span><br><span class="line">    <span class="type">int32_t</span> type;             <span class="comment">//传感器类型</span></span><br><span class="line">    <span class="type">int32_t</span> reserved0;</span><br><span class="line">    <span class="type">int64_t</span> timestamp;        <span class="comment">//时间戳</span></span><br><span class="line">    <span class="keyword">union</span> &#123;</span><br><span class="line">        <span class="type">float</span>           data[<span class="number">16</span>];</span><br><span class="line">        <span class="type">sensors_vec_t</span>   acceleration;   <span class="comment">//加速度</span></span><br><span class="line">        <span class="type">sensors_vec_t</span>   magnetic;      <span class="comment">//磁矢量</span></span><br><span class="line">        <span class="type">sensors_vec_t</span>   orientation;     <span class="comment">//方向</span></span><br><span class="line">        <span class="type">sensors_vec_t</span>   gyro;          <span class="comment">//陀螺仪</span></span><br><span class="line">        <span class="type">float</span>           temperature;     <span class="comment">//温度</span></span><br><span class="line">        <span class="type">float</span>           distance;        <span class="comment">//距离</span></span><br><span class="line">        <span class="type">float</span>           light;           <span class="comment">//光照</span></span><br><span class="line">        <span class="type">float</span>           pressure;         <span class="comment">//压力</span></span><br><span class="line">        <span class="type">float</span>           relative_humidity;  <span class="comment">//相对湿度</span></span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="type">uint32_t</span>        reserved1[<span class="number">4</span>];</span><br><span class="line">&#125; <span class="type">sensors_event_t</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>在JNI层有一个ASensorEvent结构体与sensors_event_t向对应，frameworks&#x2F;native&#x2F;include&#x2F;android&#x2F;sensor.h：</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> <span class="title class_">ASensorEvent</span> &#123;</span><br><span class="line">    <span class="type">int32_t</span> version;</span><br><span class="line">    <span class="type">int32_t</span> sensor;</span><br><span class="line">    <span class="type">int32_t</span> type;</span><br><span class="line">    <span class="type">int32_t</span> reserved0;</span><br><span class="line">    <span class="type">int64_t</span> timestamp;</span><br><span class="line">    <span class="keyword">union</span> &#123;</span><br><span class="line">        <span class="type">float</span>           data[<span class="number">16</span>];</span><br><span class="line">        ASensorVector   vector;</span><br><span class="line">        ASensorVector   acceleration;</span><br><span class="line">        ASensorVector   magnetic;</span><br><span class="line">        <span class="type">float</span>           temperature;</span><br><span class="line">        <span class="type">float</span>           distance;</span><br><span class="line">        <span class="type">float</span>           light;</span><br><span class="line">        <span class="type">float</span>           pressure;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="type">int32_t</span> reserved1[<span class="number">4</span>];</span><br><span class="line">&#125; ASensorEvent;</span><br></pre></td></tr></table></figure>
+
+<h2 id="交互调用时序图"><a href="#交互调用时序图" class="headerlink" title="交互调用时序图"></a>交互调用时序图</h2><img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorFramework/6.jpg"/>
+
+<ul>
+<li>经过前面的介绍，现在知道了客户端实现的方式及服务端的实现，但是没有具体讲到它们是如何进行通信的，现在看看客户端与服务端之间的通信。</li>
+<li>主要涉及的是进程间通信，有IBind和管道通信。</li>
+<li>客户端通过IBind通信获取到服务端的远程调用，然后通过管道进行sensor数据的传输。</li>
+</ul>
+<h3 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h3><ul>
+<li>native层实现了sensor服务的核心实现，Sensor服务的主要流程的实现在sensorservice类中，下面重点分析下这个类的流程。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">SensorService</span> :</span><br><span class="line">        <span class="keyword">public</span> BinderService&lt;SensorService&gt;,</span><br><span class="line">        <span class="keyword">public</span> BnSensorServer,</span><br><span class="line">        <span class="keyword">protected</span> Thread</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>看看sensorService继承的类:继承BinderService<SensorService>这个模板类添加到系统服务,用于Ibinder进程间通信。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> SERVICE&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">BinderService</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="type">static</span> <span class="type">status_t</span> <span class="title">publish</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="function">sp&lt;IServiceManager&gt; <span class="title">sm</span><span class="params">(defaultServiceManager())</span></span>;</span><br><span class="line">        <span class="keyword">return</span> sm-&gt;<span class="built_in">addService</span>(<span class="built_in">String16</span>(SERVICE::<span class="built_in">getServiceName</span>()), <span class="keyword">new</span> <span class="built_in">SERVICE</span>());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">publishAndJoinThreadPool</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="function">sp&lt;ProcessState&gt; <span class="title">proc</span><span class="params">(ProcessState::self())</span></span>;</span><br><span class="line">        <span class="function">sp&lt;IServiceManager&gt; <span class="title">sm</span><span class="params">(defaultServiceManager())</span></span>;</span><br><span class="line">        sm-&gt;<span class="built_in">addService</span>(<span class="built_in">String16</span>(SERVICE::<span class="built_in">getServiceName</span>()), <span class="keyword">new</span> <span class="built_in">SERVICE</span>());</span><br><span class="line">        ProcessState::<span class="built_in">self</span>()-&gt;<span class="built_in">startThreadPool</span>();</span><br><span class="line">        IPCThreadState::<span class="built_in">self</span>()-&gt;<span class="built_in">joinThreadPool</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">instantiate</span><span class="params">()</span> </span>&#123; <span class="built_in">publish</span>(); &#125;</span><br><span class="line">&#125;;</span><br><span class="line">&#125;; <span class="comment">// namespace android</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>在前面的介绍中，SensorService服务的实例是在System_init.cpp中调用SensorService::instantiate()创建的，即调用了上面的instantiate()方法，接着调用了publish(),在该方法中，我们看到了new SensorService的实例，并且调用了defaultServiceManager::addService()将Sensor服务添加到了系统服务管理中，客户端可以通过defaultServiceManager:getService()获取到Sensor服务的实例。</p>
+</li>
+<li><p>继承BnSensorServer这个是sensor服务抽象接口类提供给客户端调用：</p>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Sensor</span>;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ISensorEventConnection</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ISensorServer</span> : <span class="keyword">public</span> IInterface</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">DECLARE_META_INTERFACE</span>(SensorServer);</span><br><span class="line">    <span class="comment">//获取Sensor列表</span></span><br><span class="line"><span class="function"><span class="keyword">virtual</span> Vector&lt;Sensor&gt; <span class="title">getSensorList</span><span class="params">()</span> </span>= <span class="number">0</span>;</span><br><span class="line"><span class="comment">//创建一个连接的接口,这些都是提供给客户端的抽象接口,服务端实例化时候必须实现</span></span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> sp&lt;ISensorEventConnection&gt; <span class="title">createSensorEventConnection</span><span class="params">()</span> </span>= <span class="number">0</span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">BnSensorServer</span> : <span class="keyword">public</span> BnInterface&lt;ISensorServer&gt;</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">//传输打包数据的通讯接口,在BnSensorServer被实现</span></span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">status_t</span>    <span class="title">onTransact</span><span class="params">( <span class="type">uint32_t</span> code,</span></span></span><br><span class="line"><span class="params"><span class="function">                                    <span class="type">const</span> Parcel&amp; data,</span></span></span><br><span class="line"><span class="params"><span class="function">                                    Parcel* reply,</span></span></span><br><span class="line"><span class="params"><span class="function">                                    <span class="type">uint32_t</span> flags = <span class="number">0</span>)</span></span>;</span><br><span class="line">&#125;;</span><br><span class="line">&#125;; <span class="comment">// namespace android</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>ISensorServer接口提供了两个抽象方法给客户端调用，关键在于createSensorEventConnection()方法，该在服务端被实现，在客户端被调用，并返回一个SensorEventConnection的实例，创建连接，客户端拿到SensorEventConnection实例之后，可以对sensor进行通信操作，仅仅作为通信的接口而已，它并没有用来传送Sensor数据，因为Sensor数据量比较大，IBind实现比较困难。真正实现Sensor数据传送的是管道，在创建SensorEventConnection实例中，创建了BitTube对象，里面创建了管道，用于客户端与服务端的通信。</li>
+</ul>
+<h3 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h3><ul>
+<li>时序图：</li>
+</ul>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorFramework/7.png"/>
+
+<ul>
+<li>客户端主要在SensorManager.cpp中创建消息队列:</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">ISensorEventConnection</span>;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Sensor</span>;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Looper</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ----------------------------------------------------------------------------</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">SensorEventQueue</span> : <span class="keyword">public</span> ASensorEventQueue, <span class="keyword">public</span> RefBase</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">            <span class="built_in">SensorEventQueue</span>(<span class="type">const</span> sp&lt;ISensorEventConnection&gt;&amp; connection);</span><br><span class="line">    <span class="keyword">virtual</span> ~<span class="built_in">SensorEventQueue</span>();</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="type">void</span> <span class="title">onFirstRef</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="comment">//获取管道句柄</span></span><br><span class="line">    <span class="function"><span class="type">int</span> <span class="title">getFd</span><span class="params">()</span> <span class="type">const</span></span>;</span><br><span class="line">    <span class="comment">//向管道写数据</span></span><br><span class="line">    <span class="function"><span class="type">static</span> <span class="type">ssize_t</span> <span class="title">write</span><span class="params">(<span class="type">const</span> sp&lt;BitTube&gt;&amp; tube,</span></span></span><br><span class="line"><span class="params"><span class="function">            ASensorEvent <span class="type">const</span>* events, <span class="type">size_t</span> numEvents)</span></span>;</span><br><span class="line">    <span class="comment">//向管道读数据</span></span><br><span class="line">    <span class="function"><span class="type">ssize_t</span> <span class="title">read</span><span class="params">(ASensorEvent* events, <span class="type">size_t</span> numEvents)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">status_t</span> <span class="title">waitForEvent</span><span class="params">()</span> <span class="type">const</span></span>;</span><br><span class="line">    <span class="function"><span class="type">status_t</span> <span class="title">wake</span><span class="params">()</span> <span class="type">const</span></span>;</span><br><span class="line">    <span class="comment">//使能Sensor传感器</span></span><br><span class="line">    <span class="function"><span class="type">status_t</span> <span class="title">enableSensor</span><span class="params">(Sensor <span class="type">const</span>* sensor)</span> <span class="type">const</span></span>;</span><br><span class="line">    <span class="function"><span class="type">status_t</span> <span class="title">disableSensor</span><span class="params">(Sensor <span class="type">const</span>* sensor)</span> <span class="type">const</span></span>;</span><br><span class="line">    <span class="function"><span class="type">status_t</span> <span class="title">setEventRate</span><span class="params">(Sensor <span class="type">const</span>* sensor, <span class="type">nsecs_t</span> ns)</span> <span class="type">const</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// these are here only to support SensorManager.java</span></span><br><span class="line">    <span class="function"><span class="type">status_t</span> <span class="title">enableSensor</span><span class="params">(<span class="type">int32_t</span> handle, <span class="type">int32_t</span> us)</span> <span class="type">const</span></span>;</span><br><span class="line">    <span class="function"><span class="type">status_t</span> <span class="title">disableSensor</span><span class="params">(<span class="type">int32_t</span> handle)</span> <span class="type">const</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line"><span class="function">sp&lt;Looper&gt; <span class="title">getLooper</span><span class="params">()</span> <span class="type">const</span></span>;</span><br><span class="line"><span class="comment">//连接接口，在SensorService中创建的</span></span><br><span class="line">sp&lt;ISensorEventConnection&gt; mSensorEventConnection;</span><br><span class="line"><span class="comment">//管道指针</span></span><br><span class="line">    sp&lt;BitTube&gt; mSensorChannel;</span><br><span class="line">    <span class="keyword">mutable</span> Mutex mLock;</span><br><span class="line">    <span class="keyword">mutable</span> sp&lt;Looper&gt; mLooper;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>SensorEventQueue类作为消息队列，作用非常重要，在创建其实例的时候，传入了SensorEventConnection的实例，SensorEventConnection继承于ISensorEventConnection。SensorEventConnection其实是客户端调用SensorService的createSensorEventConnection()方法创建的，它是客户端与服务端沟通的桥梁，通过这个桥梁，可以完成一下任务：<ol>
+<li>获取管道的句柄</li>
+<li>往管道读写数据</li>
+<li>通知服务端对Sensor使能</li>
+</ol>
+</li>
+</ul>
+<h2 id="流程解析"><a href="#流程解析" class="headerlink" title="流程解析"></a>流程解析</h2><h3 id="客户端获取SensorService服务实例"><a href="#客户端获取SensorService服务实例" class="headerlink" title="客户端获取SensorService服务实例"></a>客户端获取SensorService服务实例</h3><ul>
+<li>客户端初始化的时候，即SystemSensorManager的构造函数中，通过JNI调用，创建native层SensorManager的实例，然后调用SensorManager::assertStateLocked()方法做一些初始化的动作。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">status_t</span> <span class="title">SensorManager::assertStateLocked</span><span class="params">()</span> <span class="type">const</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (mSensorServer == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="comment">// try for one second</span></span><br><span class="line">        <span class="function"><span class="type">const</span> String16 <span class="title">name</span><span class="params">(<span class="string">&quot;sensorservice&quot;</span>)</span></span>;</span><br><span class="line">        ……</span><br><span class="line">            <span class="type">status_t</span> err = <span class="built_in">getService</span>(name, &amp;mSensorServer);</span><br><span class="line">        ……</span><br><span class="line">        mSensors = mSensorServer-&gt;<span class="built_in">getSensorList</span>();</span><br><span class="line">        <span class="type">size_t</span> count = mSensors.<span class="built_in">size</span>();</span><br><span class="line">        mSensorList = (Sensor <span class="type">const</span>**)<span class="built_in">malloc</span>(count * <span class="built_in">sizeof</span>(Sensor*));</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">size_t</span> i=<span class="number">0</span> ; i&lt;count ; i++) &#123;</span><br><span class="line">            mSensorList[i] = mSensors.<span class="built_in">array</span>() + i;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> NO_ERROR;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>前面我们讲到过，SensorService的创建的时候调用了defaultServiceManager:getService()将服务添加到了系统服务管理中。现在我们又调用defaultServiceManager::geService()获取到SensorService服务的实例。在通过IBind通信，就可以获取到Sensor列表，所以在客户端初始化的时候，做了两件事情：<ol>
+<li>获取SensorService实例引用</li>
+<li>获取Sensor传感器列表</li>
+</ol>
+</li>
+</ul>
+<h3 id="注册SensorLisenter"><a href="#注册SensorLisenter" class="headerlink" title="注册SensorLisenter"></a>注册SensorLisenter</h3><ul>
+<li>时序图：</li>
+</ul>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorFramework/8.png"/>
+
+<ul>
+<li><code>new ListenerDelegate(SensorEventListener listener, Sensor sensor, Handler handler)</code>在这个构造函数中会创建一个Handler，它会在获取到Sensor数据的时候被调用。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">mHandler = <span class="keyword">new</span> <span class="title class_">Handler</span>(looper) &#123;  </span><br><span class="line">                <span class="meta">@Override</span>  </span><br><span class="line">                <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">handleMessage</span><span class="params">(Message msg)</span> &#123;  </span><br><span class="line">                    <span class="keyword">final</span> <span class="type">SensorEvent</span> <span class="variable">t</span> <span class="operator">=</span> (SensorEvent)msg.obj;  </span><br><span class="line">                    <span class="keyword">final</span> <span class="type">int</span> <span class="variable">handle</span> <span class="operator">=</span> t.sensor.getHandle();  </span><br><span class="line"></span><br><span class="line">                    <span class="keyword">switch</span> (t.sensor.getType()) &#123;  </span><br><span class="line">                        <span class="comment">// Only report accuracy for sensors that support it.  </span></span><br><span class="line">                        <span class="keyword">case</span> Sensor.TYPE_MAGNETIC_FIELD:  </span><br><span class="line">                        <span class="keyword">case</span> Sensor.TYPE_ORIENTATION:  </span><br><span class="line">                            <span class="comment">// call onAccuracyChanged() only if the value changes  </span></span><br><span class="line">                            <span class="keyword">final</span> <span class="type">int</span> <span class="variable">accuracy</span> <span class="operator">=</span> mSensorAccuracies.get(handle);  </span><br><span class="line">                            <span class="keyword">if</span> ((t.accuracy &gt;= <span class="number">0</span>) &amp;&amp; (accuracy != t.accuracy)) &#123;  </span><br><span class="line">                                mSensorAccuracies.put(handle, t.accuracy);  </span><br><span class="line">                                mSensorEventListener.onAccuracyChanged(t.sensor, t.accuracy);  </span><br><span class="line">                            &#125;  </span><br><span class="line">                            <span class="keyword">break</span>;  </span><br><span class="line">                        <span class="keyword">default</span>:  </span><br><span class="line">                            <span class="comment">// For other sensors, just report the accuracy once  </span></span><br><span class="line">                            <span class="keyword">if</span> (mFirstEvent.get(handle) == <span class="literal">false</span>) &#123;  </span><br><span class="line">                                mFirstEvent.put(handle, <span class="literal">true</span>);  </span><br><span class="line">                                mSensorEventListener.onAccuracyChanged(  </span><br><span class="line">                                        t.sensor, SENSOR_STATUS_ACCURACY_HIGH);  </span><br><span class="line">                            &#125;  </span><br><span class="line">                            <span class="keyword">break</span>;  </span><br><span class="line">                    &#125;  </span><br><span class="line"></span><br><span class="line">                    mSensorEventListener.onSensorChanged(t);  </span><br><span class="line">                    sPool.returnToPool(t);  </span><br><span class="line">                &#125;  </span><br><span class="line">            &#125;;  </span><br></pre></td></tr></table></figure>
+
+<h3 id="创建消息队列"><a href="#创建消息队列" class="headerlink" title="创建消息队列"></a>创建消息队列</h3><ul>
+<li>时序图：</li>
+</ul>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorFramework/9.png"/>
+
+<ul>
+<li><p>当客户端第一次注册监听器的时候，就需要创建一个消息队列，也就是说，<strong>android在目前的实现中，只创建了一个消息队列，一个消息队列中有一个管道，用于服务端与客户断传送Sensor数据</strong>。</p>
+</li>
+<li><p>在SensorManager.cpp中的createEventQueue方法创建消息队列：</p>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">sp&lt;SensorEventQueue&gt; <span class="title">SensorManager::createEventQueue</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    sp&lt;SensorEventQueue&gt; queue;</span><br><span class="line">    Mutex::Autolock _l(mLock);</span><br><span class="line"><span class="keyword">while</span> (<span class="built_in">assertStateLocked</span>() == NO_ERROR) &#123;</span><br><span class="line">    <span class="comment">//创建连接接口</span></span><br><span class="line">        sp&lt;ISensorEventConnection&gt; connection =</span><br><span class="line">                mSensorServer-&gt;<span class="built_in">createSensorEventConnection</span>();</span><br><span class="line">        <span class="keyword">if</span> (connection == <span class="literal">NULL</span>) &#123;</span><br><span class="line">            <span class="comment">// SensorService just died.</span></span><br><span class="line">            <span class="built_in">LOGE</span>(<span class="string">&quot;createEventQueue: connection is NULL. SensorService died.&quot;</span>);</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="comment">//创建消息队列</span></span><br><span class="line">        queue = <span class="keyword">new</span> <span class="built_in">SensorEventQueue</span>(connection);</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> queue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>客户端与服务器创建一个<code>SensorEventConnection</code>连接接口，<strong>而一个消息队列中包含一个连接接口</strong>。创建连接接口：</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">sp&lt;ISensorEventConnection&gt; <span class="title">SensorService::createSensorEventConnection</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="function">sp&lt;SensorEventConnection&gt; <span class="title">result</span><span class="params">(<span class="keyword">new</span> SensorEventConnection(<span class="keyword">this</span>))</span></span>;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line">SensorService::SensorEventConnection::<span class="built_in">SensorEventConnection</span>(</span><br><span class="line">        <span class="type">const</span> sp&lt;SensorService&gt;&amp; service)</span><br><span class="line">    : <span class="built_in">mService</span>(service), <span class="built_in">mChannel</span>(<span class="keyword">new</span> <span class="built_in">BitTube</span> ())</span><br><span class="line">&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>关键在于BitTube，在构造函数中创建了管道：</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">BitTube::<span class="built_in">BitTube</span>()</span><br><span class="line">    : <span class="built_in">mSendFd</span>(<span class="number">-1</span>), <span class="built_in">mReceiveFd</span>(<span class="number">-1</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> sockets[<span class="number">2</span>];</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">socketpair</span>(AF_UNIX, SOCK_SEQPACKET, <span class="number">0</span>, sockets) == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="type">int</span> size = SOCKET_BUFFER_SIZE;</span><br><span class="line">        <span class="built_in">setsockopt</span>(sockets[<span class="number">0</span>], SOL_SOCKET, SO_SNDBUF, &amp;size, <span class="built_in">sizeof</span>(size));</span><br><span class="line">        <span class="built_in">setsockopt</span>(sockets[<span class="number">0</span>], SOL_SOCKET, SO_RCVBUF, &amp;size, <span class="built_in">sizeof</span>(size));</span><br><span class="line">        <span class="built_in">setsockopt</span>(sockets[<span class="number">1</span>], SOL_SOCKET, SO_SNDBUF, &amp;size, <span class="built_in">sizeof</span>(size));</span><br><span class="line">        <span class="built_in">setsockopt</span>(sockets[<span class="number">1</span>], SOL_SOCKET, SO_RCVBUF, &amp;size, <span class="built_in">sizeof</span>(size));</span><br><span class="line">        <span class="built_in">fcntl</span>(sockets[<span class="number">0</span>], F_SETFL, O_NONBLOCK);</span><br><span class="line">        <span class="built_in">fcntl</span>(sockets[<span class="number">1</span>], F_SETFL, O_NONBLOCK);</span><br><span class="line">        mReceiveFd = sockets[<span class="number">0</span>];</span><br><span class="line">        mSendFd = sockets[<span class="number">1</span>];</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        mReceiveFd = -errno;</span><br><span class="line">        <span class="built_in">ALOGE</span>(<span class="string">&quot;BitTube: pipe creation failed (%s)&quot;</span>, <span class="built_in">strerror</span>(-mReceiveFd));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>其中：fds[0]就是对应的mReceiveFd,是管道的读端，sensor数据的读取端，对应的是客户端进程访问的。fds[1]就是对应mSendFd,是管道的写端,sensor数据写入端,是sensor的服务进程访问的一端。通过pipe(fds)创建管道,通过fcntl来设置操作管道的方式,设置通道两端的操作方式为O_NONBLOCK ，非阻塞IO方式，read或write调用返回-1和EAGAIN错误。总结下消息队列，客户端第一次注册监听器的时候，就需要创建一个消息队列，客户端创了SensorThread线程从消息队列里面读取数据。SensorEventQueue中有一个SensorEventConnection实例的引用，SensorEventConnection中有一个BitTube实例的引用。</li>
+</ul>
+<h3 id="使能Sensor"><a href="#使能Sensor" class="headerlink" title="使能Sensor"></a>使能Sensor</h3><ul>
+<li>客户端创建了连接接口SensorEventConnection后，可以调用其方法使能Sensor传感器：</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">status_t</span> SensorService::SensorEventConnection::<span class="built_in">enableDisable</span>(</span><br><span class="line">        <span class="type">int</span> handle, <span class="type">bool</span> enabled)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">status_t</span> err;</span><br><span class="line">    <span class="keyword">if</span> (enabled) &#123;</span><br><span class="line">        err = mService-&gt;<span class="built_in">enable</span>(<span class="keyword">this</span>, handle);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        err = mService-&gt;<span class="built_in">disable</span>(<span class="keyword">this</span>, handle);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>handle对应着Sensor传感器的句柄</li>
+</ul>
+<h3 id="服务端往管道写数据"><a href="#服务端往管道写数据" class="headerlink" title="服务端往管道写数据"></a>服务端往管道写数据</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">SensorService::threadLoop</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    ……</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        count = device.<span class="built_in">poll</span>(buffer, numEventMax);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">recordLastValue</span>(buffer, count);</span><br><span class="line">        ……</span><br><span class="line"></span><br><span class="line">        <span class="comment">// send our events to clients...</span></span><br><span class="line">        <span class="type">const</span> SortedVector&lt; wp&lt;SensorEventConnection&gt; &gt; <span class="built_in">activeConnections</span>(</span><br><span class="line">                <span class="built_in">getActiveConnections</span>());</span><br><span class="line">        <span class="type">size_t</span> numConnections = activeConnections.<span class="built_in">size</span>();</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">size_t</span> i=<span class="number">0</span> ; i&lt;numConnections ; i++) &#123;</span><br><span class="line">            <span class="function">sp&lt;SensorEventConnection&gt; <span class="title">connection</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">                    activeConnections[i].promote())</span></span>;</span><br><span class="line">            <span class="keyword">if</span> (connection != <span class="number">0</span>) &#123;</span><br><span class="line">                connection-&gt;<span class="built_in">sendEvents</span>(buffer, count, scratch);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">while</span> (count &gt;= <span class="number">0</span> || Thread::<span class="built_in">exitPending</span>());</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>前面介绍过，在SensorService中，创建了一个线程不断从HAL层读取Sensor数据，就是在threadLoop方法中。</p>
+</li>
+<li><p>关键在与下面了一个for循环，其实是扫描有多少个客户端连接接口，然后就往没每个连接的管道中写数据</p>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">status_t</span> SensorService::SensorEventConnection::<span class="built_in">sendEvents</span>(</span><br><span class="line">        <span class="type">sensors_event_t</span> <span class="type">const</span>* buffer, <span class="type">size_t</span> numEvents,</span><br><span class="line">        <span class="type">sensors_event_t</span>* scratch)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// filter out events not for this connection</span></span><br><span class="line">    <span class="type">size_t</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (scratch) &#123;</span><br><span class="line">      ……</span><br><span class="line">    &#125;</span><br><span class="line">    ……</span><br><span class="line">    <span class="keyword">if</span> (count == <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="type">ssize_t</span> size = mChannel-&gt;<span class="built_in">write</span>(scratch, count*<span class="built_in">sizeof</span>(<span class="type">sensors_event_t</span>));</span><br><span class="line">    ……</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>调用该连接接口的BitTube::write()，到此，服务端就完成了往管道的写端写入数据:</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">ssize_t</span> <span class="title">BitTube::write</span><span class="params">(<span class="type">void</span> <span class="type">const</span>* vaddr, <span class="type">size_t</span> size)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">ssize_t</span> err, len;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        len = ::<span class="built_in">send</span>(mSendFd, vaddr, size, MSG_DONTWAIT | MSG_NOSIGNAL);</span><br><span class="line">        err = len &lt; <span class="number">0</span> ? errno : <span class="number">0</span>;</span><br><span class="line">    &#125; <span class="keyword">while</span> (err == EINTR);</span><br><span class="line">    <span class="keyword">return</span> err == <span class="number">0</span> ? len : -err;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="客户端读管道数据"><a href="#客户端读管道数据" class="headerlink" title="客户端读管道数据"></a>客户端读管道数据</h3><ul>
+<li>时序图:</li>
+</ul>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorFramework/10.png"/>
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">ssize_t</span> <span class="title">SensorEventQueue::read</span><span class="params">(ASensorEvent* events, <span class="type">size_t</span> numEvents)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> BitTube::<span class="built_in">recvObjects</span>(mSensorChannel, events, numEvents);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>调用到了BitTube::read()：</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">static</span> <span class="type">ssize_t</span> <span class="title">recvObjects</span><span class="params">(<span class="type">const</span> sp&lt;BitTube&gt;&amp; tube,</span></span></span><br><span class="line"><span class="params"><span class="function">            T* events, <span class="type">size_t</span> count)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">recvObjects</span>(tube, events, count, <span class="built_in">sizeof</span>(T));</span><br><span class="line">    &#125;</span><br><span class="line"><span class="function"><span class="type">ssize_t</span> <span class="title">BitTube::recvObjects</span><span class="params">(<span class="type">const</span> sp&lt;BitTube&gt;&amp; tube,</span></span></span><br><span class="line"><span class="params"><span class="function">        <span class="type">void</span>* events, <span class="type">size_t</span> count, <span class="type">size_t</span> objSize)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">ssize_t</span> numObjects = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">size_t</span> i=<span class="number">0</span> ; i&lt;count ; i++) &#123;</span><br><span class="line">        <span class="type">char</span>* vaddr = <span class="built_in">reinterpret_cast</span>&lt;<span class="type">char</span>*&gt;(events) + objSize * i;</span><br><span class="line">        <span class="type">ssize_t</span> size = tube-&gt;<span class="built_in">read</span>(vaddr, objSize);</span><br><span class="line">        <span class="keyword">if</span> (size &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="comment">// error occurred</span></span><br><span class="line">            <span class="keyword">return</span> size;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (size == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="comment">// no more messages</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        numObjects++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> numObjects;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">ssize_t</span> <span class="title">BitTube::read</span><span class="params">(<span class="type">void</span>* vaddr, <span class="type">size_t</span> size)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">ssize_t</span> err, len;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        len = ::<span class="built_in">recv</span>(mReceiveFd, vaddr, size, MSG_DONTWAIT);</span><br><span class="line">        err = len &lt; <span class="number">0</span> ? errno : <span class="number">0</span>;</span><br><span class="line">    &#125; <span class="keyword">while</span> (err == EINTR);</span><br><span class="line">    <span class="keyword">if</span> (err == EAGAIN || err == EWOULDBLOCK) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> err == <span class="number">0</span> ? len : -err;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%8D%9A%E5%AE%A2/" rel="tag"># 博客</a>
+              <a href="/tags/Sensor/" rel="tag"># Sensor</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/09/14/blogs/SensorHAL/" rel="prev" title="Android Sensor框架HAL层解读">
+      <i class="fa fa-chevron-left"></i> Android Sensor框架HAL层解读
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2016/09/29/blogs/Retrofit/" rel="next" title="Android深入浅出 Retrofit">
+      Android深入浅出 Retrofit <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Sensor%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">Sensor整体架构：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84%E8%AF%B4%E6%98%8E"><span class="nav-number">1.1.</span> <span class="nav-text">整体架构说明:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sensor%E6%80%BB%E4%BD%93%E8%B0%83%E7%94%A8%E5%85%B3%E7%B3%BB%E5%9B%BE"><span class="nav-number">1.2.</span> <span class="nav-text">Sensor总体调用关系图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%B8%BB%E8%A6%81%E7%B1%BB"><span class="nav-number">1.3.</span> <span class="nav-text">客户端主要类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E4%B8%BB%E8%A6%81%E7%B1%BB"><span class="nav-number">1.4.</span> <span class="nav-text">服务端主要类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HAL%E5%B1%82"><span class="nav-number">1.5.</span> <span class="nav-text">HAL层</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AF%BB%E5%8F%96%E6%95%B0%E6%8D%AE"><span class="nav-number">2.</span> <span class="nav-text">客户端读取数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B0%83%E7%94%A8%E6%97%B6%E5%BA%8F%E5%9B%BE"><span class="nav-number">2.1.</span> <span class="nav-text">调用时序图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#apk%E6%B3%A8%E5%86%8C%E7%9B%91%E5%90%AC%E5%99%A8"><span class="nav-number">2.2.</span> <span class="nav-text">apk注册监听器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96SystemSensorManager"><span class="nav-number">2.3.</span> <span class="nav-text">初始化SystemSensorManager</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8SensorThread%E7%BA%BF%E7%A8%8B%E8%AF%BB%E5%8F%96%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E4%B8%AD%E6%95%B0%E6%8D%AE"><span class="nav-number">2.4.</span> <span class="nav-text">启动SensorThread线程读取消息队列中数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.</span> <span class="nav-text">服务端实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B0%83%E7%94%A8%E6%97%B6%E5%BA%8F%E5%9B%BE-1"><span class="nav-number">3.1.</span> <span class="nav-text">调用时序图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8SensorService%E6%9C%8D%E5%8A%A1"><span class="nav-number">3.2.</span> <span class="nav-text">启动SensorService服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SensorService%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">3.3.</span> <span class="nav-text">SensorService初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8%E6%96%B0%E7%9A%84%E7%BA%BF%E7%A8%8B%E4%B8%AD%E8%AF%BB%E5%8F%96HAL%E5%B1%82%E6%95%B0%E6%8D%AE"><span class="nav-number">3.4.</span> <span class="nav-text">在新的线程中读取HAL层数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%B8%8E%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%80%9A%E4%BF%A1"><span class="nav-number">4.</span> <span class="nav-text">客户端与服务端通信</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E4%BC%A0%E9%80%81"><span class="nav-number">4.1.</span> <span class="nav-text">数据传送</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%A4%E4%BA%92%E8%B0%83%E7%94%A8%E6%97%B6%E5%BA%8F%E5%9B%BE"><span class="nav-number">5.</span> <span class="nav-text">交互调用时序图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF"><span class="nav-number">5.1.</span> <span class="nav-text">服务端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">5.2.</span> <span class="nav-text">客户端</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B%E8%A7%A3%E6%9E%90"><span class="nav-number">6.</span> <span class="nav-text">流程解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%8E%B7%E5%8F%96SensorService%E6%9C%8D%E5%8A%A1%E5%AE%9E%E4%BE%8B"><span class="nav-number">6.1.</span> <span class="nav-text">客户端获取SensorService服务实例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E5%86%8CSensorLisenter"><span class="nav-number">6.2.</span> <span class="nav-text">注册SensorLisenter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97"><span class="nav-number">6.3.</span> <span class="nav-text">创建消息队列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E8%83%BDSensor"><span class="nav-number">6.4.</span> <span class="nav-text">使能Sensor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%BE%80%E7%AE%A1%E9%81%93%E5%86%99%E6%95%B0%E6%8D%AE"><span class="nav-number">6.5.</span> <span class="nav-text">服务端往管道写数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AF%BB%E7%AE%A1%E9%81%93%E6%95%B0%E6%8D%AE"><span class="nav-number">6.6.</span> <span class="nav-text">客户端读管道数据</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">liweiping</p>
+  <div class="site-description" itemprop="description">爱生活...爱Android...</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">liweiping</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

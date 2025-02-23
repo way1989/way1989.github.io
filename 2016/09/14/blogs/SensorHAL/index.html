@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"way1989.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Android Sensor框架HAL层浅度解析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android Sensor框架HAL层解读">
+<meta property="og:url" content="https://way1989.github.io/2016/09/14/blogs/SensorHAL/index.html">
+<meta property="og:site_name" content="liweiping">
+<meta property="og:description" content="Android Sensor框架HAL层浅度解析">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorHAL/1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorHAL/2.jpg">
+<meta property="article:published_time" content="2016-09-14T07:24:41.000Z">
+<meta property="article:modified_time" content="2025-02-23T13:38:11.291Z">
+<meta property="article:author" content="liweiping">
+<meta property="article:tag" content="博客">
+<meta property="article:tag" content="Sensor">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorHAL/1.png">
+
+<link rel="canonical" href="https://way1989.github.io/2016/09/14/blogs/SensorHAL/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Android Sensor框架HAL层解读 | liweiping</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">liweiping</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://way1989.github.io/2016/09/14/blogs/SensorHAL/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="liweiping">
+      <meta itemprop="description" content="爱生活...爱Android...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="liweiping">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Android Sensor框架HAL层解读
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-09-14 15:24:41" itemprop="dateCreated datePublished" datetime="2016-09-14T15:24:41+08:00">2016-09-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-02-23 21:38:11" itemprop="dateModified" datetime="2025-02-23T21:38:11+08:00">2025-02-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8D%9A%E5%AE%A2/" itemprop="url" rel="index"><span itemprop="name">博客</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%8D%9A%E5%AE%A2/Sensor/" itemprop="url" rel="index"><span itemprop="name">Sensor</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">Android Sensor框架HAL层浅度解析</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="Android-sensor构建"><a href="#Android-sensor构建" class="headerlink" title="Android sensor构建"></a>Android sensor构建</h2><ol>
+<li><p>Android6.0 系统内置对传感器的支持达26种，他们分别是：加速度传感器(accelerometer)、磁力传感器(magnetic field)、方向传感器(orientation)、陀螺仪(gyroscope)、环境光照传感器(light)、压力传感器(pressure)、温度传感器(temperature)和距离传感器(proximity)等。</p>
+</li>
+<li><p>Android实现传感器系统包括以下几个部分：</p>
+<ul>
+<li>java层</li>
+<li>JNI层</li>
+<li>HAL层</li>
+<li>驱动层</li>
+</ul>
+</li>
+<li><p>各部分之间架构图如下：</p>
+</li>
+</ol>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorHAL/1.png"/>
+
+
+<h2 id="Sensor-HAL层接口"><a href="#Sensor-HAL层接口" class="headerlink" title="Sensor HAL层接口"></a>Sensor HAL层接口</h2><ol>
+<li><p>Google为Sensor提供了统一的HAL接口，不同的硬件厂商需要根据该接口来实现并完成具体的硬件抽象层。Android中Sensor的HAL接口定义在：<code>hardware/libhardware/include/hardware/sensors.h</code></p>
+</li>
+<li><p>对传感器类型的定义:</p>
+</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> SENSOR_TYPE_ACCELEROMETER                   (1)  <span class="comment">//加速度传感器</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SENSOR_TYPE_MAGNETIC_FIELD                  (2)  <span class="comment">//磁力传感器</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SENSOR_TYPE_ORIENTATION                     (3)  <span class="comment">//方向</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SENSOR_TYPE_GYROSCOPE                       (4)  <span class="comment">//陀螺仪</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SENSOR_TYPE_LIGHT                           (5)  <span class="comment">//环境光照传感器</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SENSOR_TYPE_PRESSURE                        (6)  <span class="comment">//压力传感器</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SENSOR_TYPE_TEMPERATURE                     (7)  <span class="comment">//温度传感器</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SENSOR_TYPE_PROXIMITY                       (8)  <span class="comment">//距离传感器</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SENSOR_TYPE_GRAVITY                         (9)  <span class="comment">//重力</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SENSOR_TYPE_LINEAR_ACCELERATION             (10) <span class="comment">//线性加速度</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SENSOR_TYPE_ROTATION_VECTOR                 (11) <span class="comment">//运动</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SENSOR_TYPE_RELATIVE_HUMIDITY               (12) <span class="comment">//湿度传感器</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SENSOR_TYPE_AMBIENT_TEMPERATURE             (13) <span class="comment">//环境温度传感器</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SENSOR_TYPE_MAGNETIC_FIELD_UNCALIBRATED     (14) <span class="comment">//未校准磁力传感器</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SENSOR_TYPE_GAME_ROTATION_VECTOR            (15) <span class="comment">//游戏动作传感器</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SENSOR_TYPE_GYROSCOPE_UNCALIBRATED          (16) <span class="comment">//未校准陀螺仪</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SENSOR_TYPE_SIGNIFICANT_MOTION              (17) <span class="comment">//特殊动作触发传感器</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SENSOR_TYPE_STEP_DETECTOR                   (18) <span class="comment">//步行检测传感器</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SENSOR_TYPE_STEP_COUNTER                    (19) <span class="comment">//计步传感器</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SENSOR_TYPE_GEOMAGNETIC_ROTATION_VECTOR     (20) <span class="comment">//地磁旋转矢量传感器,提供手机的旋转矢量</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SENSOR_TYPE_HEART_RATE                      (21) <span class="comment">//心率传感器</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SENSOR_TYPE_TILT_DETECTOR                   (22) <span class="comment">//每次检测到倾斜事件后均生成事件</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SENSOR_TYPE_WAKE_GESTURE                    (23) <span class="comment">//支持根据设备特定的动作唤醒设备</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SENSOR_TYPE_GLANCE_GESTURE                  (24) <span class="comment">//支持短暂打开屏幕，以便用户根据特定动作浏览屏幕上的内容</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SENSOR_TYPE_PICK_UP_GESTURE                 (25) <span class="comment">//拾起设备时触发,无论面前是什么(桌子、口袋、手提袋)</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SENSOR_TYPE_WRIST_TILT_GESTURE              (26) <span class="comment">//腕关节倾斜触发生成事件</span></span></span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>传感器模块的定义结构体如下，该接口的定义实际上是对标准的硬件模块hw_module_t的一个扩展，增加了一个<code>get_sensors_list</code>函数，用于获取传感器的列表。</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">sensors_module_t</span> &#123;</span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">hw_module_t</span> common;</span><br><span class="line">    <span class="built_in">int</span> (*get_sensors_list)(<span class="keyword">struct</span> <span class="type">sensors_module_t</span>* <span class="keyword">module</span>,</span><br><span class="line">            <span class="keyword">struct</span> <span class="type">sensor_t</span> <span class="type">const</span>** list);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>对任意一个sensor设备都会有一个<code>sensor_t</code>结构体，其定义如下：</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">sensor_t</span> &#123;</span><br><span class="line">    <span class="type">const</span> <span class="type">char</span>*     name;       <span class="comment">//传感器名字</span></span><br><span class="line">    <span class="type">const</span> <span class="type">char</span>*     vendor;</span><br><span class="line">    <span class="type">int</span>             version;     <span class="comment">//版本</span></span><br><span class="line">    <span class="type">int</span>             handle;     <span class="comment">//传感器的handle句柄</span></span><br><span class="line">    <span class="type">int</span>             type;       <span class="comment">//传感器类型</span></span><br><span class="line">    <span class="type">float</span>           maxRange;   <span class="comment">//最大范围</span></span><br><span class="line">    <span class="type">float</span>           resolution;    <span class="comment">//解析度</span></span><br><span class="line">    <span class="type">float</span>           power;       <span class="comment">//消耗能源</span></span><br><span class="line">    <span class="type">int32_t</span>         minDelay;    <span class="comment">//事件间隔最小时间</span></span><br><span class="line">    <span class="type">void</span>*           reserved[<span class="number">8</span>];   <span class="comment">//保留字段，必须为0</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>每个传感器的数据由<code>sensors_event_t</code>结构体表示，定义如下，其中，sensor为传感器的标志符，而不同的传感器则采用union方式来表示。</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> <span class="title class_">sensors_event_t</span> &#123;</span><br><span class="line">    <span class="type">int32_t</span> version;</span><br><span class="line">    <span class="type">int32_t</span> sensor;            <span class="comment">//标识符</span></span><br><span class="line">    <span class="type">int32_t</span> type;             <span class="comment">//传感器类型</span></span><br><span class="line">    <span class="type">int32_t</span> reserved0;</span><br><span class="line">    <span class="type">int64_t</span> timestamp;        <span class="comment">//时间戳</span></span><br><span class="line">    <span class="keyword">union</span> &#123;</span><br><span class="line">        <span class="type">float</span>           data[<span class="number">16</span>];</span><br><span class="line">        <span class="type">sensors_vec_t</span>   acceleration;   <span class="comment">//加速度</span></span><br><span class="line">        <span class="type">sensors_vec_t</span>   magnetic;      <span class="comment">//磁矢量</span></span><br><span class="line">        <span class="type">sensors_vec_t</span>   orientation;     <span class="comment">//方向</span></span><br><span class="line">        <span class="type">sensors_vec_t</span>   gyro;          <span class="comment">//陀螺仪</span></span><br><span class="line">        <span class="type">float</span>           temperature;     <span class="comment">//温度</span></span><br><span class="line">        <span class="type">float</span>           distance;        <span class="comment">//距离</span></span><br><span class="line">        <span class="type">float</span>           light;           <span class="comment">//光照</span></span><br><span class="line">        <span class="type">float</span>           pressure;         <span class="comment">//压力</span></span><br><span class="line">        <span class="type">float</span>           relative_humidity;  <span class="comment">//相对湿度</span></span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="type">uint32_t</span>        reserved1[<span class="number">4</span>];</span><br><span class="line">&#125; <span class="type">sensors_event_t</span>;</span><br></pre></td></tr></table></figure>
+
+<ol start="6">
+<li><code>sensors_vec_t</code>结构体用来表示不同传感器的数据：</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</span><br><span class="line">    <span class="keyword">union</span> &#123;</span><br><span class="line">        <span class="type">float</span> v[<span class="number">3</span>];</span><br><span class="line">        <span class="keyword">struct</span> &#123;</span><br><span class="line">            <span class="type">float</span> x;</span><br><span class="line">            <span class="type">float</span> y;</span><br><span class="line">            <span class="type">float</span> z;</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="keyword">struct</span> &#123;</span><br><span class="line">            <span class="type">float</span> azimuth;</span><br><span class="line">            <span class="type">float</span> pitch;</span><br><span class="line">            <span class="type">float</span> roll;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="type">int8_t</span> status;</span><br><span class="line">    <span class="type">uint8_t</span> reserved[<span class="number">3</span>];</span><br><span class="line">&#125; <span class="type">sensors_vec_t</span>;</span><br></pre></td></tr></table></figure>
+
+<ol start="7">
+<li>Sensor设备结构体<code>sensors_poll_device_t</code>，对标准硬件设备<code>hw_device_t</code>结构体的扩展，主要完成读取底层数据，并将数据存储在<code>struct sensors_poll_device_t</code>结构体中；poll函数用来获取底层数据，调用时将被阻塞定义如下：</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">sensors_poll_device_t</span> &#123;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">hw_device_t</span> common;</span><br><span class="line"><span class="comment">//Activate/deactivate one sensor</span></span><br><span class="line">    <span class="built_in">int</span> (*activate)(<span class="keyword">struct</span> <span class="type">sensors_poll_device_t</span> *dev,</span><br><span class="line">            <span class="type">int</span> handle, <span class="type">int</span> enabled);</span><br><span class="line">    <span class="comment">//Set the delay between sensor events in nanoseconds for a given sensor.</span></span><br><span class="line">    <span class="built_in">int</span> (*setDelay)(<span class="keyword">struct</span> <span class="type">sensors_poll_device_t</span> *dev,</span><br><span class="line">            <span class="type">int</span> handle, <span class="type">int64_t</span> ns);</span><br><span class="line">    <span class="comment">//获取数据</span></span><br><span class="line">    <span class="built_in">int</span> (*poll)(<span class="keyword">struct</span> <span class="type">sensors_poll_device_t</span> *dev,</span><br><span class="line">            <span class="type">sensors_event_t</span>* data, <span class="type">int</span> count);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<ol start="8">
+<li>控制设备打开&#x2F;关闭结构体定义如下：</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">static</span> <span class="keyword">inline</span> <span class="type">int</span> <span class="title">sensors_open</span><span class="params">(<span class="type">const</span> <span class="keyword">struct</span> <span class="type">hw_module_t</span>* <span class="keyword">module</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">        <span class="keyword">struct</span> <span class="type">sensors_poll_device_t</span>** device)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">module</span>-&gt;methods-&gt;<span class="built_in">open</span>(<span class="keyword">module</span>,</span><br><span class="line">            SENSORS_HARDWARE_POLL, (<span class="keyword">struct</span> <span class="type">hw_device_t</span>**)device);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">static</span> <span class="keyword">inline</span> <span class="type">int</span> <span class="title">sensors_close</span><span class="params">(<span class="keyword">struct</span> <span class="type">sensors_poll_device_t</span>* device)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> device-&gt;common.<span class="built_in">close</span>(&amp;device-&gt;common);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Sensor-HAL实现"><a href="#Sensor-HAL实现" class="headerlink" title="Sensor HAL实现"></a>Sensor HAL实现</h2><ol>
+<li>打开设备时序图</li>
+</ol>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/sensorHAL/2.jpg"/>
+
+<ol start="2">
+<li>SensorDevice属于JNI层，与HAL进行通信的接口，在JNI层调用了HAL层的<code>open_sensors()</code>方法打开设备模块，再调用<code>poll__activate()</code>对设备使能，然后调用<code>poll__poll</code>读取数据。</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%8D%9A%E5%AE%A2/" rel="tag"># 博客</a>
+              <a href="/tags/Sensor/" rel="tag"># Sensor</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/09/12/notes/HexoForBlog/" rel="prev" title="Hexo换了电脑处理方法">
+      <i class="fa fa-chevron-left"></i> Hexo换了电脑处理方法
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2016/09/15/blogs/SensorFramework/" rel="next" title="Android Sensor框架Framework层解读">
+      Android Sensor框架Framework层解读 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Android-sensor%E6%9E%84%E5%BB%BA"><span class="nav-number">1.</span> <span class="nav-text">Android sensor构建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sensor-HAL%E5%B1%82%E6%8E%A5%E5%8F%A3"><span class="nav-number">2.</span> <span class="nav-text">Sensor HAL层接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sensor-HAL%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.</span> <span class="nav-text">Sensor HAL实现</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">liweiping</p>
+  <div class="site-description" itemprop="description">爱生活...爱Android...</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">liweiping</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

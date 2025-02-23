@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"way1989.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="各种常用脚本备忘">
+<meta property="og:type" content="article">
+<meta property="og:title" content="各种常用脚本">
+<meta property="og:url" content="https://way1989.github.io/2017/01/14/notes/Command/index.html">
+<meta property="og:site_name" content="liweiping">
+<meta property="og:description" content="各种常用脚本备忘">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-01-14T09:10:24.000Z">
+<meta property="article:modified_time" content="2025-02-23T13:38:11.291Z">
+<meta property="article:author" content="liweiping">
+<meta property="article:tag" content="笔记">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://way1989.github.io/2017/01/14/notes/Command/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>各种常用脚本 | liweiping</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">liweiping</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://way1989.github.io/2017/01/14/notes/Command/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="liweiping">
+      <meta itemprop="description" content="爱生活...爱Android...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="liweiping">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          各种常用脚本
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-01-14 17:10:24" itemprop="dateCreated datePublished" datetime="2017-01-14T17:10:24+08:00">2017-01-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-02-23 21:38:11" itemprop="dateModified" datetime="2025-02-23T21:38:11+08:00">2025-02-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">笔记</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AC%94%E8%AE%B0/command/" itemprop="url" rel="index"><span itemprop="name">command</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">各种常用脚本备忘</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="alogcat可以过滤打印出对应包名的log："><a href="#alogcat可以过滤打印出对应包名的log：" class="headerlink" title="alogcat可以过滤打印出对应包名的log："></a><code>alogcat</code>可以过滤打印出对应包名的log：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 作用：能够通过进程名显示log</span></span><br><span class="line"><span class="comment"># 用法：alogcat com.android.calendar or alogcat calendar</span></span><br><span class="line"><span class="comment"># 当监控的进程异常退出时，需要重新运行此命令</span></span><br><span class="line"><span class="comment">#function alogcat() &#123;</span></span><br><span class="line">    OUT=$(adb shell ps | grep -i <span class="variable">$1</span> | awk <span class="string">&#x27;&#123;print $2&#125;&#x27;</span>)</span><br><span class="line">    OUT=$(<span class="built_in">echo</span> <span class="variable">$OUT</span> | sed <span class="string">&#x27;s/[[:blank:]]\+/\|/g&#x27;</span>)</span><br><span class="line">    <span class="comment"># 当进程异常退出，log是通过 AndroidRuntime 输出的</span></span><br><span class="line">    adb logcat -v <span class="keyword">time</span> | grep -E <span class="string">&quot;<span class="variable">$OUT</span>|AndroidRuntime&quot;</span></span><br><span class="line"><span class="comment">#&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="tingpng批量压缩图片资源的脚本："><a href="#tingpng批量压缩图片资源的脚本：" class="headerlink" title="tingpng批量压缩图片资源的脚本："></a><code>tingpng</code>批量压缩图片资源的脚本：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">pngquant -f --skip-if-larger --ext .png --quality 50-80 `find . -name <span class="string">&quot;*.png&quot;</span> -<span class="built_in">type</span> f ! -name <span class="string">&quot;*.9.png&quot;</span>`</span><br></pre></td></tr></table></figure>
+
+<h2 id="在Mac、Linux-终端显示-Git-当前所在分支"><a href="#在Mac、Linux-终端显示-Git-当前所在分支" class="headerlink" title="在Mac、Linux 终端显示 Git 当前所在分支"></a>在Mac、Linux 终端显示 Git 当前所在分支</h2><p>编辑.bashrc文件,将下面的代码加入到文件的最后处,保存退出，执行加载命令<code>source ./.bashrc</code>:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## Parses out the branch name from .git/HEAD:</span></span><br><span class="line"><span class="function"><span class="title">find_git_branch</span></span> () &#123;</span><br><span class="line">    <span class="built_in">local</span> <span class="built_in">dir</span>=. <span class="built_in">head</span></span><br><span class="line">    <span class="keyword">until</span> [ <span class="string">&quot;<span class="variable">$dir</span>&quot;</span> -ef / ]; <span class="keyword">do</span></span><br><span class="line">        <span class="keyword">if</span> [ -f <span class="string">&quot;<span class="variable">$dir</span>/.git/HEAD&quot;</span> ]; <span class="keyword">then</span></span><br><span class="line">            <span class="built_in">head</span>=$(&lt; <span class="string">&quot;<span class="variable">$dir</span>/.git/HEAD&quot;</span>)</span><br><span class="line">            <span class="keyword">if</span> [[ <span class="variable">$head</span> = ref:\ refs/heads/* ]]; <span class="keyword">then</span></span><br><span class="line">                git_branch=<span class="string">&quot; → <span class="variable">$&#123;head#*/*/&#125;</span>&quot;</span></span><br><span class="line">            <span class="keyword">elif</span> [[ <span class="variable">$head</span> != <span class="string">&#x27;&#x27;</span> ]]; <span class="keyword">then</span></span><br><span class="line">                git_branch=<span class="string">&quot; → (detached)&quot;</span></span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                git_branch=<span class="string">&quot; → (unknow)&quot;</span></span><br><span class="line">            <span class="keyword">fi</span></span><br><span class="line">            <span class="built_in">return</span></span><br><span class="line">        <span class="keyword">fi</span></span><br><span class="line">        <span class="built_in">dir</span>=<span class="string">&quot;../<span class="variable">$dir</span>&quot;</span></span><br><span class="line">    <span class="keyword">done</span></span><br><span class="line">    git_branch=<span class="string">&#x27;&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">PROMPT_COMMAND=<span class="string">&quot;find_git_branch; <span class="variable">$PROMPT_COMMAND</span>&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Here is bash color codes you can use</span></span><br><span class="line">  black=$<span class="string">&#x27;\[\e[1;30m\]&#x27;</span></span><br><span class="line">    red=$<span class="string">&#x27;\[\e[1;31m\]&#x27;</span></span><br><span class="line">  green=$<span class="string">&#x27;\[\e[1;32m\]&#x27;</span></span><br><span class="line"> yellow=$<span class="string">&#x27;\[\e[1;33m\]&#x27;</span></span><br><span class="line">   blue=$<span class="string">&#x27;\[\e[1;34m\]&#x27;</span></span><br><span class="line">magenta=$<span class="string">&#x27;\[\e[1;35m\]&#x27;</span></span><br><span class="line">   cyan=$<span class="string">&#x27;\[\e[1;36m\]&#x27;</span></span><br><span class="line">  white=$<span class="string">&#x27;\[\e[1;37m\]&#x27;</span></span><br><span class="line"> normal=$<span class="string">&#x27;\[\e[m\]&#x27;</span></span><br><span class="line"></span><br><span class="line">PS1=<span class="string">&quot;<span class="variable">$white</span>[<span class="variable">$white</span>\u<span class="variable">$white</span>@<span class="variable">$white</span>\h<span class="variable">$white</span>:<span class="variable">$white</span>\w<span class="variable">$yellow</span>\$git_branch<span class="variable">$white</span>]\$ <span class="variable">$normal</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="通过git-diffall-branch-a-branch-b来对比两个分支间差异配置："><a href="#通过git-diffall-branch-a-branch-b来对比两个分支间差异配置：" class="headerlink" title="通过git diffall branch_a...branch_b来对比两个分支间差异配置："></a>通过<code>git diffall branch_a...branch_b</code>来对比两个分支间差异配置：</h2><p>在～&#x2F;bin目录下新建git-diffall文件:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"><span class="comment"># Copyright 2010 - 2012, Tim Henigan &lt;tim.henigan@gmail.com&gt;</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Permission is hereby granted, free of charge, to any person obtaining</span></span><br><span class="line"><span class="comment"># a copy of this software and associated documentation files (the</span></span><br><span class="line"><span class="comment"># &quot;Software&quot;), to deal in the Software without restriction, including</span></span><br><span class="line"><span class="comment"># without limitation the rights to use, copy, modify, merge, publish,</span></span><br><span class="line"><span class="comment"># distribute, sublicense, and/or sell copies of the Software, and to</span></span><br><span class="line"><span class="comment"># permit persons to whom the Software is furnished to do so, subject to</span></span><br><span class="line"><span class="comment"># the following conditions:</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># The above copyright notice and this permission notice shall be included</span></span><br><span class="line"><span class="comment"># in all copies or substantial portions of the Software.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS</span></span><br><span class="line"><span class="comment"># OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF</span></span><br><span class="line"><span class="comment"># MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.</span></span><br><span class="line"><span class="comment"># IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY</span></span><br><span class="line"><span class="comment"># CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,</span></span><br><span class="line"><span class="comment"># TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE</span></span><br><span class="line"><span class="comment"># SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Perform a directory diff between commits in the repository using</span></span><br><span class="line"><span class="comment"># the external diff or merge tool specified in the user&#x27;s config.</span></span><br><span class="line"></span><br><span class="line">USAGE=<span class="string">&#x27;[--cached] [--copy-back] [-x|--extcmd=&lt;command&gt;] &lt;commit&gt;&#123;0,2&#125; [-- &lt;path&gt;*]</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    --cached     Compare to the index rather than the working tree.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    --copy-back  Copy files back to the working tree when the diff</span></span><br><span class="line"><span class="string">                 tool exits (in case they were modified by the</span></span><br><span class="line"><span class="string">                 user).  This option is only valid if the diff</span></span><br><span class="line"><span class="string">                 compared with the working tree.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    -x=&lt;command&gt;</span></span><br><span class="line"><span class="string">    --extcmd=&lt;command&gt;  Specify a custom command for viewing diffs.</span></span><br><span class="line"><span class="string">                 git-diffall ignores the configured defaults and</span></span><br><span class="line"><span class="string">                 runs $command $LOCAL $REMOTE when this option is</span></span><br><span class="line"><span class="string">                 specified. Additionally, $BASE is set in the</span></span><br><span class="line"><span class="string">                 environment.</span></span><br><span class="line"><span class="string">&#x27;</span></span><br><span class="line"></span><br><span class="line">SUBDIRECTORY_OK=1</span><br><span class="line">. <span class="string">&quot;<span class="subst">$(git --exec-path)</span>/git-sh-setup&quot;</span></span><br><span class="line"></span><br><span class="line">TOOL_MODE=diff</span><br><span class="line">. <span class="string">&quot;<span class="subst">$(git --exec-path)</span>/git-mergetool--lib&quot;</span></span><br><span class="line"></span><br><span class="line">merge_tool=<span class="string">&quot;<span class="subst">$(get_merge_tool)</span>&quot;</span></span><br><span class="line"><span class="keyword">if</span> <span class="built_in">test</span> -z <span class="string">&quot;<span class="variable">$merge_tool</span>&quot;</span></span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">	<span class="built_in">echo</span> <span class="string">&quot;Error: Either the &#x27;diff.tool&#x27; or &#x27;merge.tool&#x27; option must be set.&quot;</span></span><br><span class="line">	usage</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line">start_dir=$(<span class="built_in">pwd</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># All the file paths returned by the diff command are relative to the root</span></span><br><span class="line"><span class="comment"># of the working copy. So if the script is called from a subdirectory, it</span></span><br><span class="line"><span class="comment"># must switch to the root of working copy before trying to use those paths.</span></span><br><span class="line">cdup=$(git rev-parse --show-cdup) &amp;&amp;</span><br><span class="line"><span class="built_in">cd</span> <span class="string">&quot;<span class="variable">$cdup</span>&quot;</span> || &#123;</span><br><span class="line">	<span class="built_in">echo</span> &gt;&amp;2 <span class="string">&quot;Cannot chdir to <span class="variable">$cdup</span>, the toplevel of the working tree&quot;</span></span><br><span class="line">	<span class="built_in">exit</span> 1</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># set up temp dir</span></span><br><span class="line">tmp=$(perl -e <span class="string">&#x27;use File::Temp qw(tempdir);</span></span><br><span class="line"><span class="string">	$t=tempdir(&quot;/tmp/git-diffall.XXXXX&quot;) or exit(1);</span></span><br><span class="line"><span class="string">	print $t&#x27;</span>) || <span class="built_in">exit</span> 1</span><br><span class="line"><span class="built_in">trap</span> <span class="string">&#x27;rm -rf &quot;$tmp&quot;&#x27;</span> EXIT</span><br><span class="line"></span><br><span class="line">left=</span><br><span class="line">right=</span><br><span class="line">paths=</span><br><span class="line">dashdash_seen=</span><br><span class="line">compare_staged=</span><br><span class="line">merge_base=</span><br><span class="line">left_dir=</span><br><span class="line">right_dir=</span><br><span class="line">diff_tool=</span><br><span class="line">copy_back=</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="built_in">test</span> <span class="variable">$#</span> != 0</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">	<span class="keyword">case</span> <span class="string">&quot;<span class="variable">$1</span>&quot;</span> <span class="keyword">in</span></span><br><span class="line">	-h|--h|--he|--hel|--<span class="built_in">help</span>)</span><br><span class="line">		usage</span><br><span class="line">		;;</span><br><span class="line">	--cached)</span><br><span class="line">		compare_staged=1</span><br><span class="line">		;;</span><br><span class="line">	--copy-back)</span><br><span class="line">		copy_back=1</span><br><span class="line">		;;</span><br><span class="line">	-x|--e|--ex|--ext|--extc|--extcm|--extcmd)</span><br><span class="line">		<span class="keyword">if</span> <span class="built_in">test</span> <span class="variable">$#</span> = 1</span><br><span class="line">		<span class="keyword">then</span></span><br><span class="line">			<span class="built_in">echo</span> You must specify the tool <span class="keyword">for</span> use with --extcmd</span><br><span class="line">			usage</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			diff_tool=<span class="variable">$2</span></span><br><span class="line">			<span class="built_in">shift</span></span><br><span class="line">		<span class="keyword">fi</span></span><br><span class="line">		;;</span><br><span class="line">	--)</span><br><span class="line">		dashdash_seen=1</span><br><span class="line">		;;</span><br><span class="line">	-*)</span><br><span class="line">		<span class="built_in">echo</span> Invalid option: <span class="string">&quot;<span class="variable">$1</span>&quot;</span></span><br><span class="line">		usage</span><br><span class="line">		;;</span><br><span class="line">	*)</span><br><span class="line">		<span class="comment"># could be commit, commit range or path limiter</span></span><br><span class="line">		<span class="keyword">case</span> <span class="string">&quot;<span class="variable">$1</span>&quot;</span> <span class="keyword">in</span></span><br><span class="line">		*...*)</span><br><span class="line">			left=<span class="variable">$&#123;1%...*&#125;</span></span><br><span class="line">			right=<span class="variable">$&#123;1#*...&#125;</span></span><br><span class="line">			merge_base=1</span><br><span class="line">			;;</span><br><span class="line">		*..*)</span><br><span class="line">			left=<span class="variable">$&#123;1%..*&#125;</span></span><br><span class="line">			right=<span class="variable">$&#123;1#*..&#125;</span></span><br><span class="line">			;;</span><br><span class="line">		*)</span><br><span class="line">			<span class="keyword">if</span> <span class="built_in">test</span> -n <span class="string">&quot;<span class="variable">$dashdash_seen</span>&quot;</span></span><br><span class="line">			<span class="keyword">then</span></span><br><span class="line">				paths=<span class="string">&quot;$paths<span class="variable">$1</span> &quot;</span></span><br><span class="line">			<span class="keyword">elif</span> <span class="built_in">test</span> -z <span class="string">&quot;<span class="variable">$left</span>&quot;</span></span><br><span class="line">			<span class="keyword">then</span></span><br><span class="line">				left=<span class="variable">$1</span></span><br><span class="line">			<span class="keyword">elif</span> <span class="built_in">test</span> -z <span class="string">&quot;<span class="variable">$right</span>&quot;</span></span><br><span class="line">			<span class="keyword">then</span></span><br><span class="line">				right=<span class="variable">$1</span></span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">				paths=<span class="string">&quot;$paths<span class="variable">$1</span> &quot;</span></span><br><span class="line">			<span class="keyword">fi</span></span><br><span class="line">			;;</span><br><span class="line">		<span class="keyword">esac</span></span><br><span class="line">		;;</span><br><span class="line">	<span class="keyword">esac</span></span><br><span class="line">	<span class="built_in">shift</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Determine the set of files which changed</span></span><br><span class="line"><span class="keyword">if</span> <span class="built_in">test</span> -n <span class="string">&quot;<span class="variable">$left</span>&quot;</span> &amp;&amp; <span class="built_in">test</span> -n <span class="string">&quot;<span class="variable">$right</span>&quot;</span></span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">	left_dir=<span class="string">&quot;cmt-<span class="subst">$(git rev-parse --short $left)</span>&quot;</span></span><br><span class="line">	right_dir=<span class="string">&quot;cmt-<span class="subst">$(git rev-parse --short $right)</span>&quot;</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">test</span> -n <span class="string">&quot;<span class="variable">$compare_staged</span>&quot;</span></span><br><span class="line">	<span class="keyword">then</span></span><br><span class="line">		usage</span><br><span class="line">	<span class="keyword">elif</span> <span class="built_in">test</span> -n <span class="string">&quot;<span class="variable">$merge_base</span>&quot;</span></span><br><span class="line">	<span class="keyword">then</span></span><br><span class="line">		git diff --name-only <span class="string">&quot;<span class="variable">$left</span>&quot;</span>...<span class="string">&quot;<span class="variable">$right</span>&quot;</span> -- <span class="variable">$paths</span> &gt;<span class="string">&quot;<span class="variable">$tmp</span>/filelist&quot;</span></span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		git diff --name-only <span class="string">&quot;<span class="variable">$left</span>&quot;</span> <span class="string">&quot;<span class="variable">$right</span>&quot;</span> -- <span class="variable">$paths</span> &gt;<span class="string">&quot;<span class="variable">$tmp</span>/filelist&quot;</span></span><br><span class="line">	<span class="keyword">fi</span></span><br><span class="line"><span class="keyword">elif</span> <span class="built_in">test</span> -n <span class="string">&quot;<span class="variable">$left</span>&quot;</span></span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">	left_dir=<span class="string">&quot;cmt-<span class="subst">$(git rev-parse --short $left)</span>&quot;</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">test</span> -n <span class="string">&quot;<span class="variable">$compare_staged</span>&quot;</span></span><br><span class="line">	<span class="keyword">then</span></span><br><span class="line">		right_dir=<span class="string">&quot;staged&quot;</span></span><br><span class="line">		git diff --name-only --cached <span class="string">&quot;<span class="variable">$left</span>&quot;</span> -- <span class="variable">$paths</span> &gt;<span class="string">&quot;<span class="variable">$tmp</span>/filelist&quot;</span></span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		right_dir=<span class="string">&quot;working_tree&quot;</span></span><br><span class="line">		git diff --name-only <span class="string">&quot;<span class="variable">$left</span>&quot;</span> -- <span class="variable">$paths</span> &gt;<span class="string">&quot;<span class="variable">$tmp</span>/filelist&quot;</span></span><br><span class="line">	<span class="keyword">fi</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">	left_dir=<span class="string">&quot;HEAD&quot;</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">test</span> -n <span class="string">&quot;<span class="variable">$compare_staged</span>&quot;</span></span><br><span class="line">	<span class="keyword">then</span></span><br><span class="line">		right_dir=<span class="string">&quot;staged&quot;</span></span><br><span class="line">		git diff --name-only --cached -- <span class="variable">$paths</span> &gt;<span class="string">&quot;<span class="variable">$tmp</span>/filelist&quot;</span></span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		right_dir=<span class="string">&quot;working_tree&quot;</span></span><br><span class="line">		git diff --name-only -- <span class="variable">$paths</span> &gt;<span class="string">&quot;<span class="variable">$tmp</span>/filelist&quot;</span></span><br><span class="line">	<span class="keyword">fi</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Exit immediately if there are no diffs</span></span><br><span class="line"><span class="keyword">if</span> <span class="built_in">test</span> ! -s <span class="string">&quot;<span class="variable">$tmp</span>/filelist&quot;</span></span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">	<span class="built_in">exit</span> 0</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="built_in">test</span> -n <span class="string">&quot;<span class="variable">$copy_back</span>&quot;</span> &amp;&amp; <span class="built_in">test</span> <span class="string">&quot;<span class="variable">$right_dir</span>&quot;</span> != <span class="string">&quot;working_tree&quot;</span></span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">	<span class="built_in">echo</span> <span class="string">&quot;--copy-back is only valid when diff includes the working tree.&quot;</span></span><br><span class="line">	<span class="built_in">exit</span> 1</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Create the named tmp directories that will hold the files to be compared</span></span><br><span class="line"><span class="built_in">mkdir</span> -p <span class="string">&quot;<span class="variable">$tmp</span>/<span class="variable">$left_dir</span>&quot;</span> <span class="string">&quot;<span class="variable">$tmp</span>/<span class="variable">$right_dir</span>&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Populate the tmp/right_dir directory with the files to be compared</span></span><br><span class="line"><span class="keyword">while</span> <span class="built_in">read</span> name</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">test</span> -n <span class="string">&quot;<span class="variable">$right</span>&quot;</span></span><br><span class="line">	<span class="keyword">then</span></span><br><span class="line">		ls_list=$(git ls-tree <span class="variable">$right</span> <span class="string">&quot;<span class="variable">$name</span>&quot;</span>)</span><br><span class="line">		<span class="keyword">if</span> <span class="built_in">test</span> -n <span class="string">&quot;<span class="variable">$ls_list</span>&quot;</span></span><br><span class="line">		<span class="keyword">then</span></span><br><span class="line">			<span class="built_in">mkdir</span> -p <span class="string">&quot;<span class="variable">$tmp</span>/<span class="variable">$right_dir</span>/<span class="subst">$(dirname <span class="string">&quot;<span class="variable">$name</span>&quot;</span>)</span>&quot;</span></span><br><span class="line">			git show <span class="string">&quot;<span class="variable">$right</span>&quot;</span>:<span class="string">&quot;<span class="variable">$name</span>&quot;</span> &gt;<span class="string">&quot;<span class="variable">$tmp</span>/<span class="variable">$right_dir</span>/<span class="variable">$name</span>&quot;</span> || <span class="literal">true</span></span><br><span class="line">		<span class="keyword">fi</span></span><br><span class="line">	<span class="keyword">elif</span> <span class="built_in">test</span> -n <span class="string">&quot;<span class="variable">$compare_staged</span>&quot;</span></span><br><span class="line">	<span class="keyword">then</span></span><br><span class="line">		ls_list=$(git ls-files -- <span class="string">&quot;<span class="variable">$name</span>&quot;</span>)</span><br><span class="line">		<span class="keyword">if</span> <span class="built_in">test</span> -n <span class="string">&quot;<span class="variable">$ls_list</span>&quot;</span></span><br><span class="line">		<span class="keyword">then</span></span><br><span class="line">			<span class="built_in">mkdir</span> -p <span class="string">&quot;<span class="variable">$tmp</span>/<span class="variable">$right_dir</span>/<span class="subst">$(dirname <span class="string">&quot;<span class="variable">$name</span>&quot;</span>)</span>&quot;</span></span><br><span class="line">			git show :<span class="string">&quot;<span class="variable">$name</span>&quot;</span> &gt;<span class="string">&quot;<span class="variable">$tmp</span>/<span class="variable">$right_dir</span>/<span class="variable">$name</span>&quot;</span></span><br><span class="line">		<span class="keyword">fi</span></span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="keyword">if</span> <span class="built_in">test</span> -e <span class="string">&quot;<span class="variable">$name</span>&quot;</span></span><br><span class="line">		<span class="keyword">then</span></span><br><span class="line">			<span class="built_in">mkdir</span> -p <span class="string">&quot;<span class="variable">$tmp</span>/<span class="variable">$right_dir</span>/<span class="subst">$(dirname <span class="string">&quot;<span class="variable">$name</span>&quot;</span>)</span>&quot;</span></span><br><span class="line">			<span class="built_in">cp</span> <span class="string">&quot;<span class="variable">$name</span>&quot;</span> <span class="string">&quot;<span class="variable">$tmp</span>/<span class="variable">$right_dir</span>/<span class="variable">$name</span>&quot;</span></span><br><span class="line">		<span class="keyword">fi</span></span><br><span class="line">	<span class="keyword">fi</span></span><br><span class="line"><span class="keyword">done</span> &lt; <span class="string">&quot;<span class="variable">$tmp</span>/filelist&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Populate the tmp/left_dir directory with the files to be compared</span></span><br><span class="line"><span class="keyword">while</span> <span class="built_in">read</span> name</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">test</span> -n <span class="string">&quot;<span class="variable">$left</span>&quot;</span></span><br><span class="line">	<span class="keyword">then</span></span><br><span class="line">		ls_list=$(git ls-tree <span class="variable">$left</span> <span class="string">&quot;<span class="variable">$name</span>&quot;</span>)</span><br><span class="line">		<span class="keyword">if</span> <span class="built_in">test</span> -n <span class="string">&quot;<span class="variable">$ls_list</span>&quot;</span></span><br><span class="line">		<span class="keyword">then</span></span><br><span class="line">			<span class="built_in">mkdir</span> -p <span class="string">&quot;<span class="variable">$tmp</span>/<span class="variable">$left_dir</span>/<span class="subst">$(dirname <span class="string">&quot;<span class="variable">$name</span>&quot;</span>)</span>&quot;</span></span><br><span class="line">			git show <span class="string">&quot;<span class="variable">$left</span>&quot;</span>:<span class="string">&quot;<span class="variable">$name</span>&quot;</span> &gt;<span class="string">&quot;<span class="variable">$tmp</span>/<span class="variable">$left_dir</span>/<span class="variable">$name</span>&quot;</span> || <span class="literal">true</span></span><br><span class="line">		<span class="keyword">fi</span></span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="keyword">if</span> <span class="built_in">test</span> -n <span class="string">&quot;<span class="variable">$compare_staged</span>&quot;</span></span><br><span class="line">		<span class="keyword">then</span></span><br><span class="line">			ls_list=$(git ls-tree HEAD <span class="string">&quot;<span class="variable">$name</span>&quot;</span>)</span><br><span class="line">			<span class="keyword">if</span> <span class="built_in">test</span> -n <span class="string">&quot;<span class="variable">$ls_list</span>&quot;</span></span><br><span class="line">			<span class="keyword">then</span></span><br><span class="line">				<span class="built_in">mkdir</span> -p <span class="string">&quot;<span class="variable">$tmp</span>/<span class="variable">$left_dir</span>/<span class="subst">$(dirname <span class="string">&quot;<span class="variable">$name</span>&quot;</span>)</span>&quot;</span></span><br><span class="line">				git show HEAD:<span class="string">&quot;<span class="variable">$name</span>&quot;</span> &gt;<span class="string">&quot;<span class="variable">$tmp</span>/<span class="variable">$left_dir</span>/<span class="variable">$name</span>&quot;</span></span><br><span class="line">			<span class="keyword">fi</span></span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			<span class="built_in">mkdir</span> -p <span class="string">&quot;<span class="variable">$tmp</span>/<span class="variable">$left_dir</span>/<span class="subst">$(dirname <span class="string">&quot;<span class="variable">$name</span>&quot;</span>)</span>&quot;</span></span><br><span class="line">			git show :<span class="string">&quot;<span class="variable">$name</span>&quot;</span> &gt;<span class="string">&quot;<span class="variable">$tmp</span>/<span class="variable">$left_dir</span>/<span class="variable">$name</span>&quot;</span></span><br><span class="line">		<span class="keyword">fi</span></span><br><span class="line">	<span class="keyword">fi</span></span><br><span class="line"><span class="keyword">done</span> &lt; <span class="string">&quot;<span class="variable">$tmp</span>/filelist&quot;</span></span><br><span class="line"></span><br><span class="line">LOCAL=<span class="string">&quot;<span class="variable">$tmp</span>/<span class="variable">$left_dir</span>&quot;</span></span><br><span class="line">REMOTE=<span class="string">&quot;<span class="variable">$tmp</span>/<span class="variable">$right_dir</span>&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="built_in">test</span> -n <span class="string">&quot;<span class="variable">$diff_tool</span>&quot;</span></span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">	<span class="built_in">export</span> BASE</span><br><span class="line">	<span class="built_in">eval</span> <span class="variable">$diff_tool</span> <span class="string">&#x27;&quot;$LOCAL&quot;&#x27;</span> <span class="string">&#x27;&quot;$REMOTE&quot;&#x27;</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">	run_merge_tool <span class="string">&quot;<span class="variable">$merge_tool</span>&quot;</span> <span class="literal">false</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Copy files back to the working dir, if requested</span></span><br><span class="line"><span class="keyword">if</span> <span class="built_in">test</span> -n <span class="string">&quot;<span class="variable">$copy_back</span>&quot;</span> &amp;&amp; <span class="built_in">test</span> <span class="string">&quot;<span class="variable">$right_dir</span>&quot;</span> = <span class="string">&quot;working_tree&quot;</span></span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">	<span class="built_in">cd</span> <span class="string">&quot;<span class="variable">$start_dir</span>&quot;</span></span><br><span class="line">	git_top_dir=$(git rev-parse --show-toplevel)</span><br><span class="line">	find <span class="string">&quot;<span class="variable">$tmp</span>/<span class="variable">$right_dir</span>&quot;</span> -<span class="built_in">type</span> f |</span><br><span class="line">	<span class="keyword">while</span> <span class="built_in">read</span> file</span><br><span class="line">	<span class="keyword">do</span></span><br><span class="line">		<span class="built_in">cp</span> <span class="string">&quot;<span class="variable">$file</span>&quot;</span> <span class="string">&quot;<span class="variable">$git_top_dir</span>/<span class="variable">$&#123;file#$tmp/$right_dir/&#125;</span>&quot;</span></span><br><span class="line">	<span class="keyword">done</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+
+<p>然后配置<code>~/.gitconfig</code>文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">[color]</span><br><span class="line">	ui = auto</span><br><span class="line">[user]</span><br><span class="line">	name = xxx</span><br><span class="line">	email = xxx@xxx.xx</span><br><span class="line">[<span class="built_in">alias</span>]</span><br><span class="line">	st = status</span><br><span class="line">	co = checkout</span><br><span class="line">	ci = commit</span><br><span class="line">	br = branch</span><br><span class="line">	last = <span class="built_in">log</span> -1</span><br><span class="line">	di = diff</span><br><span class="line">	lg = <span class="built_in">log</span> --color --graph --pretty=format:<span class="string">&#x27;%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%an&gt;%Creset&#x27;</span> --abbrev-commit</span><br><span class="line">	unstage = reset HEAD</span><br><span class="line">	chp = cherry-pick</span><br><span class="line">	diffall = ~/bin/git-diffall</span><br><span class="line">[core]</span><br><span class="line">	quotepath = <span class="literal">false</span></span><br><span class="line">	editor = vim</span><br><span class="line">[<span class="built_in">help</span>]</span><br><span class="line">	autocorrect = 1</span><br><span class="line">[credential]</span><br><span class="line">	helper = cache --<span class="built_in">timeout</span>=31536000</span><br><span class="line">[diff]</span><br><span class="line">    tool = bc3</span><br><span class="line">[difftool]</span><br><span class="line">    prompt = <span class="literal">false</span></span><br><span class="line">[merge]</span><br><span class="line">    tool = bcomp</span><br><span class="line">[mergetool]</span><br><span class="line">    prompt = <span class="literal">false</span></span><br><span class="line">[mergetool <span class="string">&quot;bcomp&quot;</span>]</span><br><span class="line">    cmd = \&quot;/usr/local/bin/bcomp\&quot; \&quot;<span class="variable">$LOCAL</span>\&quot; \&quot;<span class="variable">$REMOTE</span>\&quot; \&quot;<span class="variable">$BASE</span>\&quot; \&quot;<span class="variable">$MERGED</span>\&quot;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="配置git显示当前分支，在-bashrc文件末尾加上："><a href="#配置git显示当前分支，在-bashrc文件末尾加上：" class="headerlink" title="配置git显示当前分支，在~&#x2F;.bashrc文件末尾加上："></a>配置git显示当前分支，在~&#x2F;.bashrc文件末尾加上：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## Parses out the branch name from .git/HEAD:</span></span><br><span class="line"><span class="function"><span class="title">find_git_branch</span></span> () &#123;</span><br><span class="line">    <span class="built_in">local</span> <span class="built_in">dir</span>=. <span class="built_in">head</span></span><br><span class="line">    <span class="keyword">until</span> [ <span class="string">&quot;<span class="variable">$dir</span>&quot;</span> -ef / ]; <span class="keyword">do</span></span><br><span class="line">        <span class="keyword">if</span> [ -f <span class="string">&quot;<span class="variable">$dir</span>/.git/HEAD&quot;</span> ]; <span class="keyword">then</span></span><br><span class="line">            <span class="built_in">head</span>=$(&lt; <span class="string">&quot;<span class="variable">$dir</span>/.git/HEAD&quot;</span>)</span><br><span class="line">            <span class="keyword">if</span> [[ <span class="variable">$head</span> = ref:\ refs/heads/* ]]; <span class="keyword">then</span></span><br><span class="line">                git_branch=<span class="string">&quot; → <span class="variable">$&#123;head#*/*/&#125;</span>&quot;</span></span><br><span class="line">            <span class="keyword">elif</span> [[ <span class="variable">$head</span> != <span class="string">&#x27;&#x27;</span> ]]; <span class="keyword">then</span></span><br><span class="line">                git_branch=<span class="string">&quot; → (detached)&quot;</span></span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                git_branch=<span class="string">&quot; → (unknow)&quot;</span></span><br><span class="line">            <span class="keyword">fi</span></span><br><span class="line">            <span class="built_in">return</span></span><br><span class="line">        <span class="keyword">fi</span></span><br><span class="line">        <span class="built_in">dir</span>=<span class="string">&quot;../<span class="variable">$dir</span>&quot;</span></span><br><span class="line">    <span class="keyword">done</span></span><br><span class="line">    git_branch=<span class="string">&#x27;&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">PROMPT_COMMAND=<span class="string">&quot;find_git_branch; <span class="variable">$PROMPT_COMMAND</span>&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Here is bash color codes you can use</span></span><br><span class="line">  black=$<span class="string">&#x27;\[\e[1;30m\]&#x27;</span></span><br><span class="line">    red=$<span class="string">&#x27;\[\e[1;31m\]&#x27;</span></span><br><span class="line">  green=$<span class="string">&#x27;\[\e[1;32m\]&#x27;</span></span><br><span class="line"> yellow=$<span class="string">&#x27;\[\e[1;33m\]&#x27;</span></span><br><span class="line">   blue=$<span class="string">&#x27;\[\e[1;34m\]&#x27;</span></span><br><span class="line">magenta=$<span class="string">&#x27;\[\e[1;35m\]&#x27;</span></span><br><span class="line">   cyan=$<span class="string">&#x27;\[\e[1;36m\]&#x27;</span></span><br><span class="line">  white=$<span class="string">&#x27;\[\e[1;37m\]&#x27;</span></span><br><span class="line"> normal=$<span class="string">&#x27;\[\e[m\]&#x27;</span></span><br><span class="line"></span><br><span class="line">PS1=<span class="string">&quot;<span class="variable">$white</span>[<span class="variable">$white</span>\u<span class="variable">$white</span>@<span class="variable">$white</span>\h<span class="variable">$white</span>:<span class="variable">$white</span>\w<span class="variable">$yellow</span>\$git_branch<span class="variable">$white</span>]\$ <span class="variable">$normal</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="未完待续…"><a href="#未完待续…" class="headerlink" title="未完待续…"></a>未完待续…</h2>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"># 笔记</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/12/15/notes/GitAdvance/" rel="prev" title="Git进阶用法">
+      <i class="fa fa-chevron-left"></i> Git进阶用法
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/01/15/notes/MacOS/" rel="next" title="mac OS常用开发软件激活方式">
+      mac OS常用开发软件激活方式 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#alogcat%E5%8F%AF%E4%BB%A5%E8%BF%87%E6%BB%A4%E6%89%93%E5%8D%B0%E5%87%BA%E5%AF%B9%E5%BA%94%E5%8C%85%E5%90%8D%E7%9A%84log%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">alogcat可以过滤打印出对应包名的log：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tingpng%E6%89%B9%E9%87%8F%E5%8E%8B%E7%BC%A9%E5%9B%BE%E7%89%87%E8%B5%84%E6%BA%90%E7%9A%84%E8%84%9A%E6%9C%AC%EF%BC%9A"><span class="nav-number">2.</span> <span class="nav-text">tingpng批量压缩图片资源的脚本：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8Mac%E3%80%81Linux-%E7%BB%88%E7%AB%AF%E6%98%BE%E7%A4%BA-Git-%E5%BD%93%E5%89%8D%E6%89%80%E5%9C%A8%E5%88%86%E6%94%AF"><span class="nav-number">3.</span> <span class="nav-text">在Mac、Linux 终端显示 Git 当前所在分支</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E8%BF%87git-diffall-branch-a-branch-b%E6%9D%A5%E5%AF%B9%E6%AF%94%E4%B8%A4%E4%B8%AA%E5%88%86%E6%94%AF%E9%97%B4%E5%B7%AE%E5%BC%82%E9%85%8D%E7%BD%AE%EF%BC%9A"><span class="nav-number">4.</span> <span class="nav-text">通过git diffall branch_a...branch_b来对比两个分支间差异配置：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEgit%E6%98%BE%E7%A4%BA%E5%BD%93%E5%89%8D%E5%88%86%E6%94%AF%EF%BC%8C%E5%9C%A8-bashrc%E6%96%87%E4%BB%B6%E6%9C%AB%E5%B0%BE%E5%8A%A0%E4%B8%8A%EF%BC%9A"><span class="nav-number">5.</span> <span class="nav-text">配置git显示当前分支，在~&#x2F;.bashrc文件末尾加上：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%AA%E5%AE%8C%E5%BE%85%E7%BB%AD%E2%80%A6"><span class="nav-number">6.</span> <span class="nav-text">未完待续…</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">liweiping</p>
+  <div class="site-description" itemprop="description">爱生活...爱Android...</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">liweiping</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

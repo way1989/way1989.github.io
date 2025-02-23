@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"way1989.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="git rebase高阶用法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git进阶用法">
+<meta property="og:url" content="https://way1989.github.io/2016/12/15/notes/GitAdvance/index.html">
+<meta property="og:site_name" content="liweiping">
+<meta property="og:description" content="git rebase高阶用法">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/1.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/2.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/3.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/4.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/5.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/6.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/7.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/8.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/9.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/10.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/11.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/12.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/13.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/14.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/15.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/16.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/17.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/18.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/19.png">
+<meta property="article:published_time" content="2016-12-15T03:22:15.000Z">
+<meta property="article:modified_time" content="2025-02-23T13:38:11.291Z">
+<meta property="article:author" content="liweiping">
+<meta property="article:tag" content="笔记">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/1.png">
+
+<link rel="canonical" href="https://way1989.github.io/2016/12/15/notes/GitAdvance/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Git进阶用法 | liweiping</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">liweiping</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://way1989.github.io/2016/12/15/notes/GitAdvance/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="liweiping">
+      <meta itemprop="description" content="爱生活...爱Android...">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="liweiping">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Git进阶用法
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-12-15 11:22:15" itemprop="dateCreated datePublished" datetime="2016-12-15T11:22:15+08:00">2016-12-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-02-23 21:38:11" itemprop="dateModified" datetime="2025-02-23T21:38:11+08:00">2025-02-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">笔记</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AC%94%E8%AE%B0/GIT/" itemprop="url" rel="index"><span itemprop="name">GIT</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">git rebase高阶用法</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="Git重要概念："><a href="#Git重要概念：" class="headerlink" title="Git重要概念："></a>Git重要概念：</h2><p>对于任何一个文件，在 Git 内都只有三种状态：已修改（modified）、已暂存（staged）、已提交（committed）：</p>
+<ul>
+<li>已修改表示修改了某个文件，但还没有提交保存.</li>
+<li>已暂存表示把已修改的文件放在下次提交时要保存的清单中.</li>
+<li>已提交表示该文件已经被安全地保存在本地数据库中了.</li>
+</ul>
+ <img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/1.png"/>
+
+<h2 id="两种分支合并的方法-rebase-与-merge："><a href="#两种分支合并的方法-rebase-与-merge：" class="headerlink" title="两种分支合并的方法,rebase 与 merge："></a>两种分支合并的方法,rebase 与 merge：</h2><img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/2.png"/>
+
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/3.png"/>
+
+<h2 id="Rebase的原理"><a href="#Rebase的原理" class="headerlink" title="Rebase的原理:"></a>Rebase的原理:</h2><ul>
+<li>先把本地的未push的提交生成一个个patch</li>
+<li>然后移除本地未上传的提交</li>
+<li>把服务器最新的提交全拉下来</li>
+<li>按修改顺序，重新应用本地的提交生成的patch</li>
+</ul>
+<p>由此可见，rebase过程可能产生冲突，而且可能需要解决多次</p>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/4.png"/>
+
+
+<h2 id="删除一个未上传的提交"><a href="#删除一个未上传的提交" class="headerlink" title="删除一个未上传的提交"></a>删除一个未上传的提交</h2><img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/5.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/6.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/7.png"/>
+
+<p>注意点:</p>
+<ul>
+<li>Rebase时log显示是按修改的顺序显示的，和git log 显示刚好是相反的</li>
+<li>Rebase完以后编辑器里面最少需要保留一行有效内容，否则不会进行rebase</li>
+<li>适合某个commit,在走读以后发现是不需要修改的</li>
+</ul>
+<h2 id="修改非最后一个提交"><a href="#修改非最后一个提交" class="headerlink" title="修改非最后一个提交"></a>修改非最后一个提交</h2><img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/8.png"/>
+
+<p>注意点:</p>
+<ul>
+<li>这个方案适合走读发现的小问题修改，适合少量的代码修改。</li>
+<li>大量的代码修改，建议把要修改的内容变成一个commit,然后合并到原来的commit</li>
+</ul>
+<h2 id="合并本地未上传的提交"><a href="#合并本地未上传的提交" class="headerlink" title="合并本地未上传的提交"></a>合并本地未上传的提交</h2><img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/9.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/10.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/11.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/12.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/13.png"/>
+
+<p>注意点:</p>
+<ul>
+<li>只能合并到未上传的commit</li>
+<li>如果多个提交合并到一个提交也是同理的，把要合并的commit按顺序移动到待合并的commit后面，要合并的commit前面的pick都修改成f,然后保存退出</li>
+<li>Rebase过程可能出现冲突，此时需要修改冲突然后执行”git add . “ 和”git rebase –continue”</li>
+</ul>
+<h2 id="已经commit未push的提交，不小心reset掉了，怎么找回来"><a href="#已经commit未push的提交，不小心reset掉了，怎么找回来" class="headerlink" title="已经commit未push的提交，不小心reset掉了，怎么找回来"></a>已经commit未push的提交，不小心reset掉了，怎么找回来</h2><img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/14.png"/>
+
+<p>操作步骤及注意事项:</p>
+<ul>
+<li>根据后面的commit_msg找到对应的commit</li>
+<li>执行命令git cherry-pick commit_id</li>
+<li>各种rebase操作错误的时候，也可以利用git reflog，找到rebase之前的commit,然后执行git reset –hard commit_id (这个会丢弃本地未commit的修改内容)</li>
+</ul>
+<h2 id="把自己的修改内容合并到别人的commit里面去了"><a href="#把自己的修改内容合并到别人的commit里面去了" class="headerlink" title="把自己的修改内容合并到别人的commit里面去了"></a>把自己的修改内容合并到别人的commit里面去了</h2><img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/15.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/16.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/17.png"/>
+
+<p>操作步骤及注意事项</p>
+<ul>
+<li>根据后面的commit_msg找到对应的comit</li>
+<li>git reset –soft commit_id</li>
+</ul>
+<h2 id="从gerrit获取别人提交的commit"><a href="#从gerrit获取别人提交的commit" class="headerlink" title="从gerrit获取别人提交的commit"></a>从gerrit获取别人提交的commit</h2><img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/18.png"/>
+<img src="https://raw.githubusercontent.com/way1989/way1989.github.io/hexo/images_post/gitAdvance/19.png"/>
+
+<p>操作步骤及注意事项</p>
+<ul>
+<li>从gerrit查看到要下载的commit的commit_id</li>
+<li>执行命令git ls-remote | grep 66e1d6ec3597，获取要下载commit在gerrit的路径</li>
+<li>执行命令 git pull –rebase origin refs&#x2F;changes&#x2F;06&#x2F;3306&#x2F;1, 将要下载的commit rebase到本地</li>
+<li>要下载的commit 所依赖的其它commit都会同时下载下来，走读时可只下载最后的commit</li>
+</ul>
+<h2 id="常见错误"><a href="#常见错误" class="headerlink" title="常见错误"></a>常见错误</h2><ul>
+<li>git pull –rebase，出现冲突时，解决后不知道执行git rebase –continue</li>
+<li>git cherry-pick commit_id 出现冲突时,解决后不知道执行git cherry-pick –continue</li>
+<li>出现冲突时，直接切到其它分支</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag"># 笔记</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2016/09/29/blogs/Retrofit/" rel="prev" title="Android深入浅出 Retrofit">
+      <i class="fa fa-chevron-left"></i> Android深入浅出 Retrofit
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/01/14/notes/Command/" rel="next" title="各种常用脚本">
+      各种常用脚本 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Git%E9%87%8D%E8%A6%81%E6%A6%82%E5%BF%B5%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">Git重要概念：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%A4%E7%A7%8D%E5%88%86%E6%94%AF%E5%90%88%E5%B9%B6%E7%9A%84%E6%96%B9%E6%B3%95-rebase-%E4%B8%8E-merge%EF%BC%9A"><span class="nav-number">2.</span> <span class="nav-text">两种分支合并的方法,rebase 与 merge：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rebase%E7%9A%84%E5%8E%9F%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text">Rebase的原理:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E4%B8%80%E4%B8%AA%E6%9C%AA%E4%B8%8A%E4%BC%A0%E7%9A%84%E6%8F%90%E4%BA%A4"><span class="nav-number">4.</span> <span class="nav-text">删除一个未上传的提交</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E9%9D%9E%E6%9C%80%E5%90%8E%E4%B8%80%E4%B8%AA%E6%8F%90%E4%BA%A4"><span class="nav-number">5.</span> <span class="nav-text">修改非最后一个提交</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%88%E5%B9%B6%E6%9C%AC%E5%9C%B0%E6%9C%AA%E4%B8%8A%E4%BC%A0%E7%9A%84%E6%8F%90%E4%BA%A4"><span class="nav-number">6.</span> <span class="nav-text">合并本地未上传的提交</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%B2%E7%BB%8Fcommit%E6%9C%AApush%E7%9A%84%E6%8F%90%E4%BA%A4%EF%BC%8C%E4%B8%8D%E5%B0%8F%E5%BF%83reset%E6%8E%89%E4%BA%86%EF%BC%8C%E6%80%8E%E4%B9%88%E6%89%BE%E5%9B%9E%E6%9D%A5"><span class="nav-number">7.</span> <span class="nav-text">已经commit未push的提交，不小心reset掉了，怎么找回来</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%8A%E8%87%AA%E5%B7%B1%E7%9A%84%E4%BF%AE%E6%94%B9%E5%86%85%E5%AE%B9%E5%90%88%E5%B9%B6%E5%88%B0%E5%88%AB%E4%BA%BA%E7%9A%84commit%E9%87%8C%E9%9D%A2%E5%8E%BB%E4%BA%86"><span class="nav-number">8.</span> <span class="nav-text">把自己的修改内容合并到别人的commit里面去了</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8Egerrit%E8%8E%B7%E5%8F%96%E5%88%AB%E4%BA%BA%E6%8F%90%E4%BA%A4%E7%9A%84commit"><span class="nav-number">9.</span> <span class="nav-text">从gerrit获取别人提交的commit</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E9%94%99%E8%AF%AF"><span class="nav-number">10.</span> <span class="nav-text">常见错误</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">liweiping</p>
+  <div class="site-description" itemprop="description">爱生活...爱Android...</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">liweiping</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
